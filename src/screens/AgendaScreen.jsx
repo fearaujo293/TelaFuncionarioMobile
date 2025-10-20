@@ -1,8 +1,9 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions, Modal, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { useOrientation } from '../Utils/Responsive';
 import { Colors, CommonStyles } from '../Utils/Theme';
+import ConsultationCard from '../components/ConsultationCard';
 
 LocaleConfig.locales['pt-br'] = {
   monthNames: [
@@ -23,9 +24,24 @@ LocaleConfig.defaultLocale = 'pt-br';
 
 const AgendaScreen = () => {
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
+  const [selectedConsultation, setSelectedConsultation] = useState(null);
+  const [showSmallModal, setShowSmallModal] = useState(false);
+  const [smallModalContent, setSmallModalContent] = useState(null);
   const { width, height } = useWindowDimensions();
   const orientation = useOrientation();
   const isLandscape = orientation === 'landscape';
+
+  const markedDates = useMemo(() => ({
+    '2025-07-05': { marked: true, dotColor: Colors.gray, activeOpacity: 0, completed: true, consultation: { id: '1', time: '10:00', pet: 'Rex', vet: 'Dr. Smith', type: 'Consulta de Rotina', status: 'completed', petImage: require('../assets/dog1.png') } }, // Consulta concluída (acinzentada)
+    '2025-12-10': { selected: true, selectedColor: Colors.highlightCoral, selectedTextColor: Colors.darkHighlightPurple, consultation: { id: '2', time: '14:30', pet: 'Miau', vet: 'Dra. Johnson', type: 'Vacinação', status: 'scheduled', petImage: require('../assets/cat1.png') } }, // Exemplo de dia 10 com destaque
+    '2025-10-15': { marked: true, dotColor: Colors.mediumPurple, activeOpacity: 0, consultation: { id: '3', time: '09:00', pet: 'Buddy', vet: 'Dr. Brown', type: 'Exame de Sangue', status: 'scheduled', petImage: require('../assets/dog2.png') } }, // Consulta marcada (roxo)
+    '2025-11-20': { marked: true, dotColor: '#FF0000', activeOpacity: 0, consultation: { id: '4', time: '11:00', pet: 'Princesa', vet: 'Dra. White', type: 'Emergência', status: 'urgent', petImage: require('../assets/cat1.png') } }, // Consulta urgente (vermelho)
+  }), []);
+
+  const allConsultations = useMemo(() => {
+    return Object.values(markedDates).map(marking => marking.consultation);
+  }, [markedDates]);
 
   const calendarTheme = useMemo(() => ({
     backgroundColor: Colors.softLilac, // Fundo roxo/lilás suave que envolve toda a área do calendário
@@ -49,13 +65,6 @@ const AgendaScreen = () => {
     textDayHeaderFontSize: 12,
   }), []);
 
-  const markedDates = useMemo(() => ({
-    '2025-07-05': { marked: true, dotColor: Colors.gray, activeOpacity: 0, completed: true }, // Consulta concluída (acinzentada)
-    '2025-12-10': { selected: true, selectedColor: Colors.highlightCoral, selectedTextColor: Colors.darkHighlightPurple }, // Exemplo de dia 10 com destaque
-    '2025-10-15': { marked: true, dotColor: Colors.mediumPurple, activeOpacity: 0 }, // Consulta marcada (roxo)
-    '2025-11-20': { marked: true, dotColor: '#FF0000', activeOpacity: 0 }, // Consulta urgente (vermelho)
-  }), []);
-
   const renderDay = (day, marking) => {
     const dayStyle = [styles.dayContainer];
     const dayTextStyle = [styles.dayText];
@@ -66,12 +75,48 @@ const AgendaScreen = () => {
     }
 
     return (
-      <View style={dayStyle}>
+      <TouchableOpacity 
+        style={dayStyle}
+        onPress={() => {
+          // Manually trigger onDayPress for the Calendar component
+          // This ensures the main onDayPress logic is executed for all days
+          const dateString = day.dateString;
+          const markingForDay = markedDates[dateString];
+          const consultation = markingForDay?.consultation;
+
+          setSelectedDate(dateString); // Always set selected date when a day is pressed
+
+          if (consultation) {
+            if (markingForDay.dotColor === Colors.mediumPurple) {
+              // Show small modal for purple dot (scheduled)
+              setSmallModalContent({
+                petImage: consultation.petImage,
+                time: consultation.time,
+                date: day.dateString,
+              });
+              setShowSmallModal(true);
+              setSelectedConsultation(null); // Clear detailed modal content
+              setShowDetailsModal(false); // Ensure detailed modal is closed
+            } else {
+              // Show detailed modal for other marked dates
+              setSelectedConsultation(consultation);
+              setShowDetailsModal(true);
+              setShowSmallModal(false); // Ensure small modal is closed
+            }
+          } else {
+            // No consultation, close both modals
+            setSelectedConsultation(null);
+            setShowDetailsModal(false);
+            setSmallModalContent(null);
+            setShowSmallModal(false);
+          }
+        }}
+      >
         <Text style={dayTextStyle}>{day.day}</Text>
         {marking && marking.marked && (
           <View style={[styles.dot, { backgroundColor: marking.dotColor }]} />
         )}
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -87,12 +132,42 @@ const AgendaScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.headerTitle}>Agenda</Text>
+    <ScrollView contentContainerStyle={styles.scrollContainer}>
+      {/* <Text style={styles.headerTitle}>Agenda</Text> */}
       <View style={[CommonStyles.card, styles.calendarWrapper]}>
         <Calendar
           onDayPress={(day) => {
-            // setSelectedDate(day.dateString); // Desabilitar seleção de dias
+            const dateString = day.dateString;
+            const markingForDay = markedDates[dateString];
+            const consultation = markingForDay?.consultation;
+
+            setSelectedDate(dateString); // Always set selected date when a day is pressed
+
+            if (consultation) {
+              if (markingForDay.dotColor === Colors.mediumPurple) {
+                // Show small modal for purple dot (scheduled)
+                setSmallModalContent({
+                  petImage: consultation.petImage,
+                  time: consultation.time,
+                  date: day.dateString,
+                  pet: consultation.pet,
+                });
+                setShowSmallModal(true);
+                setSelectedConsultation(null); // Clear detailed modal content
+                setShowDetailsModal(false); // Ensure detailed modal is closed
+              } else {
+                // Show detailed modal for other marked dates
+                setSelectedConsultation(consultation);
+                setShowDetailsModal(true);
+                setShowSmallModal(false); // Ensure small modal is closed
+              }
+            } else {
+              // No consultation, close both modals
+              setSelectedConsultation(null);
+              setShowDetailsModal(false);
+              setSmallModalContent(null);
+              setShowSmallModal(false);
+            }
           }}
           markedDates={markedDates}
           theme={calendarTheme}
@@ -103,11 +178,108 @@ const AgendaScreen = () => {
           firstDay={1}
           showWeekNumbers={false}
           hideExtraDays={true}
-          disableAllTouchEventsForDisabledDays={true}
+          // disableAllTouchEventsForDisabledDays={true} // Remove this line to make all days clickable
           dayComponent={({ date, marking }) => renderDay(date, marking)}
         />
       </View>
-    </View>
+
+      {/* Small Modal for Purple Dot Consultations */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showSmallModal}
+        onRequestClose={() => setShowSmallModal(false)}
+      >
+        <TouchableOpacity
+          style={styles.smallModalOverlay}
+          activeOpacity={1}
+          onPressOut={() => setShowSmallModal(false)}
+        >
+          <View style={styles.smallModalContent}>
+            {smallModalContent && (
+              <>
+                {smallModalContent.petImage && (
+                  <Image source={smallModalContent.petImage} style={styles.smallModalPetImage} />
+                )}
+                <Text style={styles.modalTitle}>Consulta Agendada</Text>
+                <Text style={styles.smallModalText}>Pet: {smallModalContent.pet}</Text>
+                <Text style={styles.smallModalText}>Horário: {smallModalContent.time}</Text>
+                <Text style={styles.smallModalText}>Data: {smallModalContent.date}</Text>
+                <TouchableOpacity
+                  style={styles.smallModalCloseButton}
+                  onPress={() => setShowSmallModal(false)}
+                >
+                  <Text style={styles.smallModalCloseButtonText}>Fechar</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+        </TouchableOpacity>
+      </Modal>
+
+      {/* Existing Detailed Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={showDetailsModal}
+        onRequestClose={() => setShowDetailsModal(false)}
+      >
+        <TouchableOpacity 
+          style={styles.modalOverlay}
+          activeOpacity={1}
+          onPressOut={() => setShowDetailsModal(false)}
+        >
+          <View style={styles.modalContent}>
+            {selectedConsultation && (
+              <> 
+                {selectedConsultation.petImage && (
+                  <Image 
+                    source={selectedConsultation.petImage} 
+                    style={styles.modalPetImage} 
+                  />
+                )}
+                <Text style={styles.modalTitle}>Detalhes da Consulta</Text>
+                {selectedConsultation.status === 'scheduled' && (
+                  <Text style={[styles.modalText, styles.statusScheduled]}>
+                    📅 Marcada para {selectedConsultation.pet} às {selectedConsultation.time}
+                  </Text>
+                )}
+                {selectedConsultation.status === 'urgent' && (
+                  <Text style={[styles.modalText, styles.statusUrgent]}>
+                    ⚠️ Urgente para {selectedConsultation.pet} às {selectedConsultation.time}!
+                  </Text>
+                )}
+                {selectedConsultation.status === 'completed' && (
+                  <Text style={[styles.modalText, styles.statusCompleted]}>
+                    ✅ Concluída para {selectedConsultation.pet} às {selectedConsultation.time}
+                  </Text>
+                )}
+                <Text style={styles.modalText}>Veterinário: {selectedConsultation.vet}</Text>
+                <Text style={styles.modalText}>Tipo: {selectedConsultation.type}</Text>
+                <TouchableOpacity
+                  style={styles.closeButton}
+                  onPress={() => setShowDetailsModal(false)}
+                >
+                  <Text style={styles.closeButtonText}>Fechar</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+        </TouchableOpacity>
+      </Modal>
+      <View style={styles.consultationsList}>
+        {allConsultations.map((consultation, index) => (
+          <ConsultationCard 
+            key={index} 
+            consultation={consultation} 
+            onPress={(consultation) => {
+              setSelectedConsultation(consultation);
+              setShowDetailsModal(true);
+            }} 
+          />
+        ))}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -115,23 +287,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // justifyContent: 'center',
-    alignItems: 'center',
+    // alignItems: 'center',
     backgroundColor: Colors.background,
     paddingHorizontal: 20,
     paddingTop: 24,
     paddingBottom: 16,
   },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 20,
+  },
   calendarWrapper: {
-    marginHorizontal: 0,
+    marginHorizontal: 20,
     marginTop: 0,
     marginBottom: 0,
     padding: 20,
     borderRadius: 24,
     overflow: 'hidden',
     backgroundColor: Colors.softLilac,
+    // width: '100%', // Make calendar wrapper take full width
+    // height: 'auto', // Adjust height automatically
   },
   calendar: {
     borderRadius: 24,
+    // width: '100%', // Make calendar take full width of its wrapper
+    // height: 350, // Set a fixed height for the calendar
   },
   headerTitle: {
     fontSize: 24,
@@ -143,8 +323,10 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   dayContainer: {
-    width: 40,
-    height: 40,
+    flex: 1,
+    aspectRatio: 1,
+    // width: 40,
+    // height: 40,
     borderRadius: 8,
     justifyContent: 'center',
     alignItems: 'center',
@@ -156,6 +338,7 @@ const styles = StyleSheet.create({
     color: Colors.mediumPurple, // Números roxos
     fontSize: 14,
     fontWeight: '500',
+    textAlign: 'center',
   },
   highlightedDay: {
     backgroundColor: Colors.highlightCoral, // Fundo coral/salmão para destaque
@@ -168,6 +351,135 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     marginTop: 2,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: Colors.white,
+    borderRadius: 16,
+    padding: 24,
+    width: '85%',
+    maxHeight: '85%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  modalPetImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 20,
+    borderWidth: 3,
+    borderColor: Colors.lightPurple,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  statusScheduled: {
+    backgroundColor: Colors.softLilac,
+    padding: 8,
+    borderRadius: 4,
+    color: Colors.mediumPurple,
+  },
+  statusUrgent: {
+    backgroundColor: Colors.lightRed,
+    padding: 8,
+    borderRadius: 4,
+    color: '#FF0000',
+  },
+  statusCompleted: {
+    backgroundColor: Colors.lightGreen,
+    padding: 8,
+    borderRadius: 4,
+    color: Colors.gray,
+  },
+  closeButton: {
+    marginTop: 24,
+    backgroundColor: Colors.highlightCoral,
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    elevation: 3,
+  },
+  closeButtonText: {
+    color: Colors.white,
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  smallModalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  smallModalContent: {
+    backgroundColor: Colors.white,
+    borderRadius: 16,
+    padding: 24,
+    width: '85%',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  smallModalPetImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 20,
+    borderWidth: 3,
+    borderColor: Colors.lightPurple,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  smallModalText: {
+    fontSize: 16,
+    marginBottom: 12,
+    color: Colors.mediumPurple,
+    textAlign: 'center',
+  },
+  smallModalCloseButton: {
+    marginTop: 24,
+    backgroundColor: Colors.highlightCoral,
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+    elevation: 3,
+  },
+  smallModalCloseButtonText: {
+    color: Colors.white,
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 12,
+    color: Colors.mediumPurple,
+    textAlign: 'center',
+  },
+  modalTextUrgent: {
+    fontSize: 16,
+    marginBottom: 12,
+    color: '#FF0000',
+    fontWeight: '600',
+    textAlign: 'center',
+    backgroundColor: Colors.lightRed,
+    padding: 8,
+    borderRadius: 4,
   },
 });
 

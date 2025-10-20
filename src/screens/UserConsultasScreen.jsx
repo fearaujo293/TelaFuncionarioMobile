@@ -120,36 +120,17 @@ const UserConsultasScreen = ({ navigation }) => {
             </View>
           </TouchableOpacity>
         ) : (
-          <View style={styles.card}>
-            <TouchableOpacity onPress={navigateToDetails} style={{ flexDirection: 'row', flex: 1, alignItems: 'center' }}>
-              <Image source={consulta.imageSource} style={styles.petImage} />
-              <View style={styles.cardInfo}>
-                <Text style={styles.petName}>{consulta.petName}</Text>
-                <Text style={styles.service}>{consulta.service}</Text>
-                <Text style={styles.time}>{consulta.time}</Text>
-              </View>
-            </TouchableOpacity>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={[styles.actionButton, styles.acceptButton]}
-                onPress={() => console.log('Aceitar', consulta.id)}
-              >
-                <Text style={styles.buttonText}>Aceitar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.actionButton, styles.rejectButton]}
-                onPress={() => console.log('Rejeitar', consulta.id)}
-              >
-                <Text style={styles.buttonText}>Rejeitar</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.actionButton, styles.detailsButton]}
-                onPress={navigateToDetails}
-              >
-                <Text style={styles.buttonText}>Detalhes</Text>
-              </TouchableOpacity>
+          <TouchableOpacity onPress={navigateToDetails} style={styles.card}>
+            <Image source={consulta.imageSource} style={styles.petImage} />
+            <View style={styles.cardInfo}>
+              <Text style={styles.petName}>{consulta.petName}</Text>
+              <Text style={styles.service}>{consulta.service}</Text>
+              <Text style={styles.time}>{consulta.time}</Text>
             </View>
-          </View>
+            <View style={[styles.statusBadgeCard, styles[`status${consulta.status}`]]}>
+              <Text style={styles.statusTextCard}>{consulta.status}</Text>
+            </View>
+          </TouchableOpacity>
         )
       );
     };
@@ -209,20 +190,25 @@ const styles = StyleSheet.create({
   },
   tabContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 16,
+    justifyContent: 'space-between', // Distribuição uniforme entre as abas
+    marginBottom: 24,
     backgroundColor: '#FFFFFF',
+    paddingHorizontal: 10, // Espaçamento das bordas do container
   },
   tab: {
-    flex: 1,
+    width: '30%', // Largura ajustada para melhor distribuição
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    marginHorizontal: 16,
+    marginHorizontal: 0, // Espaçamento controlado por justifyContent
   },
   activeTab: {
     backgroundColor: '#A367F0',
+    transform: [{ scale: 1.05 }], // Destaque sutil
+    paddingVertical: 16, // Menor altura
+    paddingHorizontal: 10, // Menor largura
+    borderRadius: 10,
   },
   tabText: {
     fontSize: 16,
@@ -231,6 +217,7 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     color: '#FFFFFF',
+    fontSize: 18,
   },
   contentContainer: {
     flex: 1,
@@ -239,8 +226,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    height: 80, // Reverted height
-    padding: 12, // Reverted padding
+    height: 75, // Aumentado em mais 20px
+    padding: 20, // Ajustado para um preenchimento maior
     marginBottom: 12,
     alignItems: 'center',
     borderWidth: 1,

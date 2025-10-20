@@ -117,10 +117,16 @@ const DetalhesConsultaScreen = ({ navigation, route }) => {
           <View style={styles.actionButtonsContainer}>
             {consultaData.status === 'Pendente' && (
               <View style={styles.pendingActionButtonsContainer}>
-                <TouchableOpacity style={[styles.actionButton, styles.acceptButton]} onPress={() => console.log('Aceitar consulta')}>
+                <TouchableOpacity
+                  style={[styles.actionButton, styles.acceptButton]}
+                  onPress={() => console.log('Aceitar', consultaData.id)}
+                >
                   <Text style={styles.actionButtonText}>Aceitar</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.actionButton, styles.rejectButton]} onPress={() => console.log('Rejeitar consulta')}>
+                <TouchableOpacity
+                  style={[styles.actionButton, styles.rejectButton]}
+                  onPress={() => console.log('Rejeitar', consultaData.id)}
+                >
                   <Text style={styles.actionButtonText}>Rejeitar</Text>
                 </TouchableOpacity>
               </View>
