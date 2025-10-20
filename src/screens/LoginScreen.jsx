@@ -6,18 +6,50 @@ import { Colors, CommonStyles } from '../Utils/Theme';
 const LoginScreen = () => {
   const navigation = useNavigation(); // Obtenha o objeto de navegação
   const route = useRoute();
-  const [userType, setUserType] = useState(route.params?.userType || 'usuario'); // 'usuario' ou 'veterinario'
+  const [userType, setUserType] = useState(route.params?.userType || 'usuario'); // 'usuario', 'veterinario' ou 'funcionario'
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   const handleBackPress = () => {
     navigation.goBack(); // Volta para a tela anterior na pilha
   };
 
   const handleLogin = () => {
-    // Lógica de autenticação aqui
-    if (userType === 'usuario') {
-      navigation.navigate('UserMainApp');
-    } else if (userType === 'veterinario') {
-      navigation.navigate('VeterinarianMainApp');
+    // Limpa erros anteriores
+    setEmailError('');
+    setPasswordError('');
+
+    let valid = true;
+
+    // Validação de Email
+    if (!email) {
+      setEmailError('O email é obrigatório.');
+      valid = false;
+    } else if (!/^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/.test(email)) {
+      setEmailError('Formato de email inválido.');
+      valid = false;
+    }
+
+    // Validação de Senha (exemplo: mínimo de 6 caracteres)
+    if (!password) {
+      setPasswordError('A senha é obrigatória.');
+      valid = false;
+    } else if (password.length < 6) {
+      setPasswordError('A senha deve ter no mínimo 6 caracteres.');
+      valid = false;
+    }
+
+    if (valid) {
+      // Lógica de autenticação simulada
+      if (userType === 'usuario') {
+        navigation.navigate('UserMainApp');
+      } else if (userType === 'veterinario') {
+        navigation.navigate('VeterinarianMainApp');
+      } else if (userType === 'funcionario') {
+        navigation.navigate('EmployeeMainApp');
+      }
     }
   };
 
@@ -50,6 +82,14 @@ const LoginScreen = () => {
               Veterinário
             </Text>
           </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.userTypeButton, userType === 'funcionario' && styles.userTypeButtonActive]}
+            onPress={() => setUserType('funcionario')}
+          >
+            <Text style={[styles.userTypeButtonText, userType === 'funcionario' && styles.userTypeButtonTextActive]}>
+              Funcionário
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {/* Logo Pet Vita agora é uma imagem */}
@@ -65,25 +105,31 @@ const LoginScreen = () => {
         <View style={styles.formGroup}>
           <Text style={styles.label}>Email</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, emailError ? styles.inputError : {}]}
             placeholder="Exemplo@gmail.com"
             placeholderTextColor={Colors.lightPurple}
             keyboardType="email-address"
-            maxLength={35} // Limit email to 35 characters
+            maxLength={35}
             autoCapitalize="none"
+            value={email}
+            onChangeText={setEmail}
           />
+          {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
         </View>
 
         {/* Campo de Senha */}
         <View style={styles.formGroup}>
           <Text style={styles.label}>Password</Text>
           <TextInput
-            style={styles.input}
+            style={[styles.input, passwordError ? styles.inputError : {}]}
             placeholder="Senha"
             placeholderTextColor={Colors.lightPurple}
             secureTextEntry
-            maxLength={20} // Limit password to 20 characters
+            maxLength={20}
+            value={password}
+            onChangeText={setPassword}
           />
+          {passwordError ? <Text style={styles.errorText}>{passwordError}</Text> : null}
         </View>
 
         {/* Lembre-me e Esqueci a Senha */}
@@ -246,6 +292,16 @@ const styles = StyleSheet.create({
     color: Colors.bluePurple,
     fontSize: 16,
     fontWeight: '600',
+  },
+  inputError: {
+    borderColor: Colors.red,
+    borderWidth: 1,
+  },
+  errorText: {
+    color: Colors.red,
+    fontSize: 12,
+    marginTop: 5,
+    marginLeft: 5,
   },
 });
 

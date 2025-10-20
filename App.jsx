@@ -13,6 +13,7 @@ import InicialScreen from './src/screens/InicialScreen';
 import { ChatProvider } from './src/context/ChatContext';
 import UserMainApp from './src/navigation/UserMainApp';
 import VeterinarianMainApp from './src/navigation/VeterinarianMainApp';
+import EmployeeMainApp from './src/navigation/EmployeeMainApp';
 import PrincipalScreen from './src/screens/PrincipalScreen';
 
 const RootStack = createNativeStackNavigator();
@@ -37,6 +38,7 @@ export default function App() {
           <RootStack.Screen name="Cadastro" component={CadastroScreen} />
           <RootStack.Screen name="UserMainApp" component={UserMainApp} />
           <RootStack.Screen name="VeterinarianMainApp" component={VeterinarianMainApp} />
+          <RootStack.Screen name="EmployeeMainApp" component={EmployeeMainApp} />
           <RootStack.Screen name="PrincipalScreen" component={PrincipalScreen} />
         </RootStack.Navigator>
       </NavigationContainer>
