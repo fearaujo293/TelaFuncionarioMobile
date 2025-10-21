@@ -116,7 +116,7 @@ const ScheduleFormScreen = ({ navigation, route }) => {
         ...formData,
         pet: petMap[formData.pet] || { id: 'unknown', name: formData.pet, image: 'https://via.placeholder.com/100' }
       };
-      navigation.navigate('SelectVetScreen', { appointmentData });
+      navigation.navigate('VeteSelectScreen', { appointmentData });
     }
   };
 

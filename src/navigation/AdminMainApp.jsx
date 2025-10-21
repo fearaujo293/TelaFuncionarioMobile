@@ -6,10 +6,14 @@ import { Image, Animated, Easing, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
 // Telas de Funcionários
-import EmployeeDashboardScreen from '../screens/EmployeeDashboardScreen';
-import EmployeeListScreen from '../screens/EmployeeListScreen';
-import EmployeeChatScreen from '../screens/EmployeeChatScreen';
-import AddEmployeeScreen from '../screens/AddEmployeeScreen'; // Importar a nova tela
+import AdminDashboardScreen from '../screens/AdminDashboardScreen';
+import AdminListScreen from '../screens/AdminListScreen';
+import AdminChatScreen from '../screens/AdminChatScreen';
+import AddAdminScreen from '../screens/AddAdminScreen'; // Importar a nova tela
+import UserListScreen from '../screens/UserListScreen'; // Import UserListScreen
+import AllAppointmentsScreen from '../screens/AllAppointmentsScreen'; // Import AllAppointmentsScreen
+import NewAppointmentScreen from '../screens/NewAppointmentScreen'; // Import NewAppointmentScreen
+import UserChatScreen from '../screens/UserChatScreen'; // Import UserChatScreen
 
 // Ícones personalizados (usando os existentes por enquanto)
 import iconeHome from '../assets/icone.png'; // Para Dashboard
@@ -74,7 +78,10 @@ const slideTransition = {
 function EmployeeDashboardStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
-      <Stack.Screen name="Dashboard" component={EmployeeDashboardScreen} options={{ title: 'Dashboard' }} />
+      <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: 'Dashboard' }} />
+      <Stack.Screen name="UserListScreen" component={UserListScreen} options={{ title: 'Lista de Clientes', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="AllAppointmentsScreen" component={AllAppointmentsScreen} options={{ title: 'Todas as Consultas', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="NewAppointmentScreen" component={NewAppointmentScreen} options={{ title: 'Nova Consulta', headerBackVisible: true, headerLeft: undefined }} />
     </Stack.Navigator>
   );
 }
@@ -82,8 +89,8 @@ function EmployeeDashboardStack() {
 function EmployeeListStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
-      <Stack.Screen name="EmployeeList" component={EmployeeListScreen} options={{ title: 'Funcionários' }} />
-      <Stack.Screen name="AddEmployee" component={AddEmployeeScreen} options={{ title: 'Adicionar Funcionário' }} />
+      <Stack.Screen name="AdminList" component={AdminListScreen} options={{ title: 'Administradores' }} />
+      <Stack.Screen name="AddAdmin" component={AddAdminScreen} options={{ title: 'Adicionar Administrador' }} />
     </Stack.Navigator>
   );
 }
@@ -91,7 +98,8 @@ function EmployeeListStack() {
 function EmployeeChatStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
-      <Stack.Screen name="EmployeeChat" component={EmployeeChatScreen} options={{ title: 'Chat' }} />
+      <Stack.Screen name="AdminChat" component={AdminChatScreen} options={{ title: 'Chat' }} />
+      <Stack.Screen name="UserChatScreen" component={UserChatScreen} options={({ route }) => ({ title: route.params.clientName, headerBackVisible: true, headerLeft: undefined })} />
     </Stack.Navigator>
   );
 }
@@ -178,10 +186,10 @@ function EmployeeMainTabs({ route }) {
   );
 }
 
-const EmployeeMainApp = ({ route }) => {
+const AdminMainApp = ({ route }) => {
   return (
     <EmployeeMainTabs route={route} />
   );
 };
 
-export default EmployeeMainApp;
+export default AdminMainApp;

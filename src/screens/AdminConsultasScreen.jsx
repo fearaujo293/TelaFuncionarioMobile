@@ -8,20 +8,21 @@ import {
   ScrollView,
 } from 'react-native';
 
-const ConsultasScreen = ({ navigation }) => {
-  const [activeTab, setActiveTab] = useState('Agendada');
+const AdminConsultasScreen = ({ navigation }) => {
+  const [activeTab, setActiveTab] = useState('Pendentes');
 
   // Dados das consultas com informações únicas para cada pet
   const consultasData = {
-    Agendada: [
+    Pendentes: [
       {
         id: 1,
         petName: "Mascote 1",
-        service: "Consulta Geral", 
+        service: "Consulta Geral com Dr. Felipe A.", 
+        doctorName: "Dr. Felipe A.",
         time: "10:00 AM",
+        date: "2025-02-05",
         imageSource: require('../assets/cat1.png'),
-        status: "Agendada",
-        data: "15:23 | 05/02/2025",
+        status: "Pendente",
         sintomas: "Meu gato acordou vomitando, está dormindo mais que o normal e não está comendo nada.",
         localizacao: "R. Bento Branco de Andrade Filho, 379 – Santo Amaro, São Paulo – SP, 04757-000",
         implementos: ["Termômetro", "Estetoscópio", "Soro"]
@@ -29,14 +30,30 @@ const ConsultasScreen = ({ navigation }) => {
       {
         id: 2,
         petName: "Mascote 2", 
-        service: "Vacinação",
+        service: "Vacinação com Dra. Ana C.",
+        doctorName: "Dra. Ana C.",
         time: "02:30 PM",
+        date: "2025-02-06",
         imageSource: require('../assets/dog1.png'),
-        status: "Agendada",
-        data: "14:00 | 06/02/2025",
+        status: "Pendente",
         sintomas: "Vacinação anual de rotina para meu cachorro.",
         localizacao: "Av. Paulista, 1000 – Bela Vista, São Paulo – SP, 01310-000",
         implementos: ["Vacina", "Algodão", "Álcool"]
+      }
+    ],
+    Aceitas: [
+      {
+        id: 3,
+        petName: "Mascote 3",
+        service: "Exame de Sangue com Dr. João P.", 
+        doctorName: "Dr. João P.",
+        time: "09:00 AM",
+        date: "2025-02-05",
+        imageSource: require('../assets/dog2.png'),
+        status: "Aceita",
+        sintomas: "Meu cachorro está com fraqueza e perda de apetite, precisa de exame de sangue.",
+        localizacao: "R. Augusta, 500 – Consolação, São Paulo – SP, 01305-000",
+        implementos: ["Agulha", "Tubo de coleta", "Algodão"]
       }
     ],
     Andamento: [
@@ -57,11 +74,12 @@ const ConsultasScreen = ({ navigation }) => {
       {
         id: 4,
         petName: "Mascote 4",
-        service: "Tosa", 
+        service: "Tosa com Dra. Ana C.", 
+        doctorName: "Dra. Ana C.",
         time: "04:00 PM",
+        date: "2025-02-04",
         imageSource: require('../assets/cat1.png'),
         status: "Concluída",
-        data: "16:00 | 04/02/2025",
         sintomas: "Tosa de rotina para meu gato de pelo longo.",
         localizacao: "R. Oscar Freire, 800 – Jardim Paulista, São Paulo – SP, 01426-000",
         implementos: ["Tesoura", "Máquina de tosa", "Pente"]
@@ -69,11 +87,12 @@ const ConsultasScreen = ({ navigation }) => {
       {
         id: 5,
         petName: "Mascote 5",
-        service: "Banho", 
+        service: "Banho com Dr. João P.", 
+        doctorName: "Dr. João P.",
         time: "01:00 PM",
+        date: "2025-02-04",
         imageSource: require('../assets/dog1.png'),
         status: "Concluída",
-        data: "13:00 | 04/02/2025",
         sintomas: "Banho e higienização completa para meu cachorro.",
         localizacao: "R. Haddock Lobo, 500 – Jardim Paulista, São Paulo – SP, 01414-000",
         implementos: ["Shampoo", "Condicionador", "Toalha"]
@@ -82,28 +101,39 @@ const ConsultasScreen = ({ navigation }) => {
   };
 
   const renderContent = () => {
-    const Card = ({ consulta }) => (
-      <TouchableOpacity 
-        style={styles.card} 
-        onPress={() => {
-          const parts = consulta.data.split(' | ');
-          const datePart = parts[1]; // "DD/MM/YYYY"
-          const [day, month, year] = datePart.split('/');
-          const formattedDateForDetails = `${year}-${month}-${day}`;
-          navigation.navigate('DetalhesConsulta', { consulta: { ...consulta, data: formattedDateForDetails } });
-        }}
-      >
-        <Image source={consulta.imageSource} style={styles.petImage} />
-        <View style={styles.cardInfo}>
-          <Text style={styles.petName}>{consulta.petName}</Text>
-          <Text style={styles.service}>{consulta.service}</Text>
-          <Text style={styles.time}>{consulta.time}</Text>
-        </View>
-        <View style={[styles.statusBadgeCard, styles[`status${consulta.status}`]]}>
-          <Text style={styles.statusTextCard}>{consulta.status}</Text>
-        </View>
-      </TouchableOpacity>
-    );
+    const Card = ({ consulta }) => {
+      const navigateToDetails = () => {
+        navigation.navigate('DetalhesConsulta', { consulta: { ...consulta, time: consulta.time, date: consulta.date } });
+      };
+  
+      return (
+        activeTab !== 'Pendentes' ? (
+          <TouchableOpacity onPress={navigateToDetails} style={styles.card}>
+            <Image source={consulta.imageSource} style={styles.petImage} />
+            <View style={styles.cardInfo}>
+              <Text style={styles.petName}>{consulta.petName}</Text>
+              <Text style={styles.service}>{consulta.service}</Text>
+              <Text style={styles.time}>{consulta.time}</Text>
+            </View>
+            <View style={[styles.statusBadgeCard, styles[`status${consulta.status}`]]}>
+              <Text style={styles.statusTextCard}>{consulta.status}</Text>
+            </View>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity onPress={navigateToDetails} style={styles.card}>
+            <Image source={consulta.imageSource} style={styles.petImage} />
+            <View style={styles.cardInfo}>
+              <Text style={styles.petName}>{consulta.petName}</Text>
+              <Text style={styles.service}>{consulta.service}</Text>
+              <Text style={styles.time}>{consulta.time}</Text>
+            </View>
+            <View style={[styles.statusBadgeCard, styles[`status${consulta.status}`]]}>
+              <Text style={styles.statusTextCard}>{consulta.status}</Text>
+            </View>
+          </TouchableOpacity>
+        )
+      );
+    };
 
     const currentConsultas = consultasData[activeTab] || [];
     
@@ -124,16 +154,16 @@ const ConsultasScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={styles.tabContainer}>
         <TouchableOpacity
-          style={[styles.tab, activeTab === 'Agendada' && styles.activeTab]}
-          onPress={() => setActiveTab('Agendada')}
+          style={[styles.tab, activeTab === 'Pendentes' && styles.activeTab]}
+          onPress={() => setActiveTab('Pendentes')}
         >
-          <Text style={[styles.tabText, activeTab === 'Agendada' && styles.activeTabText]}>Agendada</Text>
+          <Text style={[styles.tabText, activeTab === 'Pendentes' && styles.activeTabText]}>Pendentes</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, activeTab === 'Andamento' && styles.activeTab]}
-          onPress={() => setActiveTab('Andamento')}
+          style={[styles.tab, activeTab === 'Aceitas' && styles.activeTab]}
+          onPress={() => setActiveTab('Aceitas')}
         >
-          <Text style={[styles.tabText, activeTab === 'Andamento' && styles.activeTabText]}>Andamento</Text>
+          <Text style={[styles.tabText, activeTab === 'Aceitas' && styles.activeTabText]}>Aceitas</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.tab, activeTab === 'Concluídas' && styles.activeTab]}
@@ -145,9 +175,9 @@ const ConsultasScreen = ({ navigation }) => {
 
       <ScrollView style={styles.contentContainer}>{renderContent()}</ScrollView>
 
-      <TouchableOpacity style={styles.scheduleButton} onPress={() => navigation.navigate('Agendamento')}>
+      {/* <TouchableOpacity style={styles.scheduleButton} onPress={() => navigation.navigate('Agendamento')}>
         <Text style={styles.scheduleButtonText}>Agendar Consulta</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 };
@@ -160,20 +190,25 @@ const styles = StyleSheet.create({
   },
   tabContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 16,
+    justifyContent: 'space-between', // Distribuição uniforme entre as abas
+    marginBottom: 24,
     backgroundColor: '#FFFFFF',
+    paddingHorizontal: 10, // Espaçamento das bordas do container
   },
   tab: {
-    flex: 1,
+    width: '30%', // Largura ajustada para melhor distribuição
     paddingVertical: 14,
     borderRadius: 8,
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    marginHorizontal: 16,
+    marginHorizontal: 0, // Espaçamento controlado por justifyContent
   },
   activeTab: {
     backgroundColor: '#A367F0',
+    transform: [{ scale: 1.05 }], // Destaque sutil
+    paddingVertical: 16, // Menor altura
+    paddingHorizontal: 10, // Menor largura
+    borderRadius: 10,
   },
   tabText: {
     fontSize: 16,
@@ -182,6 +217,7 @@ const styles = StyleSheet.create({
   },
   activeTabText: {
     color: '#FFFFFF',
+    fontSize: 18,
   },
   contentContainer: {
     flex: 1,
@@ -190,8 +226,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    height: 80,
-    padding: 12,
+    height: 75, // Aumentado em mais 20px
+    padding: 20, // Ajustado para um preenchimento maior
     marginBottom: 12,
     alignItems: 'center',
     borderWidth: 1,
@@ -206,6 +242,7 @@ const styles = StyleSheet.create({
   cardInfo: {
     flex: 1,
     justifyContent: 'center',
+    marginRight: 10, // Added margin to separate from buttons
   },
   petName: {
     fontWeight: 'bold',
@@ -229,10 +266,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
   },
-  statusAgendada: {
+  statusPendentes: {
     backgroundColor: 'rgba(141, 126, 251, 0.8)' // #8D7EFB with opacity
   },
-  statusAndamento: {
+  statusAceitas: {
     backgroundColor: 'rgba(196, 157, 246, 0.8)', // #C49DF6 with opacity
   },
   statusConcluída: {
@@ -254,6 +291,32 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  buttonContainer: {
+    flexDirection: 'row', // Changed to row for side-by-side buttons
+    justifyContent: 'space-between', // Distribute buttons evenly
+    // Removed marginLeft: 10
+  },
+  actionButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 20, // Increased padding for wider buttons
+    borderRadius: 15, // Adjusted for a slightly oval shape
+    marginHorizontal: 4,
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  acceptButton: {
+    backgroundColor: '#4CAF50', // Green
+  },
+  rejectButton: {
+    backgroundColor: '#F44336', // Red
+  },
+  detailsButton: {
+    backgroundColor: '#C49DF6', // Light Purple
+  },
 });
 
-export default ConsultasScreen;
+export default AdminConsultasScreen;

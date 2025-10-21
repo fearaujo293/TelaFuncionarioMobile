@@ -6,7 +6,7 @@ import { Colors, CommonStyles } from '../Utils/Theme';
 const LoginScreen = () => {
   const navigation = useNavigation(); // Obtenha o objeto de navegação
   const route = useRoute();
-  const [userType, setUserType] = useState(route.params?.userType || 'usuario'); // 'usuario', 'veterinario' ou 'funcionario'
+  const [userType, setUserType] = useState(route.params?.userType || 'usuario'); // 'usuario', 'veterinario' ou 'admin'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -44,11 +44,11 @@ const LoginScreen = () => {
     if (valid) {
       // Lógica de autenticação simulada
       if (userType === 'usuario') {
-        navigation.navigate('UserMainApp');
+        navigation.navigate('AdminUserMainApp');
       } else if (userType === 'veterinario') {
         navigation.navigate('VeterinarianMainApp');
-      } else if (userType === 'funcionario') {
-        navigation.navigate('EmployeeMainApp');
+      } else if (userType === 'admin') {
+        navigation.navigate('AdminMainApp');
       }
     }
   };
@@ -83,10 +83,10 @@ const LoginScreen = () => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.userTypeButton, userType === 'funcionario' && styles.userTypeButtonActive]}
-            onPress={() => setUserType('funcionario')}
+            style={[styles.userTypeButton, userType === 'admin' && styles.userTypeButtonActive]}
+            onPress={() => setUserType('admin')}
           >
-            <Text style={[styles.userTypeButtonText, userType === 'funcionario' && styles.userTypeButtonTextActive]}>
+            <Text style={[styles.userTypeButtonText, userType === 'admin' && styles.userTypeButtonTextActive]}>
               Funcionário
             </Text>
           </TouchableOpacity>

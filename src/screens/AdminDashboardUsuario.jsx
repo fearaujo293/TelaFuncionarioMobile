@@ -24,7 +24,7 @@ const useTheme = () => ({
   }
 });
 
-const DashboardUsuario = () => {
+const AdminDashboardUsuario = () => {
   const { colors } = useTheme();
   const styles = getStyles(colors);
   const navigation = useNavigation();
@@ -222,7 +222,7 @@ const getStyles = (colors) => StyleSheet.create({
   },
 });
 
-export default DashboardUsuario;
+export default AdminDashboardUsuario;
 
 // Componente CategoryButton
 const CategoryButton = ({ icon, label, styles, onPress }) => (

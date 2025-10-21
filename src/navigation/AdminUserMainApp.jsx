@@ -10,16 +10,16 @@ import PetList from '../screens/PetList';
 import AgendamentoScreen from '../screens/AgendamentoScreen.jsx';
 import PetsScreen from '../screens/Petscreen';  // Tela de detalhes do pet
 import ConfigurationScreen from '../screens/ConfigurationScreen';
-import ConsultasScreen from '../screens/VeterinarioScreen';
+import ConsultasScreen from '../screens/VeteScreen';
 import DetalhesConsultaSharedScreen from '../screens/DetalhesConsultaSharedScreen';
 import AdicionarPetScreen from '../screens/AdicionarPetScreen'; // Nova tela de adicionar pet
 import PrincipalScreen from '../screens/PrincipalScreen'; // Importando PrincipalScreen
-import UserConsultasScreen from '../screens/UserConsultasScreen';
+import AdminConsultasScreen from '../screens/AdminConsultasScreen';
 import ChatScreen from '../screens/ChatScreen';
 
 // Novas telas do fluxo de agendamento
 import ScheduleFormScreen from '../screens/ScheduleFormScreen';
-import SelectVetScreen from '../screens/SelectVetScreen';
+import VeteSelectScreen from '../screens/VeteSelectScreen';
 import ReviewScreen from '../screens/ReviewScreen';
 import SuccessScreen from '../screens/SuccessScreen';
 
@@ -254,8 +254,8 @@ function MainTabs({ route }) {
               options={{ title: 'Detalhes do Agendamento', headerBackVisible: true, headerLeft: undefined }}
             />
             <Stack.Screen
-              name="SelectVetScreen"
-              component={SelectVetScreen}
+              name="VeteSelectScreen"
+              component={VeteSelectScreen}
               options={{ title: 'Selecionar Veterinário', headerBackVisible: true, headerLeft: undefined }}
             />
             <Stack.Screen
@@ -298,10 +298,10 @@ function MainTabs({ route }) {
   );
 }
 
-const VeterinarianMainApp = ({ route }) => {
+const AdminUserMainApp = ({ route }) => {
   return (
     <MainTabs route={route} />
   );
 };
 
-export default VeterinarianMainApp;
+export default AdminUserMainApp;

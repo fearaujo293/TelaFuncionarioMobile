@@ -9,7 +9,7 @@ import {
   FlatList,
   Alert
 } from 'react-native';
-const SelectVetScreen = ({ navigation, route }) => {
+const VeteSelectScreen = ({ navigation, route }) => {
   const [selectedVetId, setSelectedVetId] = useState(null);
 
   // Dados mockados de veterinários - serão substituídos pela API posteriormente
@@ -236,4 +236,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SelectVetScreen;
+export default VeteSelectScreen;

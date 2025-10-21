@@ -1,11 +1,28 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { GiftedChat, Bubble, InputToolbar, Send } from 'react-native-gifted-chat';
 import { FontAwesome } from '@expo/vector-icons';
-import { Colors } from '../Utils/Theme'; // Assuming Colors.js exists in ../Utils
+import { Colors } from '../Utils/Theme';
+import { useNavigation } from '@react-navigation/native';
 
-const EmployeeChatScreen = () => {
+const AdminChatScreen = () => {
   const [messages, setMessages] = useState([]);
+  const navigation = useNavigation();
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: () => (
+        <View style={styles.headerTitleContainer}>
+          <FontAwesome name="user-circle" size={24} color={Colors.white} style={{ marginRight: 10 }} />
+          <Text style={styles.headerTitleText}>Cliente (Nome)</Text>
+        </View>
+      ),
+      headerStyle: {
+        backgroundColor: Colors.primary,
+      },
+      headerTintColor: Colors.white,
+    });
+  }, [navigation]);
 
   useEffect(() => {
     setMessages([
@@ -15,7 +32,7 @@ const EmployeeChatScreen = () => {
         createdAt: new Date(),
         user: {
           _id: 2,
-          name: 'React Native',
+          name: 'Cliente',
           avatar: 'https://placeimg.com/140/140/any',
         },
       },
@@ -25,7 +42,7 @@ const EmployeeChatScreen = () => {
         createdAt: new Date(),
         user: {
           _id: 1,
-          name: 'Employee',
+          name: 'Funcionário',
           avatar: 'https://placeimg.com/140/140/any',
         },
       },
@@ -51,9 +68,11 @@ const EmployeeChatScreen = () => {
             wrapperStyle={{
               left: {
                 backgroundColor: Colors.lightGray,
+                borderBottomLeftRadius: 2,
               },
               right: {
                 backgroundColor: Colors.primary,
+                borderBottomRightRadius: 2,
               },
             }}
             textStyle={{
@@ -78,11 +97,12 @@ const EmployeeChatScreen = () => {
             {...props}
             containerStyle={styles.sendButtonContainer}
           >
-            <FontAwesome name="send" size={20} color={Colors.primary} style={styles.sendButtonIcon} />
+            <FontAwesome name="paper-plane" size={22} color={Colors.primary} />
           </Send>
         )}
         textInputStyle={styles.textInput}
         messagesContainerStyle={styles.messagesContainer}
+        renderAvatar={null} // Oculta o avatar nas mensagens para um visual mais limpo
       />
     </View>
   );
@@ -93,6 +113,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
   },
+  headerTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerTitleText: {
+    color: Colors.white,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
   messagesContainer: {
     backgroundColor: Colors.background,
   },
@@ -100,29 +129,31 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderTopColor: Colors.lightGray,
     borderTopWidth: 1,
-    paddingVertical: 5,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    marginBottom: Platform.OS === 'ios' ? 0 : 5, // Ajuste para Android
   },
   textInput: {
     color: Colors.dark,
     backgroundColor: Colors.lightGray,
-    borderRadius: 20,
+    borderRadius: 25,
     paddingHorizontal: 15,
     paddingTop: 10,
     paddingBottom: 10,
     marginRight: 10,
     fontSize: 16,
-    lineHeight: 20, // Ensure text input aligns well
+    lineHeight: 20,
+    flex: 1,
   },
   sendButtonContainer: {
-    width: 44,
-    height: 44,
+    width: 48,
+    height: 48,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 5,
-  },
-  sendButtonIcon: {
-    // No additional styles needed here, color is set in renderSend
+    backgroundColor: Colors.lightBlue,
+    borderRadius: 24,
   },
 });
 
-export default EmployeeChatScreen;
+export default AdminChatScreen;

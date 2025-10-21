@@ -79,15 +79,15 @@ const CadastroScreen = () => {
               styles.userTypeButton,
               userType === 'veterinario' && styles.userTypeButtonActive,
             ]}
-            onPress={() => setUserType('veterinario')}
+            onPress={() => setUserType('vete')}
           >
             <Text
               style={[
                 styles.userTypeButtonText,
-                userType === 'veterinario' && styles.userTypeButtonTextActive,
+                userType === 'vete' && styles.userTypeButtonTextActive,
               ]}
             >
-              Veterinário
+              Vete
             </Text>
           </TouchableOpacity>
         </View>

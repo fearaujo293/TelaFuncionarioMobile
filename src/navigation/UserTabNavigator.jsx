@@ -4,11 +4,11 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Image, Animated, Easing, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-import DashboardUsuario from '../screens/DashboardUsuario';
+import AdminDashboardUsuario from '../screens/AdminDashboardUsuario';
 import AgendaScreen from '../screens/AgendaScreen';
 import AgendamentoScreen from '../screens/AgendamentoScreen';
 import ScheduleFormScreen from '../screens/ScheduleFormScreen';
-import SelectVetScreen from '../screens/SelectVetScreen';
+import VeteSelectScreen from '../screens/VeteSelectScreen';
 import ReviewScreen from '../screens/ReviewScreen';
 import SuccessScreen from '../screens/SuccessScreen';
 import ChatsListScreen from '../screens/ChatsListScreen';
@@ -16,7 +16,7 @@ import ChatScreen from '../screens/ChatScreen';
 import ConfigurationScreen from '../screens/ConfigurationScreen';
 import SecurityScreen from '../screens/SecurityScreen';
 import PrincipalScreen from '../screens/PrincipalScreen';
-import UserConsultasScreen from '../screens/UserConsultasScreen';
+import AdminConsultasScreen from '../screens/AdminConsultasScreen';
 import DetalhesConsultaScreen from '../screens/DetalhesConsultaScreen';
 
 // Ícones personalizados
@@ -93,7 +93,7 @@ function HomeUserTabStack() {
 function ConsultasUserTabStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
-      <Stack.Screen name="MinhasConsultas" component={UserConsultasScreen} options={{ title: 'Minhas Consultas' }} />
+      <Stack.Screen name="MinhasConsultas" component={AdminConsultasScreen} options={{ title: 'Minhas Consultas' }} />
       <Stack.Screen name="DetalhesConsulta" component={DetalhesConsultaScreen} options={{ title: 'Detalhes da Consulta', headerBackVisible: true, headerLeft: undefined }} />
     </Stack.Navigator>
   );
@@ -123,7 +123,7 @@ function AgendaUserTabStack() {
       <Stack.Screen name="Agenda" component={AgendaScreen} options={{ title: 'Agenda' }} />
       <Stack.Screen name="Agendamento" component={AgendamentoScreen} options={{ title: 'Agendar Consulta', headerBackVisible: true, headerLeft: undefined }} />
       <Stack.Screen name="ScheduleFormScreen" component={ScheduleFormScreen} options={{ title: 'Detalhes do Agendamento', headerBackVisible: true, headerLeft: undefined }} />
-      <Stack.Screen name="SelectVetScreen" component={SelectVetScreen} options={{ title: 'Selecionar Veterinário', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="VeteSelectScreen" component={VeteSelectScreen} options={{ title: 'Selecionar Veterinário', headerBackVisible: true, headerLeft: undefined }} />
       <Stack.Screen name="ReviewScreen" component={ReviewScreen} options={{ title: 'Revisar Agendamento' }} />
       <Stack.Screen name="SuccessScreen" component={SuccessScreen} options={{ title: 'Agendamento Concluído' }} />
     </Stack.Navigator>
@@ -189,8 +189,8 @@ const UserTabNavigator = () => {
       />
 
       <Tab.Screen
-        name="Home"
-        component={HomeUserTabStack}
+        name="Principal"
+        component={AdminDashboardUsuario}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image

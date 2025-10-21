@@ -15,6 +15,8 @@ const initialEmployees = [
     rating: 4.8,
     status: 'Ativo',
     photo: 'https://randomuser.me/api/portraits/men/1.jpg',
+    phone: '(11) 98765-4321',
+    email: 'joao.silva@vet.com',
   },
   {
     id: '2',
@@ -24,6 +26,8 @@ const initialEmployees = [
     rating: 4.9,
     status: 'Ativo',
     photo: 'https://randomuser.me/api/portraits/women/2.jpg',
+    phone: '(11) 98765-1234',
+    email: 'maria.souza@vet.com',
   },
   {
     id: '3',
@@ -33,6 +37,8 @@ const initialEmployees = [
     rating: 4.5,
     status: 'Férias',
     photo: 'https://randomuser.me/api/portraits/women/3.jpg',
+    phone: '(11) 99887-6655',
+    email: 'ana.paula@vet.com',
   },
   {
     id: '4',
@@ -42,6 +48,8 @@ const initialEmployees = [
     rating: 4.2,
     status: 'Ativo',
     photo: 'https://randomuser.me/api/portraits/men/4.jpg',
+    phone: '(11) 97788-5544',
+    email: 'carlos.mendes@vet.com',
   },
   {
     id: '5',
@@ -51,6 +59,8 @@ const initialEmployees = [
     rating: 4.7,
     status: 'Ativo',
     photo: 'https://randomuser.me/api/portraits/women/5.jpg',
+    phone: '(11) 96655-4433',
+    email: 'fernanda.lima@vet.com',
   },
 ];
 
@@ -84,7 +94,7 @@ const EmployeeCard = ({ employee, onPress }) => (
   </TouchableOpacity>
 );
 
-const EmployeeListScreen = () => {
+const AdminListScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [selectedRole, setSelectedRole] = useState('Todos');
   const [modalVisible, setModalVisible] = useState(false);
@@ -100,7 +110,7 @@ const EmployeeListScreen = () => {
     setModalVisible(true);
   };
 
-  const filteredFuncionarios = initialEmployees.filter((func) => {
+  const filteredAdmins = initialEmployees.filter((func) => {
     const matchesSearch =
       func.name.toLowerCase().includes(searchText.toLowerCase()) ||
       func.specialty.toLowerCase().includes(searchText.toLowerCase());
@@ -114,15 +124,20 @@ const EmployeeListScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.searchContainer}>
-        <FontAwesome name="search" size={20} color={Colors.darkGray} style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Buscar funcionário..."
-          placeholderTextColor={Colors.darkGray}
-          value={searchText}
-          onChangeText={setSearchText}
-        />
-      </View>
+  <FontAwesome name="search" size={20} color={Colors.darkGray} style={styles.searchIcon} />
+  <TextInput
+    style={styles.searchInput}
+    placeholder="Buscar funcionário..."
+    placeholderTextColor={Colors.darkGray}
+    value={searchText}
+    onChangeText={setSearchText}
+  />
+  {searchText !== '' && (
+    <TouchableOpacity onPress={() => setSearchText('')} style={styles.clearButton}>
+      <FontAwesome name="times" size={18} color={Colors.darkGray} />
+    </TouchableOpacity>
+  )}
+</View>
 
       <View
         style={styles.filterContainer}
@@ -149,7 +164,7 @@ const EmployeeListScreen = () => {
       </View>
 
       <FlatList
-        data={filteredFuncionarios}
+        data={filteredAdmins}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <EmployeeCard employee={item} onPress={handleEmployeePress} />
@@ -249,6 +264,10 @@ const styles = StyleSheet.create({
     height: 60, // Altura ajustada para ser maior
     fontSize: 16,
     color: Colors.text,
+  },
+  clearButton: {
+    marginLeft: 10,
+    padding: 5,
   },
   filterScrollView: {
     marginVertical: 5,
@@ -488,4 +507,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EmployeeListScreen;
+export default AdminListScreen;

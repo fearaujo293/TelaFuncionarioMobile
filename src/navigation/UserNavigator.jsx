@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import PrincipalScreen from '../screens/PrincipalScreen';
 import DetalhesConsultaScreen from '../screens/DetalhesConsultaScreen';
-import UserConsultasScreen from '../screens/UserConsultasScreen';
+import AdminConsultasScreen from '../screens/AdminConsultasScreen';
 import ChatsListScreen from '../screens/ChatsListScreen';
 import ChatScreen from '../screens/ChatScreen';
 
@@ -24,7 +24,7 @@ const UserNavigator = () => {
       />
       <Stack.Screen
         name="UserConsultas"
-        component={UserConsultasScreen}
+        component={AdminConsultasScreen}
         options={{ title: 'Minhas Consultas' }}
       />
       <Stack.Screen
