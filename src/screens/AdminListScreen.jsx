@@ -65,44 +65,105 @@ const initialEmployees = [
 ];
 
 const roles = ['Todos', 'Veterinário', 'Recepcionista', 'Auxiliar'];
+const employeeStatuses = ['Todos', 'Em Serviço', 'Livre para Atendimento', 'De Férias'];
 
-const EmployeeCard = ({ employee, onPress }) => (
-  <TouchableOpacity style={styles.employeeCard} onPress={() => onPress(employee)}>
-    <LinearGradient
-      colors={['#E3F2FD', '#BBDEFB']} // Gradiente mais suave
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 1 }}
-      style={styles.cardGradient}
-    >
-      <Image source={{ uri: employee.photo }} style={styles.employeePhoto} />
-      <View style={styles.employeeInfo}>
-        <Text style={styles.employeeName}>{employee.name}</Text>
-        <Text style={styles.employeeSpecialty}>{employee.specialty}</Text>
-        <View style={styles.employeeDetailRow}>
-          <FontAwesome name="briefcase" size={12} color={Colors.darkGray} />
-          <Text style={styles.employeeRole}>{employee.role}</Text>
-        </View>
-        <View style={styles.employeeDetailRow}>
-          <FontAwesome name="star" size={12} color={Colors.yellow} />
-          <Text style={styles.employeeRating}>{employee.rating}</Text>
-        </View>
-      </View>
-      <View style={[styles.statusBadge, employee.status === 'Ativo' ? styles.statusActive : styles.statusVacation]}>
+const mockEmployees = [
+  {
+    id: '1',
+    name: 'Dr. Ana Silva',
+    specialty: 'Cardiologia',
+    role: 'Veterinário',
+    phone: '(11) 98765-4321',
+    email: 'ana.silva@example.com',
+    photo: 'https://randomuser.me/api/portraits/women/1.jpg',
+    rating: 4.8,
+    status: 'Em Serviço',
+  },
+  {
+    id: '2',
+    name: 'João Santos',
+    specialty: 'Atendimento',
+    role: 'Recepcionista',
+    phone: '(11) 91234-5678',
+    email: 'joao.santos@example.com',
+    photo: 'https://randomuser.me/api/portraits/men/2.jpg',
+    rating: 4.5,
+    status: 'Livre para Atendimento',
+  },
+  {
+    id: '3',
+    name: 'Dra. Carla Lima',
+    specialty: 'Cirurgia',
+    role: 'Veterinário',
+    phone: '(11) 99876-1234',
+    email: 'carla.lima@example.com',
+    photo: 'https://randomuser.me/api/portraits/women/3.jpg',
+    rating: 4.9,
+    status: 'De Férias',
+  },
+  {
+    id: '4',
+    name: 'Pedro Almeida',
+    specialty: 'Suporte',
+    role: 'Auxiliar',
+    phone: '(11) 97654-3210',
+    email: 'pedro.almeida@example.com',
+    photo: 'https://randomuser.me/api/portraits/men/4.jpg',
+    rating: 4.2,
+    status: 'Em Serviço',
+  },
+  {
+    id: '5',
+    name: 'Mariana Costa',
+    specialty: 'Dermatologia',
+    role: 'Veterinário',
+    phone: '(11) 96543-2109',
+    email: 'mariana.costa@example.com',
+    photo: 'https://randomuser.me/api/portraits/women/5.jpg',
+    rating: 4.7,
+    status: 'Livre para Atendimento',
+  },
+];
+
+const EmployeeCard = ({ employee, getStatusStyle }) => (
+  <TouchableOpacity style={styles.employeeCard}>
+    <Image source={{ uri: employee.photo }} style={styles.employeePhoto} />
+    <View style={styles.employeeInfo}>
+      <Text style={styles.employeeName}>{employee.name}</Text>
+      <Text style={styles.employeeRole}>{employee.role}</Text>
+      <View style={[styles.statusBadge, getStatusStyle(employee.status)]}>
         <Text style={styles.statusText}>{employee.status}</Text>
       </View>
-    </LinearGradient>
+    </View>
   </TouchableOpacity>
 );
 
 const AdminListScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [selectedRole, setSelectedRole] = useState('Todos');
+  const [selectedStatus, setSelectedStatus] = useState('Todos'); // Novo estado para o status selecionado
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedEmployee, setSelectedEmployee] = useState(null);
-  const navigation = useNavigation(); // Inicializar useNavigation
+  const [employees, setEmployees] = useState(mockEmployees); // Usando dados mockados
+  const navigation = useNavigation();
+
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case 'Em Serviço':
+        return styles.statusEmServico;
+      case 'Livre para Atendimento':
+        return styles.statusLivreParaAtendimento;
+      case 'De Férias':
+        return styles.statusDeFerias;
+      case 'Ativo':
+        return styles.statusActive;
+      default:
+        return {};
+    }
+  };
 
   const handleAddEmployee = () => {
-    navigation.navigate('AddEmployee'); // Navegar para a tela AddEmployee
+    navigation.navigate('AddAdmin');
   };
 
   const handleEmployeePress = (employee) => {
@@ -110,7 +171,7 @@ const AdminListScreen = () => {
     setModalVisible(true);
   };
 
-  const filteredAdmins = initialEmployees.filter((func) => {
+  const filteredAdmins = employees.filter((func) => {
     const matchesSearch =
       func.name.toLowerCase().includes(searchText.toLowerCase()) ||
       func.specialty.toLowerCase().includes(searchText.toLowerCase());
@@ -118,26 +179,20 @@ const AdminListScreen = () => {
     const matchesRole =
       selectedRole === 'Todos' || func.role === selectedRole;
 
-    return matchesSearch && matchesRole;
+    const matchesStatus =
+      selectedStatus === 'Todos' || func.status === selectedStatus;
+
+    return matchesSearch && matchesRole && matchesStatus;
   });
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchContainer}>
-  <FontAwesome name="search" size={20} color={Colors.darkGray} style={styles.searchIcon} />
-  <TextInput
-    style={styles.searchInput}
-    placeholder="Buscar funcionário..."
-    placeholderTextColor={Colors.darkGray}
-    value={searchText}
-    onChangeText={setSearchText}
-  />
-  {searchText !== '' && (
-    <TouchableOpacity onPress={() => setSearchText('')} style={styles.clearButton}>
-      <FontAwesome name="times" size={18} color={Colors.darkGray} />
-    </TouchableOpacity>
-  )}
-</View>
+      <TextInput
+        style={styles.searchInput}
+        placeholder="Buscar funcionário..."
+        value={searchText}
+        onChangeText={setSearchText}
+      />
 
       <View
         style={styles.filterContainer}
@@ -160,78 +215,32 @@ const AdminListScreen = () => {
               {role}
             </Text>
           </TouchableOpacity>
-        ))}
-      </View>
+        ))}</View>
+
 
       <FlatList
         data={filteredAdmins}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <EmployeeCard employee={item} onPress={handleEmployeePress} />
+          <EmployeeCard
+            key={item.id}
+            employee={item}
+            getStatusStyle={getStatusStyle}
+          />
         )}
-        contentContainerStyle={styles.employeeList}
+        contentContainerStyle={styles.listContentContainer}
       />
 
       <TouchableOpacity style={styles.addButton} onPress={handleAddEmployee}>
-        <FontAwesome name="plus" size={20} color={Colors.white} />
-        <Text style={styles.addButtonText}>Adicionar Funcionário</Text>
+        <FontAwesome name="plus" size={24} color={Colors.white} />
       </TouchableOpacity>
 
       {selectedEmployee && (
-        <Modal
-          animationType="fade"
-          transparent={true}
+        <EmployeeDetailModal
           visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalOverlay}>
-            <View style={styles.modalContent}>
-              <TouchableOpacity style={styles.modalCloseButton} onPress={() => setModalVisible(false)}>
-                <FontAwesome name="times-circle" size={28} color={Colors.darkGray} />
-              </TouchableOpacity>
-              <Image source={{ uri: selectedEmployee.photo }} style={styles.modalEmployeePhoto} />
-              <Text style={styles.modalEmployeeName}>{selectedEmployee.name}</Text>
-              <Text style={styles.modalEmployeeSpecialty}>{selectedEmployee.specialty}</Text>
-
-              <View style={styles.modalDetailRow}>
-                <FontAwesome name="briefcase" size={18} color={Colors.darkGray} />
-                <Text style={styles.modalDetailText}>Cargo: {selectedEmployee.role}</Text>
-              </View>
-              <View style={styles.modalDetailRow}>
-                <FontAwesome name="phone" size={18} color={Colors.darkGray} />
-                <Text style={styles.modalDetailText}>Telefone: {selectedEmployee.phone || 'N/A'}</Text>
-              </View>
-              <View style={styles.modalDetailRow}>
-                <FontAwesome name="envelope" size={18} color={Colors.darkGray} />
-                <Text style={styles.modalDetailText}>Email: {selectedEmployee.email || 'N/A'}</Text>
-              </View>
-              <View style={styles.modalDetailRow}>
-                <FontAwesome name="star" size={18} color={Colors.yellow} />
-                <Text style={styles.modalDetailText}>Avaliação: {selectedEmployee.rating}</Text>
-              </View>
-              <View style={styles.modalDetailRow}>
-                <FontAwesome
-                  name="circle"
-                  size={14}
-                  color={selectedEmployee.status === 'Ativo' ? Colors.green : Colors.red}
-                  style={{ marginRight: 8 }}
-                />
-                <Text style={styles.modalDetailText}>Status: {selectedEmployee.status}</Text>
-              </View>
-
-              <View style={styles.modalActionButtons}>
-                <TouchableOpacity style={styles.editButton}>
-                  <FontAwesome name="edit" size={20} color={Colors.white} style={{ marginRight: 5 }} />
-                  <Text style={styles.editButtonText}>Editar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.contactButton}>
-                  <FontAwesome name="comments" size={20} color={Colors.primary} style={{ marginRight: 5 }} />
-                  <Text style={styles.contactButtonText}>Contato</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
+          onClose={() => setModalVisible(false)}
+          employee={selectedEmployee}
+        />
       )}
     </View>
   );
@@ -240,124 +249,103 @@ const AdminListScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background, // Usando a cor de fundo do tema
-    padding: 16,
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: Colors.white,
-    borderRadius: 12,
-    paddingHorizontal: 12,
-    marginBottom: 15,
-    elevation: 6, // Mais elevação
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 6,
-  },
-  searchIcon: {
-    marginRight: 10,
+    backgroundColor: Colors.background,
+    padding: 15,
   },
   searchInput: {
-    flex: 1,
-    height: 60, // Altura ajustada para ser maior
+    backgroundColor: Colors.white,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    marginBottom: 15,
     fontSize: 16,
-    color: Colors.text,
-  },
-  clearButton: {
-    marginLeft: 10,
-    padding: 5,
-  },
-  filterScrollView: {
-    marginVertical: 5,
-    marginBottom: 10, // Mais espaço entre filtros e lista
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   filterContainer: {
     flexDirection: 'row',
-    paddingVertical: 2,
-    alignItems: 'center', // Adicionado para centralizar os itens
-    flexWrap: 'wrap', // Adicionado para permitir que os itens quebrem a linha
+    justifyContent: 'space-around',
+    marginBottom: 15,
+    backgroundColor: Colors.white,
+    borderRadius: 10,
+    padding: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
   },
   filterButton: {
-    backgroundColor: Colors.white,
-    borderRadius: 15, // Borda mais suave
-    paddingVertical: 6, // Aumentado
-    paddingHorizontal: 12, // Aumentado
-    marginRight: 2, // Espaçamento menor entre botões
-    elevation: 0.5, // Sombra mais sutil
-    shadowOpacity: 0.05,
-    shadowRadius: 1,
-    borderWidth: 1,
-    borderColor: Colors.lightGray,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 8,
   },
   filterButtonActive: {
     backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
   },
   filterButtonText: {
     color: Colors.darkGray,
-    fontSize: 12, // Aumentado
-    fontWeight: '500',
+    fontWeight: 'bold',
   },
   filterButtonTextActive: {
     color: Colors.white,
-    fontWeight: 'bold',
   },
-  employeeList: {
+  listContent: {
     paddingBottom: 80,
   },
   employeeCard: {
-    marginBottom: 8, // Reduzir espaçamento entre cards
-    borderRadius: 10,
+    marginBottom: 15,
+    borderRadius: 15,
     overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.23,
+    shadowRadius: 2.62,
+    elevation: 4,
   },
   cardGradient: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 8, // Reduzir padding do card
-    borderRadius: 10,
+    padding: 15,
   },
   employeePhoto: {
     width: 60,
     height: 60,
     borderRadius: 30,
-    marginRight: 10,
+    marginRight: 15,
     borderWidth: 2,
-    borderColor: Colors.white,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2, // Sombra na foto
+    borderColor: Colors.primary,
   },
   employeeInfo: {
     flex: 1,
   },
   employeeName: {
-    fontSize: 16, // Fonte menor
+    fontSize: 18,
     fontWeight: 'bold',
     color: Colors.text,
   },
   employeeSpecialty: {
-    fontSize: 12,
+    fontSize: 14,
     color: Colors.darkGray,
-    marginBottom: 3,
+    marginBottom: 5,
   },
   employeeDetailRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 2,
+    marginBottom: 2,
   },
   employeeRole: {
     fontSize: 12,
-    color: Colors.darkGray,
+    color: Colors.mediumGray,
     marginLeft: 5,
   },
   employeeRating: {
     fontSize: 12,
-    color: Colors.yellow,
+    color: Colors.mediumGray,
     marginLeft: 5,
-    fontWeight: 'bold',
   },
   statusBadge: {
     borderRadius: 15,
@@ -374,136 +362,35 @@ const styles = StyleSheet.create({
   statusVacation: {
     backgroundColor: Colors.red,
   },
+  statusEmServico: {
+    backgroundColor: Colors.green, // Ou outra cor para 'Em Serviço'
+  },
+  statusLivreParaAtendimento: {
+    backgroundColor: Colors.blue, // Ou outra cor para 'Livre para Atendimento'
+  },
+  statusDeFerias: {
+    backgroundColor: Colors.red, // Ou outra cor para 'De Férias'
+  },
   statusText: {
     fontSize: 11,
     fontWeight: 'bold',
     color: Colors.white,
   },
   addButton: {
-    backgroundColor: Colors.primary, // Alterado para a cor roxa principal
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 18, // Aumentado o preenchimento vertical
-    paddingHorizontal: 25, // Aumentado o preenchimento horizontal
-    borderRadius: 30,
     position: 'absolute',
     bottom: 20,
-    alignSelf: 'center',
-    elevation: 8, // Aumentado a elevação para mais destaque
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
-  },
-  addButtonText: {
-    color: Colors.white,
-    fontSize: 17,
-    fontWeight: 'bold',
-    marginLeft: 10,
-  },
-  // Modal Styles
-  modalOverlay: {
-    flex: 1,
+    right: 20,
+    backgroundColor: Colors.primary,
+    borderRadius: 30,
+    width: 60,
+    height: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Overlay mais escuro
-  },
-  modalContent: {
-    backgroundColor: Colors.white,
-    borderRadius: 20,
-    padding: 30,
-    width: '90%',
-    alignItems: 'center',
-    elevation: 10,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 5 },
-    shadowOpacity: 0.3,
-    shadowRadius: 10,
-  },
-  modalCloseButton: {
-    position: 'absolute',
-    top: 15,
-    right: 15,
-    zIndex: 1,
-    backgroundColor: Colors.lightGray,
-    borderRadius: 14,
-    padding: 2, // Botão de fechamento com fundo
-  },
-  modalEmployeePhoto: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    marginBottom: 20,
-    borderWidth: 4,
-    borderColor: Colors.primary,
-  },
-  modalEmployeeName: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: Colors.text,
-    marginBottom: 5,
-  },
-  modalEmployeeSpecialty: {
-    fontSize: 18,
-    color: Colors.darkGray,
-    marginBottom: 25,
-  },
-  modalDetailRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-    width: '100%',
-    paddingHorizontal: 10,
-  },
-  modalDetailText: {
-    fontSize: 17,
-    color: Colors.text,
-    marginLeft: 15,
-  },
-  modalActionButtons: {
-    flexDirection: 'row',
-    marginTop: 35,
-  },
-  editButton: {
-    backgroundColor: Colors.primary,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 15,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    marginHorizontal: 10,
-    elevation: 5,
-    shadowColor: Colors.shadow,
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
-    shadowRadius: 5,
-  },
-  editButtonText: {
-    color: Colors.white,
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  contactButton: {
-    backgroundColor: Colors.white,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderRadius: 15,
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    marginHorizontal: 10,
-    borderWidth: 2,
-    borderColor: Colors.primary,
+    shadowRadius: 3.84,
     elevation: 5,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 5,
-  },
-  contactButtonText: {
-    color: Colors.primary,
-    fontSize: 18,
-    fontWeight: 'bold',
   },
 });
 

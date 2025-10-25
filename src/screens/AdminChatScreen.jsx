@@ -1,20 +1,36 @@
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator, Alert } from 'react-native';
 import { GiftedChat, Bubble, InputToolbar, Send } from 'react-native-gifted-chat';
 import { FontAwesome } from '@expo/vector-icons';
 import { Colors } from '../Utils/Theme';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const AdminChatScreen = () => {
   const [messages, setMessages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const navigation = useNavigation();
+  const route = useRoute();
+  const { clientName, clientId } = route.params || {};
+
+  const adminUser = {
+    _id: 1, // ID do administrador logado
+    name: 'Administrador', // Nome do administrador logado
+    avatar: 'https://placeimg.com/140/140/admin',
+  };
+
+  const clientUser = {
+    _id: clientId || 2, // ID do cliente
+    name: clientName || 'Cliente Desconhecido', // Nome do cliente
+    avatar: 'https://placeimg.com/140/140/client',
+  };
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
         <View style={styles.headerTitleContainer}>
           <FontAwesome name="user-circle" size={24} color={Colors.white} style={{ marginRight: 10 }} />
-          <Text style={styles.headerTitleText}>Cliente (Nome)</Text>
+          <Text style={styles.headerTitleText}>{clientName || 'Chat'}</Text>
         </View>
       ),
       headerStyle: {
@@ -22,45 +38,96 @@ const AdminChatScreen = () => {
       },
       headerTintColor: Colors.white,
     });
-  }, [navigation]);
+  }, [navigation, clientName]);
 
   useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: 'Olá! Como posso ajudar hoje?',
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'Cliente',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-      {
-        _id: 2,
-        text: 'Preciso de informações sobre a consulta do Rex.',
-        createdAt: new Date(),
-        user: {
-          _id: 1,
-          name: 'Funcionário',
-          avatar: 'https://placeimg.com/140/140/any',
-        },
-      },
-    ]);
-  }, []);
+    const fetchMessages = async () => {
+      try {
+        setLoading(true);
+        // Substitua pela sua URL de API real para buscar mensagens
+        const response = await fetch(`https://api.example.com/chats/${clientId}/messages`);
+        if (!response.ok) {
+          throw new Error('Falha ao buscar mensagens.');
+        }
+        const data = await response.json();
+        // Formate as mensagens para o formato do GiftedChat
+        const formattedMessages = data.map(msg => ({
+          _id: msg.id,
+          text: msg.text,
+          createdAt: new Date(msg.createdAt),
+          user: msg.senderId === adminUser._id ? adminUser : clientUser,
+        }));
+        setMessages(formattedMessages.reverse()); // Mensagens mais recentes por último
+      } catch (err) {
+        console.error('Erro ao buscar mensagens:', err);
+        setError('Não foi possível carregar as mensagens.');
+        Alert.alert('Erro', 'Não foi possível carregar as mensagens.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const onSend = useCallback((messages = []) => {
-    setMessages(previousMessages => GiftedChat.append(previousMessages, messages));
-  }, []);
+    if (clientId) {
+      fetchMessages();
+    }
+  }, [clientId]);
+
+  const onSend = useCallback(async (newMessages = []) => {
+    setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages));
+
+    const messageToSend = newMessages[0];
+    try {
+      // Substitua pela sua URL de API real para enviar mensagens
+      const response = await fetch(`https://api.example.com/chats/${clientId}/messages`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          chatId: clientId,
+          senderId: adminUser._id,
+          receiverId: clientUser._id,
+          text: messageToSend.text,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Falha ao enviar mensagem.');
+      }
+    } catch (err) {
+      console.error('Erro ao enviar mensagem:', err);
+      Alert.alert('Erro', 'Não foi possível enviar a mensagem.');
+      // Opcional: remover a mensagem da UI se o envio falhar
+      setMessages(previousMessages => previousMessages.filter(msg => msg._id !== messageToSend._id));
+    }
+  }, [clientId]);
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+        <Text style={styles.loadingText}>Carregando mensagens...</Text>
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.errorButton}>
+          <Text style={styles.errorButtonText}>Voltar</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
       <GiftedChat
         messages={messages}
         onSend={messages => onSend(messages)}
-        user={{
-          _id: 1,
-        }}
+        user={adminUser}
         placeholder="Digite sua mensagem..."
         renderBubble={(props) => (
           <Bubble
@@ -153,6 +220,41 @@ const styles = StyleSheet.create({
     marginRight: 5,
     backgroundColor: Colors.lightBlue,
     borderRadius: 24,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.background,
+  },
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: Colors.darkGray,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.background,
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 18,
+    color: Colors.red,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  errorButton: {
+    backgroundColor: Colors.primary,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
+  errorButtonText: {
+    color: Colors.white,
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 

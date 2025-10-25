@@ -13,8 +13,10 @@ import InicialScreen from './src/screens/InicialScreen';
 import { ChatProvider } from './src/context/ChatContext';
 import AdminUserMainApp from './src/navigation/AdminUserMainApp';
 import VeterinarianMainApp from './src/navigation/VeterinarianMainApp';
-import AdminMainApp from './src/navigation/AdminMainApp';
+
 import PrincipalScreen from './src/screens/PrincipalScreen';
+import EmployeeMainApp from './src/navigation/EmployeeMainApp';
+import AdminApp from './src/navigation/AdminApp';
 
 const RootStack = createNativeStackNavigator();
 
@@ -38,7 +40,9 @@ export default function App() {
           <RootStack.Screen name="Cadastro" component={CadastroScreen} />
           <RootStack.Screen name="AdminUserMainApp" component={AdminUserMainApp} />
           <RootStack.Screen name="VeterinarianMainApp" component={VeterinarianMainApp} />
-          <RootStack.Screen name="AdminMainApp" component={AdminMainApp} />
+          <RootStack.Screen name="AdminApp" component={AdminApp} />
+          <RootStack.Screen name="EmployeeMainApp" component={EmployeeMainApp} options={{ headerShown: false }} />
+
           <RootStack.Screen name="PrincipalScreen" component={PrincipalScreen} />
         </RootStack.Navigator>
       </NavigationContainer>

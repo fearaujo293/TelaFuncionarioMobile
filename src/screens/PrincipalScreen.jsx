@@ -1,6 +1,7 @@
 import React from 'react';
-import { Image, TouchableOpacity } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 // Ícones personalizados
 import iconeHome from '../assets/icone.png';
@@ -9,50 +10,40 @@ import iconePet from '../assets/pet.png';
 import iconePessoa from '../assets/pessoa.png';
 import iconeVeterinario from '../assets/veterinario.png';
 
-// Simulação do hook useTheme para o código ser executável
-const useTheme = () => ({
-  colors: {
-    background: '#FFFAD9',
-    textPrimary: '#3C3633',
-    textSecondary: '#7D7C7C',
-    primary: '#7F57F1',
-    cardBackground: '#FFF7F1',
-    cardShadow: 'rgba(0, 0, 0, 0.05)',
-    navBackground: '#FEEEEE', // alterado de #FFFFFF para #FEEEEE
-  }
-});
-
 const PrincipalScreen = () => {
-  const { colors } = useTheme();
-  const styles = getStyles(colors);
   const navigation = useNavigation();
 
   return (
-    <div style={styles.container}>
+    <View style={styles.container}>
       {/* Cabeçalho */}
-      <header style={styles.header}>
-        <h1 style={styles.title}>Olá Usuário!</h1>
-        <p style={styles.subtitle}>Bom Dia!</p>
-      </header>
+      <View style={styles.header}>
+        <Text style={styles.title}>Olá Usuário!</Text>
+        <Text style={styles.subtitle}>Bom Dia!</Text>
+      </View>
 
       {/* Card Principal */}
-      <div style={styles.promoCard}>
-        <div style={styles.promoTextContainer}>
-          <h2 style={styles.promoTitle}>Visite nosso Website</h2>
-          <button type="button" style={styles.promoButton}>Clique Aqui</button>
-        </div>
+      <LinearGradient
+        colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
+        style={styles.promoCard}
+      >
+        <View style={styles.promoTextContainer}>
+          <Text style={styles.promoTitle}>Visite nosso Website</Text>
+          <TouchableOpacity style={styles.promoButton}>
+            <Text style={styles.promoButtonText}>Clique Aqui</Text>
+          </TouchableOpacity>
+        </View>
         {/* Placeholder para a imagem do card */}
         <TouchableOpacity activeOpacity={0.6} onPress={() => console.log('DogCat clicked')}>
           <Image source={require('../assets/DogCat.png')} style={styles.promoImage} />
         </TouchableOpacity>
-      </div>
+      </LinearGradient>
 
       {/* Seção de Categorias */}
-      <section style={styles.categorySection}>
-        <div style={styles.sectionHeader}>
-          <h3 style={styles.sectionTitle}>Category</h3>
-        </div>
-        <div style={styles.categoryGrid}>
+      <View style={styles.categorySection}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Category</Text>
+        </View>
+        <View style={styles.categoryGrid}>
           {/* Category buttons now navigate to different tabs */}
           <CategoryButton
             icon={iconeHome}
@@ -78,190 +69,179 @@ const PrincipalScreen = () => {
             styles={styles}
             onPress={() => navigation.navigate('Configurações')}
           />
-        </div>
-      </section>
+        </View>
+      </View>
 
       {/* Seção de Notificações */}
-      <section style={styles.notificacoesSection}>
-        <div style={styles.sectionHeader}>
-          <h3 style={styles.sectionTitle}>Notificações</h3>
-          <a href="#" style={styles.seeAllLink}>Ver Todas</a>
-        </div>
+      <View style={styles.notificacoesSection}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>Notificações</Text>
+          <TouchableOpacity onPress={() => console.log('Ver Todas clicked')}>
+            <Text style={styles.seeAllLink}>Ver Todas</Text>
+          </TouchableOpacity>
+        </View>
         {/* Conteúdo removido para deixar a seção em branco */}
-      </section>
+      </View>
 
 
       {/* O rodapé será removido e a navegação será gerenciada pelo Tab.Navigator em App.jsx */}
-    </div>
+    </View>
   );
 };
 
-// Função para gerar os estilos
-const getStyles = (colors) => ({
+const styles = StyleSheet.create({
   container: {
-    fontFamily: 'Poppins_700Bold',
+    flex: 1,
     backgroundColor: '#FFFFFF',
-    height: '100vh',
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '24px',
-    boxSizing: 'border-box',
-    position: 'relative',
-    paddingBottom: '100px',
-    paddingTop: 'calc(24px + env(safe-area-inset-top, 0px))',
+    padding: 24,
+    paddingTop: 24, // Adjust for safe area if needed
   },
   header: {
-    marginBottom: '24px',
+    marginBottom: 24,
   },
   title: {
-    fontSize: '28px',
+    fontSize: 28,
     fontWeight: 'bold',
-    color: colors.textPrimary,
-    margin: 0,
+    color: '#3C3633',
   },
   subtitle: {
-    fontSize: '18px',
-    color: colors.textSecondary,
-    margin: 0,
+    fontSize: 18,
+    color: '#7D7C7C',
   },
   promoCard: {
-    backgroundImage: 'linear-gradient(rgb(163, 103, 240), rgb(141, 126, 251))',
-    borderRadius: '24px',
-    padding: '20px',
-    display: 'flex',
+    borderRadius: 24,
+    padding: 20,
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     color: '#FFFFFF',
-    marginBottom: '32px',
+    marginBottom: 32,
   },
   promoTextContainer: {
     maxWidth: '50%',
   },
   promoTitle: {
-    fontSize: '20px',
+    fontSize: 20,
     fontWeight: 'bold',
-    margin: '0 0 16px 0',
+    marginBottom: 16,
+    color: '#FFFFFF',
   },
-  // Botão real (sem Rectangle.png)
   promoButton: {
     backgroundColor: '#FFFFFF',
-    color: colors.primary,
-    border: 'none',
-    borderRadius: '16px',
-    width: '150px',
-    height: '44px',
+    borderRadius: 16,
+    width: 150,
+    height: 44,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  promoButtonText: {
+    color: '#7F57F1',
     fontWeight: 'bold',
-    cursor: 'pointer',
   },
   promoImage: {
-    width: '150px',
-    height: '120px',
-    borderRadius: '16px',
-    resizeMode: 'contain',
+    width: 150,
+    height: 120,
+    borderRadius: 16,
   },
   sectionHeader: {
-    display: 'flex',
+    flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: '16px',
+    marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: '18px',
+    fontSize: 18,
     fontWeight: 'bold',
-    color: colors.textPrimary,
-    margin: 0,
+    color: '#3C3633',
   },
   seeAllLink: {
-    fontSize: '14px',
-    color: colors.primary,
-    textDecoration: 'none',
+    fontSize: 14,
+    color: '#7F57F1',
     fontWeight: 'bold',
   },
+  categorySection: {
+    marginBottom: 32,
+  },
   categoryGrid: {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(4, 1fr)',
-    gap: '16px',
-    marginBottom: '32px',
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: 16, // This might not work directly, consider using margin for spacing
   },
   categoryButton: {
-    display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
     textAlign: 'center',
+    width: '23%', // Adjust as needed for 4 columns with spacing
   },
-  // Quadrado roxo atrás do ícone de categoria (voltando ao que era antes)
   categoryIconContainer: {
-    backgroundColor: colors.primary,
-    borderRadius: '20px',
-    width: '64px',
-    height: '64px',
-    display: 'flex',
+    backgroundColor: '#7F57F1',
+    borderRadius: 20,
+    width: 64,
+    height: 64,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: '8px',
+    marginBottom: 8,
   },
-  // Ícone sem fundo branco
   categoryIcon: {
-    width: '32px',
-    height: '32px',
-    resizeMode: 'contain',
+    width: 32,
+    height: 32,
     tintColor: '#FFFFFF',
   },
-  // Ícone maior apenas para "Cuidados"
   categoryIconCare: {
-    width: '40px',
-    height: '40px',
-    resizeMode: 'contain',
+    width: 40,
+    height: 40,
     tintColor: '#FFFFFF',
   },
   categoryLabel: {
-    fontSize: '14px',
-    color: colors.textSecondary,
+    fontSize: 14,
+    color: '#7D7C7C',
     fontWeight: '500',
-    margin: 0,
   },
   notificacoesSection: {
-      marginBottom: '32px',
+      marginBottom: 32,
   },
   consultaCard: {
-    backgroundColor: colors.cardBackground,
-    borderRadius: '24px',
-    padding: '16px',
-    display: 'flex',
+    backgroundColor: '#FFF7F1',
+    borderRadius: 24,
+    padding: 16,
+    flexDirection: 'row',
     alignItems: 'center',
-    boxShadow: `0 4px 12px ${colors.cardShadow}`,
+    shadowColor: 'rgba(0, 0, 0, 0.05)',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 3, // For Android shadow
   },
   doctorImagePlaceholder: {
-    width: '60px',
-    height: '60px',
-    borderRadius: '16px',
-    backgroundImage: 'linear-gradient(rgb(163, 103, 240), rgb(141, 126, 251))',
-    marginRight: '16px',
+    width: 60,
+    height: 60,
+    borderRadius: 16,
+    backgroundColor: '#7F57F1', // Replaced linear gradient with solid color for simplicity
+    marginRight: 16,
   },
   doctorInfo: {
-    flexGrow: 1,
+    flex: 1,
   },
   doctorName: {
-    fontSize: '16px',
+    fontSize: 16,
     fontWeight: 'bold',
-    color: colors.textPrimary,
-    margin: '0 0 4px 0',
+    color: '#3C3633',
+    marginBottom: 4,
   },
   doctorSpec: {
-    fontSize: '14px',
-    color: colors.textSecondary,
-    margin: 0,
+    fontSize: 14,
+    color: '#7D7C7C',
   },
   arrowIcon: {
-    backgroundColor: colors.primary,
+    backgroundColor: '#7F57F1',
     color: '#FFFFFF',
-    width: '32px',
-    height: '32px',
-    borderRadius: '50%',
-    display: 'flex',
+    width: 32,
+    height: 32,
+    borderRadius: 16, // Half of width/height for a circle
     justifyContent: 'center',
     alignItems: 'center',
-    fontSize: '20px',
+    fontSize: 20,
     fontWeight: 'bold',
   },
 });
@@ -271,9 +251,9 @@ export default PrincipalScreen;
   // Componente CategoryButton
   const CategoryButton = ({ icon, label, styles, onPress }) => (
     <TouchableOpacity style={styles.categoryButton} activeOpacity={0.6} onPress={onPress}>
-      <div style={styles.categoryIconContainer}>
+      <View style={styles.categoryIconContainer}>
         <Image source={icon} style={label === 'Cuidados' ? styles.categoryIconCare : styles.categoryIcon} />
-      </div>
-      <p style={styles.categoryLabel}>{label}</p>
+      </View>
+      <Text style={styles.categoryLabel}>{label}</Text>
     </TouchableOpacity>
   );

@@ -1,33 +1,68 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { Colors } from '../Utils/Theme';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 const AddAdminScreen = () => {
   const navigation = useNavigation();
-  const [name, setName] = useState('');
-  const [specialty, setSpecialty] = useState('');
-  const [role, setRole] = useState('');
-  const [phone, setPhone] = useState('');
-  const [email, setEmail] = useState('');
+  const route = useRoute();
+  const { employee } = route.params || {}; // Get employee data if in edit mode
 
-  const handleSaveEmployee = () => {
+  const [name, setName] = useState(employee?.name || '');
+  const [specialty, setSpecialty] = useState(employee?.specialty || '');
+  const [role, setRole] = useState(employee?.role || '');
+  const [phone, setPhone] = useState(employee?.phone || '');
+  const [email, setEmail] = useState(employee?.email || '');
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (employee) {
+      setName(employee.name);
+      setSpecialty(employee.specialty);
+      setRole(employee.role);
+      setPhone(employee.phone);
+      setEmail(employee.email);
+    }
+  }, [employee]);
+
+  const handleSaveEmployee = async () => {
     if (!name || !specialty || !role || !phone || !email) {
       Alert.alert('Erro', 'Por favor, preencha todos os campos.');
       return;
     }
 
-    // Aqui você faria a lógica para salvar o novo funcionário
-    // Por exemplo, enviar para uma API ou atualizar um estado global
-    console.log('Novo Funcionário:', { name, specialty, role, phone, email });
-    Alert.alert('Sucesso', 'Funcionário adicionado com sucesso!');
-    navigation.goBack(); // Volta para a tela anterior após salvar
+    setLoading(true);
+    const employeeData = { name, specialty, role, phone, email };
+    const url = employee?.id ? `https://api.example.com/employees/${employee.id}` : 'https://api.example.com/employees';
+    const method = employee?.id ? 'PUT' : 'POST';
+
+    try {
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(employeeData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Falha ao salvar funcionário.');
+      }
+
+      Alert.alert('Sucesso', `Funcionário ${employee?.id ? 'atualizado' : 'adicionado'} com sucesso!`);
+      navigation.goBack();
+    } catch (error) {
+      console.error('Erro ao salvar funcionário:', error);
+      Alert.alert('Erro', 'Ocorreu um erro ao salvar o funcionário. Tente novamente.');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <Text style={styles.title}>Adicionar Novo Funcionário</Text>
+      <Text style={styles.title}>{employee?.id ? 'Editar Funcionário' : 'Adicionar Novo Funcionário'}</Text>
 
       <View style={styles.inputGroup}>
         <Text style={styles.label}>Nome Completo</Text>
@@ -97,9 +132,15 @@ const AddAdminScreen = () => {
         </View>
       </View>
 
-      <TouchableOpacity style={styles.saveButton} onPress={handleSaveEmployee}>
-        <FontAwesome name="save" size={20} color={Colors.white} style={styles.saveIcon} />
-        <Text style={styles.saveButtonText}>Salvar Funcionário</Text>
+      <TouchableOpacity style={styles.saveButton} onPress={handleSaveEmployee} disabled={loading}>
+        {loading ? (
+          <ActivityIndicator color={Colors.white} />
+        ) : (
+          <>
+            <FontAwesome name="save" size={20} color={Colors.white} style={styles.saveIcon} />
+            <Text style={styles.saveButtonText}>{employee?.id ? 'Atualizar Funcionário' : 'Salvar Funcionário'}</Text>
+          </>
+        )}
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.cancelButton} onPress={() => navigation.goBack()}>

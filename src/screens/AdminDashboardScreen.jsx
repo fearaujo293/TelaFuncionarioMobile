@@ -35,29 +35,40 @@ const AdminDashboardScreen = () => {
   const loadSummaryData = async () => {
     setIsLoading(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Substitua estas URLs pelos seus endpoints de API reais quando tiver um backend.
+      // const summaryResponse = await fetch('https://api.example.com/admin/summary');
+      // const appointmentsResponse = await fetch('https://api.example.com/admin/upcoming-appointments');
 
-      const appointments = await AsyncStorage.getItem('scheduledAppointments');
-      const pets = await AsyncStorage.getItem('attendedPets');
+      // if (!summaryResponse.ok || !appointmentsResponse.ok) {
+      //   throw new Error('Failed to fetch admin dashboard data');
+      // }
 
-      setScheduledAppointments(appointments ? parseInt(appointments) : 5);
-      setAttendedPets(pets ? parseInt(pets) : 3);
+      // const summaryData = await summaryResponse.json();
+      // const appointmentsData = await appointmentsResponse.json();
 
-      // Mock upcoming appointments data
-      const mockAppointments = [
-        { time: '10:00 AM', details: 'Rex - Golden Retriever (Dono: João)' },
-        { time: '11:30 AM', details: 'Miau - Gato Persa (Dono: Maria)' },
-        { time: '13:00 PM', details: 'Thor - Bulldog Francês (Dono: Pedro)' },
-        { time: '14:30 PM', details: 'Luna - Labrador (Dono: Ana)' },
-        { time: '16:00 PM', details: 'Bob - Poodle (Dono: Carlos)' },
-      ];
-      setUpcomingAppointments(mockAppointments);
+      // Dados simulados para desenvolvimento
+      const summaryData = {
+        scheduledAppointments: 12,
+        attendedPets: 8,
+      };
+      const appointmentsData = {
+        upcomingAppointments: [
+          { time: '10:00 AM', details: 'Consulta com Max' },
+          { time: '11:30 AM', details: 'Vacinação da Luna' },
+          { time: '02:00 PM', details: 'Banho e Tosa do Buddy' },
+        ],
+      };
+
+      setScheduledAppointments(summaryData.scheduledAppointments || 0);
+      setAttendedPets(summaryData.attendedPets || 0);
+      setUpcomingAppointments(appointmentsData.upcomingAppointments || []);
 
     } catch (error) {
       console.error('Error loading summary data:', error);
-      setScheduledAppointments(5);
-      setAttendedPets(3);
-      setUpcomingAppointments([]); // Set to empty array on error
+      // Fallback para dados padrão em caso de erro
+      setScheduledAppointments(0);
+      setAttendedPets(0);
+      setUpcomingAppointments([]);
     } finally {
       setIsLoading(false);
       setIsRefreshing(false);

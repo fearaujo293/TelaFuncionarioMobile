@@ -47,8 +47,10 @@ const LoginScreen = () => {
         navigation.navigate('AdminUserMainApp');
       } else if (userType === 'veterinario') {
         navigation.navigate('VeterinarianMainApp');
+      } else if (userType === 'funcionario') {
+        navigation.navigate('EmployeeMainApp');
       } else if (userType === 'admin') {
-        navigation.navigate('AdminMainApp');
+        navigation.navigate('AdminApp');
       }
     }
   };
@@ -83,11 +85,19 @@ const LoginScreen = () => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
+            style={[styles.userTypeButton, userType === 'funcionario' && styles.userTypeButtonActive]}
+            onPress={() => setUserType('funcionario')}
+          >
+            <Text style={[styles.userTypeButtonText, userType === 'funcionario' && styles.userTypeButtonTextActive]}>
+              Funcionário
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
             style={[styles.userTypeButton, userType === 'admin' && styles.userTypeButtonActive]}
             onPress={() => setUserType('admin')}
           >
             <Text style={[styles.userTypeButtonText, userType === 'admin' && styles.userTypeButtonTextActive]}>
-              Funcionário
+              Admin
             </Text>
           </TouchableOpacity>
         </View>

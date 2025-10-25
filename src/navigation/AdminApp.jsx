@@ -75,7 +75,7 @@ const slideTransition = {
   },
 };
 
-function EmployeeDashboardStack() {
+function AdminDashboardStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
       <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: 'Dashboard' }} />
@@ -86,16 +86,16 @@ function EmployeeDashboardStack() {
   );
 }
 
-function EmployeeListStack() {
+function AdminListStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
-      <Stack.Screen name="AdminList" component={AdminListScreen} options={{ title: 'Administradores' }} />
-      <Stack.Screen name="AddAdmin" component={AddAdminScreen} options={{ title: 'Adicionar Administrador' }} />
+      <Stack.Screen name="AdminList" component={AdminListScreen} options={{ title: 'Funcionários' }} />
+       <Stack.Screen name="AddAdmin" component={AddAdminScreen} options={{ title: 'Adicionar Administrador' }} />
     </Stack.Navigator>
   );
 }
 
-function EmployeeChatStack() {
+function AdminChatStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
       <Stack.Screen name="AdminChat" component={AdminChatScreen} options={{ title: 'Chat' }} />
@@ -104,7 +104,7 @@ function EmployeeChatStack() {
   );
 }
 
-function EmployeeMainTabs({ route }) {
+function AdminMainTabs({ route }) {
   const { initialTab } = route.params || {};
 
   return (
@@ -131,7 +131,7 @@ function EmployeeMainTabs({ route }) {
     >
       <Tab.Screen
         name="DashboardTab"
-        component={EmployeeDashboardStack}
+        component={AdminDashboardStack}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image
@@ -149,7 +149,7 @@ function EmployeeMainTabs({ route }) {
 
       <Tab.Screen
         name="EmployeeListTab"
-        component={EmployeeListStack}
+        component={AdminListStack}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image
@@ -167,7 +167,7 @@ function EmployeeMainTabs({ route }) {
 
       <Tab.Screen
         name="EmployeeChatTab"
-        component={EmployeeChatStack}
+        component={AdminChatStack}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image
@@ -186,10 +186,10 @@ function EmployeeMainTabs({ route }) {
   );
 }
 
-const AdminMainApp = ({ route }) => {
+const AdminApp = ({ route }) => {
   return (
-    <EmployeeMainTabs route={route} />
+    <AdminMainTabs route={route} />
   );
 };
 
-export default AdminMainApp;
+export default AdminApp;
