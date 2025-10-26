@@ -36,28 +36,28 @@ const AdminDashboardScreen = () => {
     setIsLoading(true);
     try {
       // Substitua estas URLs pelos seus endpoints de API reais quando tiver um backend.
-      // const summaryResponse = await fetch('https://api.example.com/admin/summary');
-      // const appointmentsResponse = await fetch('https://api.example.com/admin/upcoming-appointments');
+      const summaryResponse = await fetch('YOUR_ACTUAL_API_BASE_URL/admin/summary');
+      const appointmentsResponse = await fetch('YOUR_ACTUAL_API_BASE_URL/admin/upcoming-appointments');
 
-      // if (!summaryResponse.ok || !appointmentsResponse.ok) {
-      //   throw new Error('Failed to fetch admin dashboard data');
-      // }
+      if (!summaryResponse.ok || !appointmentsResponse.ok) {
+        throw new Error('Failed to fetch admin dashboard data');
+      }
 
-      // const summaryData = await summaryResponse.json();
-      // const appointmentsData = await appointmentsResponse.json();
+      const summaryData = await summaryResponse.json();
+      const appointmentsData = await appointmentsResponse.json();
 
       // Dados simulados para desenvolvimento
-      const summaryData = {
-        scheduledAppointments: 12,
-        attendedPets: 8,
-      };
-      const appointmentsData = {
-        upcomingAppointments: [
-          { time: '10:00 AM', details: 'Consulta com Max' },
-          { time: '11:30 AM', details: 'Vacinação da Luna' },
-          { time: '02:00 PM', details: 'Banho e Tosa do Buddy' },
-        ],
-      };
+      // const summaryData = {
+      //   scheduledAppointments: 12,
+      //   attendedPets: 8,
+      // };
+      // const appointmentsData = {
+      //   upcomingAppointments: [
+      //     { time: '10:00 AM', details: 'Consulta com Max' },
+      //     { time: '11:30 AM', details: 'Vacinação da Luna' },
+      //     { time: '02:00 PM', details: 'Banho e Tosa do Buddy' },
+      //   ],
+      // };
 
       setScheduledAppointments(summaryData.scheduledAppointments || 0);
       setAttendedPets(summaryData.attendedPets || 0);
@@ -94,6 +94,18 @@ const AdminDashboardScreen = () => {
 
   const handleChat = () => {
     navigation.navigate('EmployeeChatTab', { screen: 'AdminChat' });
+  };
+
+  const handleViewConsultations = () => {
+    navigation.navigate('AdminConsultations');
+  };
+
+  const handleViewAllChats = () => {
+    navigation.navigate('AdminAllChats');
+  };
+
+  const handleViewReports = () => {
+    navigation.navigate('AdminReports');
   };
 
   const opacity = animatedValue.interpolate({
@@ -195,6 +207,18 @@ const AdminDashboardScreen = () => {
             <FontAwesome name="comments" size={30} color={Colors.accent} />
             <Text style={styles.quickActionButtonText}>Chat</Text>
           </TouchableOpacity>
+          <TouchableOpacity style={styles.quickActionButton} onPress={handleViewConsultations} activeOpacity={0.7}>
+            <FontAwesome name="calendar" size={30} color={Colors.primary} />
+            <Text style={styles.quickActionButtonText}>Consultas</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.quickActionButton} onPress={handleViewAllChats} activeOpacity={0.7}>
+            <FontAwesome name="wechat" size={30} color={Colors.secondary} />
+            <Text style={styles.quickActionButtonText}>Todos os Chats</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.quickActionButton} onPress={handleViewReports} activeOpacity={0.7}>
+            <FontAwesome name="file-text" size={30} color={Colors.accent} />
+            <Text style={styles.quickActionButtonText}>Relatórios</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </ScrollView>
@@ -234,7 +258,7 @@ const styles = StyleSheet.create({
   summaryItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 12, // Aumentado o espaçamento
   },
   summaryText: {
     fontSize: 16,
@@ -278,7 +302,8 @@ const styles = StyleSheet.create({
   },
   quickActionsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between', // Alterado para space-between
     marginTop: 15,
   },
   quickActionButton: {
@@ -286,7 +311,8 @@ const styles = StyleSheet.create({
     padding: 15,
     backgroundColor: Colors.lightGray,
     borderRadius: 15,
-    width: '30%',
+    width: '48%', // Ajustado para 2 colunas com espaçamento
+    marginBottom: 15, // Aumentado o espaçamento inferior
     elevation: 3,
     shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },

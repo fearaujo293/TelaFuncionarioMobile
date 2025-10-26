@@ -45,6 +45,7 @@ const MenuItem = ({ iconName, text, isDelete = false, onPress }) => (
 
 // --- Componente da Tela de Configuração Principal ---
 import { useNavigation } from '@react-navigation/native';
+import LoginScreen from './LoginScreen';
 
 const ConfigurationScreen = () => {
   const navigation = useNavigation();
@@ -69,6 +70,11 @@ const ConfigurationScreen = () => {
         <MenuItem iconName="fingerprint" text="Segurança" onPress={() => navigation.navigate('Security')} />
         <MenuItem iconName="paw" text="Pets" onPress={() => navigation.navigate('Home') } />
         <MenuItem iconName="calendar-alt" text="Consultas Agendadas" onPress={() => navigation.navigate('Veterinario', { screen: 'Consultas' })} />
+        <MenuItem 
+          iconName="sign-out-alt" 
+          text="Sair" 
+          onPress={() => navigation.navigate('Login')} // Navega para a tela de Login
+        />
         <MenuItem 
           iconName="trash-alt" 
           text="Excluir Conta" 
@@ -103,52 +109,58 @@ const styles = StyleSheet.create({
   // Cabeçalho e Avatar
   header: {
     alignItems: 'center',
-    marginBottom: 40,
+    marginBottom: 50,
+    backgroundColor: Colors.primary,
+    paddingTop: 60,
+    paddingBottom: 30,
   },
   userAvatar: {
-    width: 120,
-    height: 120,
-    backgroundColor: Colors.veryLightPurple,
-    borderRadius: 60,
+    width: 100,
+    height: 100,
+    backgroundColor: Colors.white,
+    borderRadius: 50,
     marginBottom: 15,
+    borderWidth: 3,
+    borderColor: Colors.white,
   },
   username: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-    color: Colors.purple,
+    color: Colors.white,
   },
-
-  // Menu
   menuContainer: {
     paddingHorizontal: 20,
+    marginTop: -30,
   },
   menuItem: {
     ...CommonStyles.card,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 18,
+    paddingVertical: 20,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.lightPurple,
+    borderBottomColor: Colors.lightGray,
+    borderRadius: 10,
+    marginBottom: 10,
+    backgroundColor: Colors.cardBackground,
+    shadowColor: Colors.cardShadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  // O último item não precisa de borda inferior, isso seria tratado com FlatList ou lógica de índice em um app real
-  
   icon: {
-    marginRight: 15,
-    width: 24, // Garante que todos os ícones fiquem alinhados
+    marginRight: 20,
+    width: 28,
     textAlign: 'center',
   },
   menuText: {
     flexGrow: 1,
-    fontSize: 16,
-    color: Colors.purple,
-  },
-  
-  // Estilos de Excluir Conta
-  deleteItemContainer: {
-    // Não é necessário um estilo extra para a borda aqui, mas poderia ser usado
+    fontSize: 18,
+    color: Colors.textPrimary,
   },
   deleteText: {
-    color: COLORS.delete, // Cor vermelha para o texto
+    color: COLORS.delete,
+    fontWeight: 'bold',
   },
 });
 

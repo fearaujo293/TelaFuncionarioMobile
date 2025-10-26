@@ -4,12 +4,14 @@ import { GiftedChat, Bubble, InputToolbar, Send } from 'react-native-gifted-chat
 import { FontAwesome } from '@expo/vector-icons';
 import { Colors } from '../Utils/Theme';
 import { useNavigation, useRoute } from '@react-navigation/native';
+import { useChatContext } from '../context/ChatContext';
 
 const UserChatScreen = () => {
   const [messages, setMessages] = useState([]);
   const navigation = useNavigation();
   const route = useRoute();
-  const { clientName } = route.params;
+  const { clientName, chatId } = route.params;
+  const { chats, updateChatMessages } = useChatContext();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -27,22 +29,17 @@ const UserChatScreen = () => {
   }, [navigation, clientName]);
 
   useEffect(() => {
-    setMessages([
-      {
-        _id: 1,
-        text: `Olá! Em que posso ajudar o ${clientName} hoje?`,
-        createdAt: new Date(),
-        user: {
-          _id: 2,
-          name: 'Funcionário',
-        },
-      },
-    ]);
-  }, [clientName]);
+    if (chatId && chats[chatId]) {
+      setMessages(chats[chatId].messages);
+    }
+  }, [chatId, chats]);
 
-  const onSend = useCallback((messages = []) => {
-    setMessages(previousMessages => GiftedChat.append(previousMessages, messages));
-  }, []);
+  const onSend = useCallback((newMessages = []) => {
+    setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages));
+    if (chatId) {
+      updateChatMessages(chatId, GiftedChat.append(messages, newMessages));
+    }
+  }, [chatId, messages, updateChatMessages]);
 
   return (
     <View style={styles.container}>
@@ -110,8 +107,8 @@ const styles = StyleSheet.create({
   },
   headerTitleText: {
     color: Colors.white,
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '600',
   },
   messagesContainer: {
     backgroundColor: Colors.background,
@@ -120,30 +117,30 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderTopColor: Colors.lightGray,
     borderTopWidth: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    paddingVertical: 5,
+    paddingHorizontal: 5,
     marginBottom: Platform.OS === 'ios' ? 0 : 5,
   },
   textInput: {
     color: Colors.dark,
     backgroundColor: Colors.lightGray,
-    borderRadius: 25,
+    borderRadius: 20,
     paddingHorizontal: 15,
-    paddingTop: 10,
-    paddingBottom: 10,
-    marginRight: 10,
-    fontSize: 16,
-    lineHeight: 20,
+    paddingTop: 8,
+    paddingBottom: 8,
+    marginRight: 5,
+    fontSize: 15,
+    lineHeight: 18,
     flex: 1,
   },
   sendButtonContainer: {
-    width: 48,
-    height: 48,
+    width: 40,
+    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 5,
-    backgroundColor: Colors.lightBlue,
-    borderRadius: 24,
+    backgroundColor: Colors.primary,
+    borderRadius: 20,
   },
 });
 

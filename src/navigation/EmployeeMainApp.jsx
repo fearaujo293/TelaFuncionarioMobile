@@ -1,34 +1,73 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import EmployeeServicesScreen from '../screens/EmployeeServicesScreen';
+import EmployeeChatScreen from '../screens/EmployeeChatScreen';
+import ConfigurationScreen from '../screens/ConfigurationScreen';
+import EmployeeChatsListScreen from '../screens/EmployeeChatsListScreen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { FontAwesome } from '@expo/vector-icons';
+import { Colors } from '../Utils/Theme';
 import { LinearGradient } from 'expo-linear-gradient';
-import { heightPixel, widthPixel } from '../Utils/Responsive';
 
-const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
+const ChatStack = createStackNavigator();
+
+const ChatFlow = () => (
+  <ChatStack.Navigator screenOptions={{ headerShown: false }}>
+    <ChatStack.Screen name="EmployeeChatsList" component={EmployeeChatsListScreen} />
+    <ChatStack.Screen name="EmployeeChatScreen" component={EmployeeChatScreen} />
+  </ChatStack.Navigator>
+);
 
 const EmployeeMainApp = () => {
   return (
-    <Stack.Navigator
+    <Tab.Navigator
       screenOptions={{
-        headerBackground: () => (
+        tabBarStyle: {
+          height: 60,
+          paddingBottom: 5,
+          paddingTop: 5,
+          borderTopWidth: 0,
+        },
+        tabBarBackground: () => (
           <LinearGradient
-            colors={['#A367F0', '#8D7EFB']}
+            colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
             style={{ flex: 1 }}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
           />
         ),
-        headerTitleStyle: { color: '#fff', fontSize: widthPixel(20) },
-        headerTintColor: '#fff',
-        headerBackTitleVisible: false,
-      }}
-    >
-      <Stack.Screen
-        name="EmployeeServices"
+        tabBarActiveTintColor: 'white',
+        tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.7)',
+        headerShown: false,
+        tabBarShowLabel: false,
+      }}>
+      <Tab.Screen
+        name="Serviços"
         component={EmployeeServicesScreen}
-        options={{ headerTitle: 'Dashboard do Funcionário' }}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="briefcase" color={color} size={size} />
+          ),
+        }}
       />
-    </Stack.Navigator>
+      <Tab.Screen
+        name="Chat"
+        component={ChatFlow}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="comments" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Configurações"
+        component={ConfigurationScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="cog" color={color} size={size} />
+          ),
+        }}
+      />
+    </Tab.Navigator>
   );
 };
 

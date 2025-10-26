@@ -2,42 +2,27 @@ import React, { useState } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Colors, CommonStyles } from '../Utils/Theme';
-
-const mockVets = [
-  {
-    id: '1',
-    name: 'Dr. João Silva',
-    avatar: require('../assets/veterinario.png'),
-    lastMessage: 'Olá! Como está o Rex hoje?',
-    time: '10:30 AM',
-    unread: true,
-  },
-  {
-    id: '2',
-    name: 'Dra. Ana Souza',
-    avatar: require('../assets/veterinario.png'),
-    lastMessage: 'Não se esqueça da consulta amanhã.',
-    time: 'Ontem',
-    unread: false,
-  },
-  {
-    id: '3',
-    name: 'Dr. Carlos Lima',
-    avatar: require('../assets/veterinario.png'),
-    lastMessage: 'Resultados dos exames disponíveis.',
-    time: '2 dias atrás',
-    unread: true,
-  },
-];
+import { useChatContext } from '../context/ChatContext';
 
 const ChatsListScreen = () => {
   const navigation = useNavigation();
-  const [vets, setVets] = useState(mockVets);
+  const { chats } = useChatContext();
+
+  const userChats = Object.entries(chats)
+    .filter(([, chat]) => chat.type === 'user')
+    .map(([chatId, chat]) => ({
+      id: chatId,
+      name: chat.partnerName,
+      avatar: chat.partnerAvatar || require('../assets/veterinario.png'), // Default avatar
+      lastMessage: chat.messages.length > 0 ? chat.messages[0].text : 'Nenhuma mensagem',
+      time: chat.messages.length > 0 ? new Date(chat.messages[0].createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
+      unread: false, // Implement unread logic if needed
+    }));
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.itemContainer}
-      onPress={() => navigation.navigate('Chat', { vet: item })}
+      onPress={() => navigation.navigate('UserChatScreen', { clientName: item.name, chatId: item.id })}
     >
       <Image source={item.avatar} style={styles.avatar} />
       <View style={styles.textContainer}>
@@ -61,7 +46,7 @@ const ChatsListScreen = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={vets}
+        data={userChats}
         keyExtractor={(item) => item.id}
         renderItem={renderItem}
         contentContainerStyle={{ paddingVertical: 12 }}

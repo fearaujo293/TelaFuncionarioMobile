@@ -13,6 +13,7 @@ import ReviewScreen from '../screens/ReviewScreen';
 import SuccessScreen from '../screens/SuccessScreen';
 import ChatsListScreen from '../screens/ChatsListScreen';
 import ChatScreen from '../screens/ChatScreen';
+import UserChatScreen from '../screens/UserChatScreen';
 import ConfigurationScreen from '../screens/ConfigurationScreen';
 import SecurityScreen from '../screens/SecurityScreen';
 import PrincipalScreen from '../screens/PrincipalScreen';
@@ -103,7 +104,7 @@ function ChatUserTabStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
       <Stack.Screen name="ChatsList" component={ChatsListScreen} options={{ title: 'Conversas' }} />
-      <Stack.Screen name="ChatScreen" component={ChatScreen} options={({ route }) => ({ title: route.params?.name || 'Chat', headerBackVisible: true, headerLeft: undefined })} />
+      <Stack.Screen name="UserChatScreen" component={UserChatScreen} options={({ route }) => ({ title: route.params?.clientName || 'Chat', headerBackVisible: true, headerLeft: undefined })} />
     </Stack.Navigator>
   );
 }
@@ -190,7 +191,7 @@ const UserTabNavigator = () => {
 
       <Tab.Screen
         name="Principal"
-        component={AdminDashboardUsuario}
+        component={PrincipalScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image

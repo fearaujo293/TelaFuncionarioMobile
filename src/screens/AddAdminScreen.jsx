@@ -34,7 +34,7 @@ const AddAdminScreen = () => {
 
     setLoading(true);
     const employeeData = { name, specialty, role, phone, email };
-    const url = employee?.id ? `https://api.example.com/employees/${employee.id}` : 'https://api.example.com/employees';
+    const url = employee?.id ? `YOUR_ACTUAL_API_BASE_URL/employees/${employee.id}` : 'YOUR_ACTUAL_API_BASE_URL/employees'; // Substitua YOUR_ACTUAL_API_BASE_URL pela sua URL base da API real
     const method = employee?.id ? 'PUT' : 'POST';
 
     try {

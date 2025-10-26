@@ -44,8 +44,8 @@ const AdminChatScreen = () => {
     const fetchMessages = async () => {
       try {
         setLoading(true);
-        // Substitua pela sua URL de API real para buscar mensagens
-        const response = await fetch(`https://api.example.com/chats/${clientId}/messages`);
+        // Substitua YOUR_ACTUAL_API_BASE_URL pela sua URL base da API real
+        const response = await fetch(`YOUR_ACTUAL_API_BASE_URL/chats/${clientId}/messages`);
         if (!response.ok) {
           throw new Error('Falha ao buscar mensagens.');
         }
@@ -77,8 +77,8 @@ const AdminChatScreen = () => {
 
     const messageToSend = newMessages[0];
     try {
-      // Substitua pela sua URL de API real para enviar mensagens
-      const response = await fetch(`https://api.example.com/chats/${clientId}/messages`, {
+      // Substitua YOUR_ACTUAL_API_BASE_URL pela sua URL base da API real
+      const response = await fetch(`YOUR_ACTUAL_API_BASE_URL/chats/${clientId}/messages`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

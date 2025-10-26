@@ -2,8 +2,9 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Image, Animated, Easing, Text } from 'react-native';
+import { Image, Animated, Easing, Text, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../Utils/Theme';
 
 // Telas de Funcionários
 import AdminDashboardScreen from '../screens/AdminDashboardScreen';
@@ -14,6 +15,9 @@ import UserListScreen from '../screens/UserListScreen'; // Import UserListScreen
 import AllAppointmentsScreen from '../screens/AllAppointmentsScreen'; // Import AllAppointmentsScreen
 import NewAppointmentScreen from '../screens/NewAppointmentScreen'; // Import NewAppointmentScreen
 import UserChatScreen from '../screens/UserChatScreen'; // Import UserChatScreen
+import AdminConsultationsScreen from '../screens/AdminConsultationsScreen'; // Import AdminConsultationsScreen
+import AdminAllChatsScreen from '../screens/AdminAllChatsScreen'; // Import AdminAllChatsScreen
+import AdminReportsScreen from '../screens/AdminReportsScreen'; // Import AdminReportsScreen
 
 // Ícones personalizados (usando os existentes por enquanto)
 import iconeHome from '../assets/icone.png'; // Para Dashboard
@@ -25,9 +29,8 @@ const Stack = createNativeStackNavigator();
 
 const newHeaderOptions = {
   headerBackground: () => (
-    <LinearGradient
-      colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
-      style={{ flex: 1 }}
+    <View
+      style={{ flex: 1, backgroundColor: Colors.primary }}
     />
   ),
   headerTitleStyle: {
@@ -82,6 +85,9 @@ function AdminDashboardStack() {
       <Stack.Screen name="UserListScreen" component={UserListScreen} options={{ title: 'Lista de Clientes', headerBackVisible: true, headerLeft: undefined }} />
       <Stack.Screen name="AllAppointmentsScreen" component={AllAppointmentsScreen} options={{ title: 'Todas as Consultas', headerBackVisible: true, headerLeft: undefined }} />
       <Stack.Screen name="NewAppointmentScreen" component={NewAppointmentScreen} options={{ title: 'Nova Consulta', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="AdminConsultations" component={AdminConsultationsScreen} options={{ title: 'Consultas', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="AdminAllChats" component={AdminAllChatsScreen} options={{ title: 'Todos os Chats', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="AdminReports" component={AdminReportsScreen} options={{ title: 'Relatórios', headerBackVisible: true, headerLeft: undefined }} />
     </Stack.Navigator>
   );
 }
@@ -99,6 +105,7 @@ function AdminChatStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
       <Stack.Screen name="AdminChat" component={AdminChatScreen} options={{ title: 'Chat' }} />
+      <Stack.Screen name="AdminAllChats" component={AdminAllChatsScreen} options={{ title: 'Todos os Chats', headerBackVisible: true, headerLeft: undefined }} />
       <Stack.Screen name="UserChatScreen" component={UserChatScreen} options={({ route }) => ({ title: route.params.clientName, headerBackVisible: true, headerLeft: undefined })} />
     </Stack.Navigator>
   );
@@ -118,9 +125,8 @@ function AdminMainTabs({ route }) {
           borderTopWidth: 0,
         },
         tabBarBackground: () => (
-          <LinearGradient
-            colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
-            style={{ flex: 1 }}
+          <View
+            style={{ flex: 1, backgroundColor: Colors.primary }}
           />
         ),
         tabBarActiveTintColor: 'white',

@@ -165,7 +165,7 @@ function MainTabs({ route }) {
     >
       <Tab.Screen
         name="Home"
-        component={PetsStack} // Agora aponta para Meus Pets
+        component={HomeTabStack} // Agora aponta para HomeTabStack
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image
@@ -201,7 +201,7 @@ function MainTabs({ route }) {
 
       <Tab.Screen
         name="Pets"
-        component={HomeTabStack} // Agora aponta para Home
+        component={PetsStack} // Agora aponta para PetsStack
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image

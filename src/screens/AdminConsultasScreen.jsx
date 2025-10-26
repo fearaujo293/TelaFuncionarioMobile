@@ -25,8 +25,8 @@ const AdminConsultasScreen = ({ navigation }) => {
     setLoading(true);
     setError(null);
     try {
-      // Substitua pela sua URL de API real para buscar consultas
-      const response = await fetch('https://api.example.com/consultas');
+      // Substitua YOUR_ACTUAL_API_BASE_URL pela sua URL base da API real
+      const response = await fetch('YOUR_ACTUAL_API_BASE_URL/consultas');
       if (!response.ok) {
         throw new Error('Falha ao buscar consultas.');
       }
