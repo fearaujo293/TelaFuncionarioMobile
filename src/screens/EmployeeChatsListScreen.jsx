@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ChatContext } from '../context/ChatContext';
 import { Colors } from '../Utils/Theme';
 import { FontAwesome } from '@expo/vector-icons';
@@ -46,9 +47,12 @@ const EmployeeChatsListScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <LinearGradient
+        colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
+        style={styles.headerGradient}
+      >
         <Text style={styles.headerTitle}>Conversas</Text>
-      </View>
+      </LinearGradient>
       {chatList.length > 0 ? (
         <FlatList
           data={chatList}
@@ -71,7 +75,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
   },
-  header: {
+  headerGradient: {
     backgroundColor: Colors.primary,
     paddingTop: 50,
     paddingBottom: 20,

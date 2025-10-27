@@ -8,8 +8,9 @@ import {
   Image,
   FlatList,
 } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { Colors } from '../Utils/Theme';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const EmployeeServicesScreen = () => {
   const [activeFilter, setActiveFilter] = useState('todas');
@@ -38,10 +39,10 @@ const EmployeeServicesScreen = () => {
       description: 'Exame completo e diagnóstico.',
       status: 'confirmado',
       count: 3,
-      nextTime: '11:30 AM',
-      lastTime: '16:00 PM',
+      nextTime: '11:30',
       duration: '30 min',
       badge: 'Confirmado',
+      icon: 'medical-bag',
     },
     {
       id: '2',
@@ -49,10 +50,10 @@ const EmployeeServicesScreen = () => {
       description: 'Higiene completa e tosa padrão.',
       status: 'confirmado',
       count: 1,
-      nextTime: '14:30 PM',
-      lastTime: '15:15 PM',
+      nextTime: '14:30',
       duration: '45 min',
       badge: 'Confirmado',
+      icon: 'pets',
     },
     {
       id: '3',
@@ -60,10 +61,10 @@ const EmployeeServicesScreen = () => {
       description: 'Procedimentos cirúrgicos simples.',
       status: 'pendente',
       count: 1,
-      nextTime: '16:00 PM',
-      lastTime: 'Amanhã 09:00',
+      nextTime: '16:00',
       duration: '60 min',
       badge: 'Pendente',
+      icon: 'healing',
     },
     {
       id: '4',
@@ -72,9 +73,9 @@ const EmployeeServicesScreen = () => {
       status: 'pendente',
       count: 0,
       nextTime: 'Amanhã 09:00',
-      lastTime: 'Amanhã 10:00',
       duration: '15 min',
       badge: 'Pendente',
+      icon: 'local-hospital',
     },
   ];
 
@@ -86,13 +87,13 @@ const EmployeeServicesScreen = () => {
   const getStatusColor = (status) => {
     switch (status) {
       case 'confirmado':
-        return '#4CAF50';
+        return '#10B981';
       case 'pendente':
-        return '#FBBC04';
+        return '#F59E0B';
       case 'concluido':
-        return '#2196F3';
+        return '#3B82F6';
       case 'cancelado':
-        return '#F44336';
+        return '#EF4444';
       default:
         return Colors.gray;
     }
@@ -114,161 +115,147 @@ const EmployeeServicesScreen = () => {
   };
 
   const renderServiceCard = (item) => (
-    <View key={item.id} style={styles.serviceCard}>
-      <View style={styles.cardHeader}>
-        <View style={styles.cardTitle}>
-          <Text style={styles.serviceName}>{item.name}</Text>
-          <View
-            style={[
-              styles.statusBadge,
-              { backgroundColor: getStatusColor(item.status) },
-            ]}
-          >
-            <Text style={styles.statusBadgeText}>{getStatusText(item.status)}</Text>
+    <TouchableOpacity key={item.id} style={styles.serviceCard}>
+      <View style={styles.cardContent}>
+        <View style={styles.serviceHeader}>
+          <View style={styles.serviceIconContainer}>
+            <MaterialIcons name={item.icon} size={24} color={Colors.primary} />
+          </View>
+          <View style={styles.serviceInfo}>
+            <Text style={styles.serviceName}>{item.name}</Text>
+            <Text style={styles.serviceDescription}>{item.description}</Text>
+          </View>
+          <View style={[styles.statusIndicator, { backgroundColor: getStatusColor(item.status) }]} />
+        </View>
+
+        <View style={styles.serviceStats}>
+          <View style={styles.statChip}>
+            <MaterialIcons name="today" size={16} color="#6B7280" />
+            <Text style={styles.statChipText}>{item.count} hoje</Text>
+          </View>
+          <View style={styles.statChip}>
+            <MaterialIcons name="schedule" size={16} color="#6B7280" />
+            <Text style={styles.statChipText}>{item.nextTime}</Text>
+          </View>
+          <View style={styles.statChip}>
+            <MaterialIcons name="timer" size={16} color="#6B7280" />
+            <Text style={styles.statChipText}>{item.duration}</Text>
           </View>
         </View>
       </View>
-
-      <Text style={styles.description}>{item.description}</Text>
-
-      <View style={styles.statsRow}>
-        <View style={styles.statItem}>
-          <FontAwesome name="calendar" size={14} color={Colors.primary} />
-          <Text style={styles.statText}>{item.count} hoje</Text>
-        </View>
-        <View style={styles.statItem}>
-          <FontAwesome name="clock-o" size={14} color={Colors.primary} />
-          <Text style={styles.statText}>{item.nextTime}</Text>
-        </View>
-        <View style={styles.statItem}>
-          <FontAwesome name="hourglass-half" size={14} color={Colors.primary} />
-          <Text style={styles.statText}>{item.duration}</Text>
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.viewButton}>
-        <Text style={styles.viewButtonText}>Ver Agenda</Text>
-      </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 
   const filteredServices = getFilteredServices();
 
   return (
     <View style={styles.container}>
-      {/* HEADER */}
-      <View style={styles.header}>
-        <View style={styles.profileSection}>
-          <View style={styles.avatar}>
-            <FontAwesome name="user" size={40} color={Colors.primary} />
-          </View>
-          <View style={styles.profileInfo}>
-            <Text style={styles.name}>{employeeData.name}</Text>
-            <Text style={styles.role}>{employeeData.role}</Text>
-            <View style={styles.statusRow}>
-              <View style={styles.onlineDot} />
-              <Text style={styles.statusText}>
-                {employeeData.status} • {employeeData.hours}
-              </Text>
+      {/* HEADER MODERNO */}
+      <LinearGradient
+        colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
+        style={styles.headerGradient}
+      >
+        <View style={styles.headerContent}>
+          <View style={styles.profileSection}>
+            <View style={styles.avatarContainer}>
+              <LinearGradient
+                colors={['#ffffff', '#f8fafc']}
+                style={styles.avatar}
+              >
+                <FontAwesome name="user" size={28} color={Colors.primary} />
+              </LinearGradient>
+            </View>
+            <View style={styles.profileInfo}>
+              <Text style={styles.employeeName}>{employeeData.name}</Text>
+              <Text style={styles.employeeRole}>{employeeData.role}</Text>
+              <View style={styles.statusContainer}>
+                <View style={styles.onlineIndicator} />
+                <Text style={styles.statusText}>{employeeData.status}</Text>
+                <Text style={styles.hoursText}>• {employeeData.hours}</Text>
+              </View>
             </View>
           </View>
         </View>
+      </LinearGradient>
 
-        <View style={styles.quickStats}>
-          <View style={styles.quickStatItem}>
-            <Text style={styles.quickStatLabel}>Hoje</Text>
-            <Text style={styles.quickStatValue}>{employeeData.stats.today}</Text>
-          </View>
-          <View style={styles.quickStatItem}>
-            <Text style={styles.quickStatLabel}>Próxima</Text>
-            <Text style={styles.quickStatValue}>{employeeData.stats.nextTime}</Text>
-          </View>
-          <View style={styles.quickStatItem}>
-            <Text style={styles.quickStatLabel}>Taxa</Text>
-            <Text style={styles.quickStatValue}>{employeeData.stats.rate}%</Text>
-          </View>
+      {/* ESTATÍSTICAS RÁPIDAS */}
+      <View style={styles.quickStatsContainer}>
+        <View style={styles.statCard}>
+          <Text style={styles.statNumber}>{employeeData.stats.today}</Text>
+          <Text style={styles.statLabel}>Consultas Hoje</Text>
+        </View>
+        <View style={styles.statCard}>
+          <Text style={styles.statNumber}>{employeeData.stats.completed}</Text>
+          <Text style={styles.statLabel}>Concluídas</Text>
+        </View>
+        <View style={styles.statCard}>
+          <Text style={styles.statNumber}>{employeeData.stats.pending}</Text>
+          <Text style={styles.statLabel}>Pendentes</Text>
+        </View>
+        <View style={styles.statCard}>
+          <Text style={styles.statNumber}>{employeeData.stats.rate}%</Text>
+          <Text style={styles.statLabel}>Taxa Sucesso</Text>
         </View>
       </View>
 
-      {/* SCROLL CONTENT */}
+      {/* CONTEÚDO PRINCIPAL */}
       <ScrollView
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        {/* RESUMO DO DIA */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Resumo do Dia</Text>
-          <View style={styles.summaryCard}>
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Total de Consultas:</Text>
-              <Text style={styles.summaryValue}>{employeeData.stats.today}</Text>
-            </View>
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Concluídas:</Text>
-              <Text style={[styles.summaryValue, { color: '#4CAF50' }]}>
-                {employeeData.stats.completed}
-              </Text>
-            </View>
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Pendentes:</Text>
-              <Text style={[styles.summaryValue, { color: '#FBBC04' }]}>
-                {employeeData.stats.pending}
-              </Text>
-            </View>
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Canceladas:</Text>
-              <Text style={[styles.summaryValue, { color: '#F44336' }]}>
-                {employeeData.stats.cancelled}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        {/* FILTROS */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Meus Serviços Hoje</Text>
+        {/* FILTROS MODERNOS */}
+        <View style={styles.filtersSection}>
+          <Text style={styles.sectionTitle}>Meus Serviços</Text>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={styles.filtersScroll}
+            style={styles.filtersContainer}
           >
-            {['todas', 'confirmado', 'pendente', 'concluido'].map((filter) => (
+            {[
+              { key: 'todas', label: 'Todas', icon: 'view-list' },
+              { key: 'confirmado', label: 'Confirmadas', icon: 'check-circle' },
+              { key: 'pendente', label: 'Pendentes', icon: 'schedule' },
+              { key: 'concluido', label: 'Concluídas', icon: 'done' }
+            ].map((filter) => (
               <TouchableOpacity
-                key={filter}
+                key={filter.key}
                 style={[
-                  styles.filterButton,
-                  activeFilter === filter && styles.filterButtonActive,
+                  styles.filterChip,
+                  activeFilter === filter.key && styles.filterChipActive,
                 ]}
-                onPress={() => setActiveFilter(filter)}
+                onPress={() => setActiveFilter(filter.key)}
               >
+                <MaterialIcons 
+                  name={filter.icon} 
+                  size={18} 
+                  color={activeFilter === filter.key ? '#ffffff' : '#6B7280'} 
+                />
                 <Text
                   style={[
-                    styles.filterText,
-                    activeFilter === filter && styles.filterTextActive,
+                    styles.filterChipText,
+                    activeFilter === filter.key && styles.filterChipTextActive,
                   ]}
                 >
-                  {filter.charAt(0).toUpperCase() + filter.slice(1)}
+                  {filter.label}
                 </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
 
-        {/* SERVIÇOS */}
-        <View style={styles.section}>
+        {/* LISTA DE SERVIÇOS */}
+        <View style={styles.servicesSection}>
           {filteredServices.length > 0 ? (
-            filteredServices.map((service) => renderServiceCard(service))
+            filteredServices.map(renderServiceCard)
           ) : (
             <View style={styles.emptyState}>
-              <FontAwesome name="inbox" size={50} color={Colors.gray} />
+              <MaterialIcons name="event-busy" size={64} color="#D1D5DB" />
               <Text style={styles.emptyText}>Nenhum serviço encontrado</Text>
+              <Text style={styles.emptySubtext}>Não há serviços para o filtro selecionado</Text>
             </View>
           )}
         </View>
-
-        {/* ESPAÇO PARA SCROLL */}
-        <View style={{ height: 20 }} />
       </ScrollView>
     </View>
   );
@@ -277,216 +264,232 @@ const EmployeeServicesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: '#f8fafc',
   },
-  header: {
-    backgroundColor: Colors.background,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderBottomWidth: 0,
+  headerGradient: {
+    paddingTop: 50,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
+  },
+  headerContent: {
+    flex: 1,
   },
   profileSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
-    backgroundColor: Colors.cardBackground,
-    borderRadius: 12,
-    padding: 12,
-    elevation: 2,
-    shadowColor: Colors.cardShadow,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+  },
+  avatarContainer: {
+    marginRight: 16,
   },
   avatar: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    backgroundColor: Colors.primary,
+    width: 64,
+    height: 64,
+    borderRadius: 32,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
-    borderWidth: 2,
-    borderColor: Colors.primary,
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  name: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.textPrimary,
+  profileInfo: {
+    flex: 1,
+  },
+  employeeName: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#ffffff',
     marginBottom: 4,
   },
-  role: {
+  employeeRole: {
     fontSize: 16,
-    color: Colors.textSecondary,
-    fontWeight: '600',
-    marginBottom: 6,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '500',
+    marginBottom: 8,
   },
-  statusText: {
-    fontSize: 14,
-    color: Colors.textSecondary,
-  },
-  quickStats: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: Colors.lightGray,
-  },
-  quickStatItem: {
-    alignItems: 'center',
-  },
-  quickStatLabel: {
-    fontSize: 13,
-    color: Colors.textSecondary,
-    marginBottom: 6,
-  },
-  quickStatValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.primary,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.textPrimary,
-    marginBottom: 16,
-  },
-  summaryCard: {
-    backgroundColor: Colors.cardBackground,
-    borderRadius: 12,
-    padding: 12,
-    elevation: 2,
-    shadowColor: Colors.cardShadow,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.lightGray,
-  },
-  summaryLabel: {
-    fontSize: 15,
-    color: Colors.textSecondary,
-  },
-  summaryValue: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: Colors.primary,
-  },
-  filtersScroll: {
-    marginBottom: 16,
-    marginHorizontal: -16,
-    paddingHorizontal: 16,
-  },
-  filterButton: {
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 25,
-    backgroundColor: Colors.lightGray,
-    marginRight: 10,
-  },
-  filterButtonActive: {
-    backgroundColor: Colors.primary,
-  },
-  filterText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: Colors.textSecondary,
-  },
-  filterTextActive: {
-    color: '#FFFFFF',
-  },
-  serviceCard: {
-    backgroundColor: Colors.cardBackground,
-    borderRadius: 15,
-    padding: 15,
-    marginBottom: 15,
-    elevation: 5,
-    shadowColor: Colors.cardShadow,
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 5,
-  },
-  cardHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  cardTitle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flexShrink: 1,
-  },
-  statusBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 20,
-    marginLeft: 10,
-  },
-  statusBadgeText: {
-    fontSize: 13,
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-  },
-  serviceName: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: Colors.textPrimary,
-    flexShrink: 1,
-  },
-  description: {
-    fontSize: 15,
-    color: Colors.textSecondary,
-    marginBottom: 15,
-    flexShrink: 1,
-  },
-  statsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 15,
-  },
-  statItem: {
+  statusContainer: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  statText: {
-    fontSize: 14,
-    color: Colors.textSecondary,
-    marginLeft: 8,
-  },
-  viewButton: {
-    backgroundColor: Colors.secondary,
-    paddingVertical: 15,
-    borderRadius: 12,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  viewButtonText: {
-    fontSize: 17,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  emptyState: {
-    alignItems: 'center',
-    paddingVertical: 50,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: Colors.textSecondary,
-    marginTop: 16,
-  },
-  onlineDot: {
+  onlineIndicator: {
     width: 8,
     height: 8,
     borderRadius: 4,
-    backgroundColor: '#4CAF50',
-    marginRight: 6,
+    backgroundColor: '#10B981',
+    marginRight: 8,
+  },
+  statusText: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '500',
+  },
+  hoursText: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.7)',
+    marginLeft: 4,
+  },
+  quickStatsContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    marginTop: -10,
+    zIndex: 1,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    borderRadius: 12,
+    padding: 16,
+    marginHorizontal: 4,
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: Colors.primary,
+    marginBottom: 4,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#6B7280',
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  filtersSection: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 16,
+  },
+  filtersContainer: {
+    flexDirection: 'row',
+  },
+  filterChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    backgroundColor: '#ffffff',
+    marginRight: 12,
+    elevation: 1,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 1,
+  },
+  filterChipActive: {
+    backgroundColor: Colors.primary,
+  },
+  filterChipText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#6B7280',
+    marginLeft: 6,
+  },
+  filterChipTextActive: {
+    color: '#ffffff',
+  },
+  servicesSection: {
+    flex: 1,
+  },
+  serviceCard: {
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    marginBottom: 16,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  cardContent: {
+    padding: 20,
+  },
+  serviceHeader: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    marginBottom: 16,
+  },
+  serviceIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 12,
+    backgroundColor: '#f3f4f6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  serviceInfo: {
+    flex: 1,
+  },
+  serviceName: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 4,
+  },
+  serviceDescription: {
+    fontSize: 14,
+    color: '#6B7280',
+    lineHeight: 20,
+  },
+  statusIndicator: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    marginLeft: 12,
+  },
+  serviceStats: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  statChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: '#f9fafb',
+    borderRadius: 16,
+  },
+  statChipText: {
+    fontSize: 13,
+    color: '#6B7280',
+    fontWeight: '500',
+    marginLeft: 4,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#6B7280',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptySubtext: {
+    fontSize: 14,
+    color: '#9CA3AF',
+    textAlign: 'center',
   },
 });
 

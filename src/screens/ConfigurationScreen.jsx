@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Modal, Image, Alert } from 'react-native';
 // Recomenda-se usar uma biblioteca de ícones como react-native-vector-icons
 import Icon from 'react-native-vector-icons/FontAwesome5'; // Ou similar
+import { LinearGradient } from 'expo-linear-gradient';
+import * as ImagePicker from 'expo-image-picker';
 import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
 import { Colors, CommonStyles } from '../Utils/Theme';
 
@@ -50,6 +52,7 @@ import LoginScreen from './LoginScreen';
 const ConfigurationScreen = () => {
   const navigation = useNavigation();
   const [isModalVisible, setModalVisible] = useState(false);
+  const [userImage, setUserImage] = useState(null);
 
   const handleDeleteAccount = () => {
     // Lógica para excluir a conta
@@ -57,13 +60,54 @@ const ConfigurationScreen = () => {
     setModalVisible(false);
   };
 
+  const pickImage = async () => {
+    try {
+      // Solicitar permissão para acessar a galeria
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      
+      if (status !== 'granted') {
+        Alert.alert('Permissão necessária', 'Precisamos de acesso à sua galeria para selecionar uma imagem.');
+        return;
+      }
+
+      // Abrir a galeria para seleção de imagem
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.canceled) {
+        setUserImage(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Erro ao selecionar imagem:', error);
+      Alert.alert('Erro', 'Não foi possível selecionar a imagem.');
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Cabeçalho */}
-      <View style={styles.header}>
-        <View style={styles.userAvatar} />
+      <LinearGradient
+        colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
+        style={styles.headerGradient}
+      >
+        <TouchableOpacity onPress={pickImage} style={styles.avatarContainer}>
+          {userImage ? (
+            <Image source={{ uri: userImage }} style={styles.userAvatar} />
+          ) : (
+            <View style={styles.userAvatar}>
+              <Icon name="user" size={40} color={Colors.primary} />
+            </View>
+          )}
+          <View style={styles.cameraIcon}>
+            <Icon name="camera" size={16} color={Colors.white} />
+          </View>
+        </TouchableOpacity>
         <Text style={styles.username}>Usuario</Text>
-      </View>
+      </LinearGradient>
 
       {/* Menu de Opções */}
       <View style={styles.menuContainer}>
@@ -102,25 +146,42 @@ const ConfigurationScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 50, // Espaço do topo da tela
     backgroundColor: Colors.white, // Fundo BRANCO
   },
 
   // Cabeçalho e Avatar
-  header: {
+  headerGradient: {
     alignItems: 'center',
-    marginBottom: 50,
+    marginBottom: 30,
     backgroundColor: Colors.primary,
-    paddingTop: 60,
-    paddingBottom: 30,
+    paddingTop: 40,
+    paddingBottom: 20,
+  },
+  avatarContainer: {
+    position: 'relative',
+    marginBottom: 15,
   },
   userAvatar: {
     width: 100,
     height: 100,
     backgroundColor: Colors.white,
     borderRadius: 50,
-    marginBottom: 15,
     borderWidth: 3,
+    borderColor: Colors.white,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cameraIcon: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: Colors.primary,
+    borderRadius: 12,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
     borderColor: Colors.white,
   },
   username: {

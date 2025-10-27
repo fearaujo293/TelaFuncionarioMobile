@@ -6,25 +6,38 @@ import { useChatContext } from '../context/ChatContext';
 
 const ChatsListScreen = () => {
   const navigation = useNavigation();
-  const { chats } = useChatContext();
+  const { chats, createUserChat } = useChatContext();
 
+  console.log('Chats disponíveis:', Object.keys(chats));
+  
   const userChats = Object.entries(chats)
-    .filter(([, chat]) => chat.type === 'user')
-    .map(([chatId, chat]) => ({
-      id: chatId,
-      name: chat.partnerName,
-      avatar: chat.partnerAvatar || require('../assets/veterinario.png'), // Default avatar
-      lastMessage: chat.messages.length > 0 ? chat.messages[0].text : 'Nenhuma mensagem',
-      time: chat.messages.length > 0 ? new Date(chat.messages[0].createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
-      unread: false, // Implement unread logic if needed
-    }));
+    .filter(([chatId]) => chatId.includes('employee')) // Para o usuário, listar veterinários
+    .map(([chatId, chat]) => {
+      const last = chat.messages.length > 0 ? chat.messages[chat.messages.length - 1] : null;
+      return {
+        id: chatId,
+        name: chat.chatPartnerInfo?.name || 'Veterinário',
+        avatar: chat.chatPartnerInfo?.avatar || require('../assets/veterinario.png'), // Default avatar
+        lastMessage: last ? last.text : 'Nenhuma mensagem',
+        time: last ? new Date(last.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
+        // Para o usuário, considerar não lida quando a última mensagem é do veterinário
+        unread: last ? last.role === 'employee' : false,
+      };
+    });
+
+  const handleStartChat = () => {
+    const { id, chatPartnerInfo } = createUserChat();
+    navigation.navigate('UserChatScreen', { clientName: chatPartnerInfo.name, chatId: id });
+  };
+
+  console.log('Chats de usuários filtrados:', userChats);
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.itemContainer}
       onPress={() => navigation.navigate('UserChatScreen', { clientName: item.name, chatId: item.id })}
     >
-      <Image source={item.avatar} style={styles.avatar} />
+      <Image source={typeof item.avatar === 'string' ? { uri: item.avatar } : item.avatar} style={styles.avatar} />
       <View style={styles.textContainer}>
         <View style={styles.rowBetween}>
           <Text style={styles.name}>{item.name}</Text>
@@ -45,12 +58,22 @@ const ChatsListScreen = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={userChats}
-        keyExtractor={(item) => item.id}
-        renderItem={renderItem}
-        contentContainerStyle={{ paddingVertical: 12 }}
-      />
+      {userChats.length === 0 ? (
+        <View style={styles.emptyState}>
+          <Text style={styles.emptyTitle}>Você não tem conversas ainda</Text>
+          <Text style={styles.emptySubtitle}>Toque abaixo para iniciar um chat</Text>
+          <TouchableOpacity style={styles.startButton} onPress={handleStartChat}>
+            <Text style={styles.startButtonText}>Iniciar conversa</Text>
+          </TouchableOpacity>
+        </View>
+      ) : (
+        <FlatList
+          data={userChats}
+          keyExtractor={(item) => item.id}
+          renderItem={renderItem}
+          contentContainerStyle={{ paddingVertical: 12 }}
+        />
+      )}
     </View>
   );
 };
@@ -89,6 +112,11 @@ const styles = StyleSheet.create({
     marginRight: 6,
   },
   separator: { height: 1, backgroundColor: 'transparent' },
+  emptyState: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingHorizontal: 24 },
+  emptyTitle: { fontSize: 18, fontWeight: '600', color: Colors.purple, marginBottom: 8 },
+  emptySubtitle: { fontSize: 14, color: Colors.darkGray, marginBottom: 16 },
+  startButton: { backgroundColor: Colors.primary, paddingVertical: 12, paddingHorizontal: 20, borderRadius: 24 },
+  startButtonText: { color: Colors.white, fontSize: 16, fontWeight: '600' },
 });
 
 export default ChatsListScreen;

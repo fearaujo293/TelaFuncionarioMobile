@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../Utils/Theme';
 import { ChatContext } from '../context/ChatContext';
 
@@ -45,9 +46,12 @@ const EmployeeChatScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0} // Ajuste conforme necessário
     >
-      <View style={styles.header}>
+      <LinearGradient
+        colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
+        style={styles.headerGradient}
+      >
         <Text style={styles.headerTitle}>Chat com {chatPartnerInfo.name}</Text>
-      </View>
+      </LinearGradient>
       {messages.length > 0 ? (
         <FlatList
           ref={flatListRef}
@@ -84,26 +88,26 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.white,
   },
-  header: {
+  headerGradient: {
     backgroundColor: Colors.primary,
     paddingTop: 50,
-    paddingBottom: 20, // Ajustado
+    paddingBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
   headerTitle: {
-    fontSize: 22, // Ajustado
+    fontSize: 22,
     fontWeight: 'bold',
     color: Colors.white,
   },
   messageList: {
-    paddingHorizontal: 15, // Ajustado
+    paddingHorizontal: 15,
     paddingVertical: 10,
   },
   messageBubble: {
     maxWidth: '75%',
-    paddingVertical: 12, // Ajustado
-    paddingHorizontal: 18, // Ajustado
+    paddingVertical: 12,
+    paddingHorizontal: 18,
     borderRadius: 20,
     marginBottom: 10,
     elevation: 1,
@@ -116,20 +120,20 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     backgroundColor: Colors.lightGray,
     borderTopLeftRadius: 5,
-    marginRight: 40, // Ajustado
+    marginRight: 40,
   },
   userMessage: {
     alignSelf: 'flex-end',
     backgroundColor: Colors.primary,
     borderTopRightRadius: 5,
-    marginLeft: 40, // Ajustado
+    marginLeft: 40,
   },
   messageText: {
-    fontSize: 16, // Ajustado
+    fontSize: 16,
     color: Colors.textPrimary,
   },
   messageTime: {
-    fontSize: 12, // Ajustado
+    fontSize: 12,
     color: Colors.textSecondary,
     alignSelf: 'flex-end',
     marginTop: 5,
@@ -154,7 +158,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 10,
-    paddingVertical: 10, // Ajustado
+    paddingVertical: 10,
     borderTopWidth: 1,
     borderTopColor: Colors.lightGray,
     backgroundColor: Colors.white,
@@ -167,8 +171,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 20,
     paddingHorizontal: 15,
-    paddingTop: 12, // Ajustado
-    paddingBottom: 12, // Ajustado
+    paddingTop: 12,
+    paddingBottom: 12,
     marginRight: 10,
     fontSize: 16,
     backgroundColor: Colors.cardBackground,

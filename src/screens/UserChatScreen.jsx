@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect } from 'react';
 import { View, Text, StyleSheet, Platform } from 'react-native';
 import { GiftedChat, Bubble, InputToolbar, Send } from 'react-native-gifted-chat';
 import { FontAwesome } from '@expo/vector-icons';
@@ -7,18 +7,32 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { useChatContext } from '../context/ChatContext';
 
 const UserChatScreen = () => {
-  const [messages, setMessages] = useState([]);
   const navigation = useNavigation();
   const route = useRoute();
-  const { clientName, chatId } = route.params;
-  const { chats, updateChatMessages } = useChatContext();
+  const { clientName, chatId } = route.params || {};
+  const { chats, sendMessage, markChatRead } = useChatContext();
+
+  const chat = chatId && chats[chatId] ? chats[chatId] : { messages: [], chatPartnerInfo: { name: clientName || 'Chat' } };
+  const partnerName = chat?.chatPartnerInfo?.name || clientName || 'Chat';
+
+  const giftedMessages = (chat.messages || [])
+    .map((m) => ({
+      _id: m.id || m.timestamp || Math.random().toString(),
+      text: m.text,
+      createdAt: m.timestamp ? new Date(m.timestamp) : new Date(),
+      user: {
+        _id: m.role === 'user' ? 1 : 2,
+        name: m.sender,
+      },
+    }))
+    .sort((a, b) => b.createdAt - a.createdAt);
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
         <View style={styles.headerTitleContainer}>
           <FontAwesome name="user-circle" size={24} color={Colors.white} style={{ marginRight: 10 }} />
-          <Text style={styles.headerTitleText}>{clientName}</Text>
+          <Text style={styles.headerTitleText}>{partnerName}</Text>
         </View>
       ),
       headerStyle: {
@@ -26,25 +40,27 @@ const UserChatScreen = () => {
       },
       headerTintColor: Colors.white,
     });
-  }, [navigation, clientName]);
+  }, [navigation, partnerName]);
 
   useEffect(() => {
-    if (chatId && chats[chatId]) {
-      setMessages(chats[chatId].messages);
+    if (chatId) {
+      markChatRead(chatId);
     }
-  }, [chatId, chats]);
+  }, [chatId, markChatRead]);
 
   const onSend = useCallback((newMessages = []) => {
-    setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages));
-    if (chatId) {
-      updateChatMessages(chatId, GiftedChat.append(messages, newMessages));
-    }
-  }, [chatId, messages, updateChatMessages]);
+    if (!chatId) return;
+    const partnerInfo = chat?.chatPartnerInfo || { name: partnerName };
+    newMessages.forEach((gm) => {
+      const text = gm.text;
+      sendMessage(chatId, partnerInfo, text, 'user');
+    });
+  }, [chatId, chat?.chatPartnerInfo, partnerName, sendMessage]);
 
   return (
     <View style={styles.container}>
       <GiftedChat
-        messages={messages}
+        messages={giftedMessages}
         onSend={messages => onSend(messages)}
         user={{
           _id: 1,

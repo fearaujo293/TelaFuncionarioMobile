@@ -131,6 +131,8 @@ function AgendaUserTabStack() {
   );
 }
 
+// Removido PetsUserTabStack; a aba Agenda permanece como original
+
 const UserTabNavigator = () => {
   return (
     <Tab.Navigator

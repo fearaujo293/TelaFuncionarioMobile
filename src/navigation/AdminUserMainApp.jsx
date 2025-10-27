@@ -125,6 +125,7 @@ function ChatTabStack() {
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
       <Stack.Screen name="ChatsList" component={require('../screens/ChatsListScreen').default} options={{ title: 'Conversas' }} />
       <Stack.Screen name="Chat" component={require('../screens/ChatScreen').default} options={({ route }) => ({ title: route.params?.vet?.name || 'Chat', headerBackVisible: true, headerLeft: undefined })} />
+      <Stack.Screen name="UserChatScreen" component={require('../screens/UserChatScreen').default} options={({ route }) => ({ title: route.params?.clientName || 'Chat', headerBackVisible: true, headerLeft: undefined })} />
     </Stack.Navigator>
   );
 }
@@ -165,7 +166,7 @@ function MainTabs({ route }) {
     >
       <Tab.Screen
         name="Home"
-        component={HomeTabStack} // Agora aponta para HomeTabStack
+        component={PetsStack}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image
@@ -201,7 +202,7 @@ function MainTabs({ route }) {
 
       <Tab.Screen
         name="Pets"
-        component={PetsStack} // Agora aponta para PetsStack
+        component={HomeTabStack}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image
