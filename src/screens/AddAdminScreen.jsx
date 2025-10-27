@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { Colors } from '../Utils/Theme';
+import Colors from '../Utils/Colors';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const AddAdminScreen = () => {
@@ -197,10 +197,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 12,
     fontSize: 16,
-    color: Colors.text,
+    color: Colors.textPrimary,
   },
   saveButton: {
-    backgroundColor: Colors.green,
+    backgroundColor: Colors.success,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

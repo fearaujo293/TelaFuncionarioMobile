@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -6,137 +6,218 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  FlatList,
   ActivityIndicator,
   Alert,
 } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
 
 const AdminConsultasScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('Pendentes');
   const [consultas, setConsultas] = useState({
-    Pendentes: [],
-    Aceitas: [],
-    Concluídas: [],
+    Pendentes: [
+      {
+        id: '1',
+        petName: 'Luna',
+        ownerName: 'João Silva',
+        date: '2025-02-10',
+        time: '10:00',
+        service: 'Consulta de Rotina',
+        status: 'Pendente',
+        imageSource: require('../assets/cat1.png'),
+        veterinario: 'Dr. Silva',
+        sintomas: 'Meu gato acordou vomitando, está dormindo mais que o normal.',
+        localizacao: 'R. Bento Branco, 379 – Santo Amaro, São Paulo – SP',
+        implementos: ['Termômetro', 'Estetoscópio', 'Soro'],
+      },
+      {
+        id: '2',
+        petName: 'Rex',
+        ownerName: 'Maria Souza',
+        date: '2025-02-11',
+        time: '14:30',
+        service: 'Vacinação',
+        status: 'Pendente',
+        imageSource: require('../assets/dog1.png'),
+        veterinario: 'Dra. Costa',
+        sintomas: 'Vacinação anual de rotina.',
+        localizacao: 'Av. Paulista, 1000 – Bela Vista, São Paulo – SP',
+        implementos: ['Vacina', 'Algodão', 'Álcool'],
+      },
+    ],
+    Aceitas: [
+      {
+        id: '3',
+        petName: 'Buddy',
+        ownerName: 'Carlos Santos',
+        date: '2025-02-08',
+        time: '09:00',
+        service: 'Exame de Sangue',
+        status: 'Aceita',
+        imageSource: require('../assets/dog2.png'),
+        veterinario: 'Dr. Oliveira',
+        sintomas: 'Fraqueza e perda de apetite.',
+        localizacao: 'R. Augusta, 500 – Consolação, São Paulo – SP',
+        implementos: ['Agulha', 'Tubo de coleta', 'Algodão'],
+      },
+    ],
+    Concluídas: [
+      {
+        id: '4',
+        petName: 'Miau',
+        ownerName: 'Ana Costa',
+        date: '2025-02-05',
+        time: '16:00',
+        service: 'Tosa',
+        status: 'Concluída',
+        imageSource: require('../assets/cat1.png'),
+        veterinario: 'Dra. Lima',
+        sintomas: 'Tosa de rotina.',
+        localizacao: 'R. Oscar Freire, 800 – Jardim Paulista, São Paulo – SP',
+        implementos: ['Tesoura', 'Máquina de tosa', 'Pente'],
+      },
+      {
+        id: '5',
+        petName: 'Max',
+        ownerName: 'Pedro Lima',
+        date: '2025-02-04',
+        time: '13:00',
+        service: 'Banho',
+        status: 'Concluída',
+        imageSource: require('../assets/dog1.png'),
+        veterinario: 'Dr. Pereira',
+        sintomas: 'Banho e higienização.',
+        localizacao: 'R. Haddock Lobo, 500 – Jardim Paulista, São Paulo – SP',
+        implementos: ['Shampoo', 'Condicionador', 'Toalha'],
+      },
+    ],
   });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const fetchConsultas = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      // Substitua YOUR_ACTUAL_API_BASE_URL pela sua URL base da API real
-      const response = await fetch('YOUR_ACTUAL_API_BASE_URL/consultas');
-      if (!response.ok) {
-        throw new Error('Falha ao buscar consultas.');
-      }
-      const data = await response.json();
-
-      const organizedConsultas = {
-        Pendentes: data.filter(c => c.status === 'Pendente'),
-        Aceitas: data.filter(c => c.status === 'Aceita'),
-        Concluídas: data.filter(c => c.status === 'Concluída'),
-      };
-      setConsultas(organizedConsultas);
-    } catch (err) {
-      console.error('Erro ao buscar consultas:', err);
-      setError('Não foi possível carregar as consultas.');
-      Alert.alert('Erro', 'Não foi possível carregar as consultas.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const [loading, setLoading] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       fetchConsultas();
-    }, [fetchConsultas])
+    }, [])
   );
 
-  const renderContent = () => {
-    if (loading) {
-      return (
+  const fetchConsultas = useCallback(async () => {
+    setLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 500));
+      setLoading(false);
+    } catch (err) {
+      console.error('Erro ao buscar consultas:', err);
+      Alert.alert('Erro', 'Não foi possível carregar as consultas.');
+      setLoading(false);
+    }
+  }, []);
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Pendente':
+        return '#FFC107';
+      case 'Aceita':
+        return '#03DAC6';
+      case 'Concluída':
+        return '#4CAF50';
+      default:
+        return '#A367F0';
+    }
+  };
+
+  const handleCardPress = (consulta) => {
+    navigation.navigate('DetalhesConsulta', { consulta });
+  };
+
+  const renderConsultaCard = ({ item }) => {
+    const formattedDate = new Date(item.date + 'T12:00:00').toLocaleDateString('pt-BR');
+    const statusColor = getStatusColor(item.status);
+
+    return (
+      <TouchableOpacity
+        style={styles.card}
+        onPress={() => handleCardPress(item)}
+        activeOpacity={0.7}
+      >
+        <Image source={item.imageSource} style={styles.petImage} />
+        
+        <View style={styles.cardContent}>
+          <View style={styles.cardHeader}>
+            <View>
+              <Text style={styles.petName}>{item.petName}</Text>
+              <Text style={styles.ownerName}>
+                <FontAwesome name="user" size={11} color="#666" /> {item.ownerName}
+              </Text>
+              <Text style={styles.service}>{item.service}</Text>
+            </View>
+          </View>
+
+          <View style={styles.cardFooter}>
+            <View style={styles.infoItem}>
+              <Ionicons name="time" size={13} color="#999" />
+              <Text style={styles.infoText}>{item.time}</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <Ionicons name="calendar" size={13} color="#999" />
+              <Text style={styles.infoText}>{formattedDate}</Text>
+            </View>
+            <View style={styles.infoItem}>
+              <FontAwesome name="user-md" size={11} color="#999" />
+              <Text style={styles.infoText}>{item.veterinario}</Text>
+            </View>
+          </View>
+        </View>
+
+        <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
+          <Text style={styles.statusBadgeText}>{item.status}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const currentConsultas = consultas[activeTab] || [];
+
+  return (
+    <View style={styles.container}>
+      {/* TABS SIMPLES */}
+      <View style={styles.tabContainer}>
+        {['Pendentes', 'Aceitas', 'Concluídas'].map((tab) => (
+          <TouchableOpacity
+            key={tab}
+            style={[styles.tab, activeTab === tab && styles.activeTab]}
+            onPress={() => setActiveTab(tab)}
+          >
+            <Text style={[styles.tabText, activeTab === tab && styles.activeTabText]}>
+              {tab}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      {/* LISTA DE CONSULTAS */}
+      {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#A367F0" />
           <Text style={styles.loadingText}>Carregando consultas...</Text>
         </View>
-      );
-    }
-
-    if (error) {
-      return (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity onPress={fetchConsultas} style={styles.errorButton}>
-            <Text style={styles.errorButtonText}>Tentar Novamente</Text>
-          </TouchableOpacity>
-        </View>
-      );
-    }
-
-    const Card = ({ consulta }) => {
-      const navigateToDetails = () => {
-        navigation.navigate('DetalhesConsulta', { consulta: { ...consulta, time: consulta.time, date: consulta.date } });
-      };
-  
-      return (
-        <TouchableOpacity onPress={navigateToDetails} style={styles.card}>
-          <Image source={{ uri: consulta.imageSource }} style={styles.petImage} />
-          <View style={styles.cardInfo}>
-            <Text style={styles.petName}>{consulta.petName}</Text>
-            <Text style={styles.service}>{consulta.service}</Text>
-            <Text style={styles.time}>{consulta.time} | {consulta.date}</Text>
-          </View>
-          <View style={[styles.statusBadgeCard, styles[`status${consulta.status}`]]}>
-            <Text style={styles.statusTextCard}>{consulta.status}</Text>
-          </View>
-        </TouchableOpacity>
-      );
-    };
-
-    const currentConsultas = consultas[activeTab] || [];
-    
-    if (currentConsultas.length === 0) {
-      return (
+      ) : currentConsultas.length > 0 ? (
+        <FlatList
+          data={currentConsultas}
+          renderItem={renderConsultaCard}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.listContent}
+          scrollEnabled={true}
+        />
+      ) : (
         <View style={styles.emptyContainer}>
-          <Text style={styles.emptyText}>Nenhuma consulta {activeTab.toLowerCase()} encontrada.</Text>
+          <Ionicons name="file-tray-outline" size={80} color="#DDD" />
+          <Text style={styles.emptyTitle}>Nenhuma consulta</Text>
+          <Text style={styles.emptySubtitle}>
+            Você não tem consultas {activeTab.toLowerCase()}
+          </Text>
         </View>
-      );
-    }
-
-    return (
-      <ScrollView style={styles.container}>
-        {currentConsultas.map((consulta) => (
-          <Card key={consulta.id} consulta={consulta} />
-        ))}
-      </ScrollView>
-    );
-  };
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'Pendentes' && styles.activeTab]}
-          onPress={() => setActiveTab('Pendentes')}
-        >
-          <Text style={[styles.tabText, activeTab === 'Pendentes' && styles.activeTabText]}>Pendentes</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'Aceitas' && styles.activeTab]}
-          onPress={() => setActiveTab('Aceitas')}
-        >
-          <Text style={[styles.tabText, activeTab === 'Aceitas' && styles.activeTabText]}>Aceitas</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'Concluídas' && styles.activeTab]}
-          onPress={() => setActiveTab('Concluídas')}
-        >
-          <Text style={[styles.tabText, activeTab === 'Concluídas' && styles.activeTabText]}>Concluídas</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.contentContainer}>{renderContent()}</View>
+      )}
     </View>
   );
 };
@@ -145,94 +226,112 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: 16,
   },
   tabContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Distribuição uniforme entre as abas
-    marginBottom: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
     backgroundColor: '#FFFFFF',
-    paddingHorizontal: 10, // Espaçamento das bordas do container
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
   },
   tab: {
-    width: '30%', // Largura ajustada para melhor distribuição
-    paddingVertical: 14,
+    flex: 1,
+    paddingVertical: 10,
+    paddingHorizontal: 8,
     borderRadius: 8,
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    marginHorizontal: 0, // Espaçamento controlado por justifyContent
+    backgroundColor: '#F5F5F5',
+    marginHorizontal: 6,
   },
   activeTab: {
     backgroundColor: '#A367F0',
-    transform: [{ scale: 1.05 }], // Destaque sutil
-    paddingVertical: 16, // Menor altura
-    paddingHorizontal: 10, // Menor largura
-    borderRadius: 10,
   },
   tabText: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 14,
+    fontWeight: '600',
     color: '#8D7EFB',
   },
   activeTabText: {
     color: '#FFFFFF',
-    fontSize: 18,
   },
-  contentContainer: {
-    flex: 1,
+  listContent: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 24,
   },
   card: {
     flexDirection: 'row',
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
-    height: 75, // Aumentado em mais 20px
-    padding: 20, // Ajustado para um preenchimento maior
     marginBottom: 12,
+    padding: 12,
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#C79DFD',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   petImage: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 60,
+    height: 60,
+    borderRadius: 12,
     marginRight: 12,
+    backgroundColor: '#F5F5F5',
   },
-  cardInfo: {
+  cardContent: {
     flex: 1,
-    justifyContent: 'center',
-    marginRight: 10, // Added margin to separate from buttons
+  },
+  cardHeader: {
+    marginBottom: 8,
   },
   petName: {
-    fontWeight: 'bold',
+    fontSize: 16,
+    fontWeight: '700',
     color: '#A367F0',
+    marginBottom: 2,
+  },
+  ownerName: {
+    fontSize: 12,
+    color: '#666',
+    fontWeight: '500',
+    marginBottom: 2,
   },
   service: {
-    fontSize: 14,
-    color: '#666',
-  },
-  time: {
     fontSize: 12,
+    color: '#8D7EFB',
+    fontWeight: '500',
+  },
+  cardFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  infoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  infoText: {
+    fontSize: 11,
     color: '#999',
+    fontWeight: '500',
   },
-  statusBadgeCard: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 5,
+  statusBadge: {
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 6,
+    marginLeft: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  statusTextCard: {
-    fontSize: 12,
+  statusBadgeText: {
+    fontSize: 11,
     fontWeight: 'bold',
     color: '#FFFFFF',
-  },
-  statusPendente: {
-    backgroundColor: '#FFC107',
-  },
-  statusAceita: {
-    backgroundColor: '#28A745',
-  },
-  statusConcluída: {
-    backgroundColor: '#6C757D',
   },
   loadingContainer: {
     flex: 1,
@@ -240,42 +339,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loadingText: {
-    marginTop: 10,
-    fontSize: 16,
-    color: '#666',
-  },
-  errorContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 20,
-  },
-  errorText: {
-    fontSize: 16,
-    color: '#DC3545',
-    textAlign: 'center',
-    marginBottom: 10,
-  },
-  errorButton: {
-    backgroundColor: '#A367F0',
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 5,
-  },
-  errorButtonText: {
-    color: '#FFFFFF',
+    marginTop: 12,
     fontSize: 14,
-    fontWeight: 'bold',
+    color: '#666',
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    paddingHorizontal: 24,
   },
-  emptyText: {
-    fontSize: 16,
-    color: '#666',
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: '#6B7280',
     textAlign: 'center',
   },
 });

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ScrollView, Platform } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { Colors } from '../Utils/Theme';
+import Colors from '../Utils/Colors';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: Colors.textPrimary,
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -195,7 +195,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 10,
     fontSize: 16,
-    color: Colors.text,
+    color: Colors.textPrimary,
   },
   datePickerButton: {
     flexDirection: 'row',
@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   },
   datePickerButtonText: {
     fontSize: 16,
-    color: Colors.text,
+    color: Colors.textPrimary,
   },
   saveButton: {
     backgroundColor: Colors.primary,

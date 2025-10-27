@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image, FlatList } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome } from '@expo/vector-icons'; // Assumindo que você tem @expo/vector-icons instalado
-import { Colors } from '../Utils/Theme';
+import Colors from '../Utils/Colors';
 import { Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native'; // Importar useNavigation
 
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
   employeeName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: Colors.textPrimary,
   },
   employeeSpecialty: {
     fontSize: 14,
@@ -357,19 +357,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   statusActive: {
-    backgroundColor: Colors.green,
+    backgroundColor: Colors.success,
   },
   statusVacation: {
-    backgroundColor: Colors.red,
+    backgroundColor: Colors.error,
   },
   statusEmServico: {
-    backgroundColor: Colors.green, // Ou outra cor para 'Em Serviço'
+    backgroundColor: Colors.success, // Ou outra cor para 'Em Serviço'
   },
   statusLivreParaAtendimento: {
-    backgroundColor: Colors.blue, // Ou outra cor para 'Livre para Atendimento'
+    backgroundColor: Colors.info, // Ou outra cor para 'Livre para Atendimento'
   },
   statusDeFerias: {
-    backgroundColor: Colors.red, // Ou outra cor para 'De Férias'
+    backgroundColor: Colors.error, // Ou outra cor para 'De Férias'
   },
   statusText: {
     fontSize: 11,

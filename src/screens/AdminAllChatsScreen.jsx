@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { Colors } from '../Utils/Theme';
+import Colors from '../Utils/Colors';
 
 const chatData = [
   { id: '1', clientName: 'João Silva', lastMessage: 'Olá, gostaria de agendar um horário.', time: '10:30' },
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,

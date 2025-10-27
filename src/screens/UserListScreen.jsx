@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { Colors } from '../Utils/Theme';
+import Colors from '../Utils/Colors';
 import { useNavigation } from '@react-navigation/native';
 
 const mockClients = [
@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: Colors.text,
+    color: Colors.textPrimary,
     marginBottom: 20,
     textAlign: 'center',
   },

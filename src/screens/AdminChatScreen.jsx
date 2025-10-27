@@ -2,7 +2,7 @@ import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react'
 import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, ActivityIndicator, Alert } from 'react-native';
 import { GiftedChat, Bubble, InputToolbar, Send } from 'react-native-gifted-chat';
 import { FontAwesome } from '@expo/vector-icons';
-import { Colors } from '../Utils/Theme';
+import Colors from '../Utils/Colors';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const AdminChatScreen = () => {
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 5,
-    backgroundColor: Colors.lightBlue,
+    backgroundColor: Colors.info, // Changed from Colors.lightBlue
     borderRadius: 24,
   },
   loadingContainer: {
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 18,
-    color: Colors.red,
+    color: Colors.error,
     textAlign: 'center',
     marginBottom: 20,
   },

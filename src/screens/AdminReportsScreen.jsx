@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { Colors } from '../Utils/Theme';
+import Colors from '../Utils/Colors';
 
 const AdminReportsScreen = () => {
   const handleViewReport = (reportType) => {
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     padding: 15,
     paddingVertical: 10, // Added vertical padding
     marginBottom: 20, // Increased spacing between cards
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,

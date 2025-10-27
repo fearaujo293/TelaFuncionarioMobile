@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, View, TouchableOpacity, RefreshControl, Animated } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import { Colors } from '../Utils/Theme';
+import Colors from '../Utils/Colors';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -208,7 +208,7 @@ const AdminDashboardScreen = () => {
             <Text style={styles.quickActionButtonText}>Chat</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.quickActionButton} onPress={handleViewConsultations} activeOpacity={0.7}>
-            <FontAwesome name="calendar" size={30} color={Colors.primary} />
+            <FontAwesome name="calendar" size={30} color={Colors.textPrimary} />
             <Text style={styles.quickActionButtonText}>Consultas</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.quickActionButton} onPress={handleViewAllChats} activeOpacity={0.7}>
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 30,
     fontWeight: '800',
-    color: Colors.text,
+    color: Colors.textPrimary,
     marginBottom: 25,
     textAlign: 'center',
   },
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: Colors.text,
+    color: Colors.textPrimary,
     marginBottom: 15,
   },
   summaryItem: {
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   appointmentTime: {
     fontSize: 16,
     fontWeight: '700',
-    color: Colors.text,
+    color: Colors.textPrimary,
     marginBottom: 5,
   },
   appointmentDetails: {
@@ -321,7 +321,7 @@ const styles = StyleSheet.create({
   },
   quickActionButtonText: {
     fontSize: 14,
-    color: Colors.text,
+    color: Colors.textPrimary,
     marginTop: 10,
     fontWeight: '600',
     textAlign: 'center',

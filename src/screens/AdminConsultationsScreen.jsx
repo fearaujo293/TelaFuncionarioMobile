@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { Colors } from '../Utils/Theme';
+import Colors from '../Utils/Colors';
 
 const consultationsData = [
   { id: '1', clientName: 'João Silva', service: 'Corte de Cabelo', date: '2023-10-26', time: '10:00' },
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginBottom: 20, // Increased spacing between cards
-    shadowColor: '#000',
+    shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
   },
   cancelButton: {
-    backgroundColor: Colors.red,
+    backgroundColor: Colors.error,
   },
   buttonText: {
     color: Colors.white,
