@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import Colors from '../Utils/Colors';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../Utils/Theme';
 import AppointmentDetailModal from '../components/AppointmentDetailModal';
 
 const mockAllAppointments = [
@@ -88,7 +89,17 @@ const AllAppointmentsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Todas as Consultas</Text>
+      {/* HEADER ÚNICO COM GRADIENTE */}
+      <LinearGradient
+        colors={Colors.gradientPrimary}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <Text style={styles.headerTitle}>Todas as Consultas</Text>
+        <Text style={styles.headerSubtitle}>Gerencie todas as consultas agendadas</Text>
+      </LinearGradient>
+
       <FlatList
         data={mockAllAppointments}
         keyExtractor={(item) => item.id}
@@ -108,16 +119,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    padding: 16,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.textPrimary,
-    marginBottom: 20,
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 40,
+    paddingBottom: 30,
+  },
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: Colors.white,
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '400',
   },
   listContent: {
     paddingBottom: 20,
+    paddingHorizontal: 16, // Added padding to match the new header's horizontal padding
   },
   appointmentCard: {
     flexDirection: 'row',

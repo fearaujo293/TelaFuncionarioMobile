@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import Colors from '../Utils/Colors';
+import { FontAwesome } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../Utils/Theme';
 
 const consultationsData = [
   { id: '1', clientName: 'João Silva', service: 'Corte de Cabelo', date: '2023-10-26', time: '10:00' },
@@ -10,6 +12,8 @@ const consultationsData = [
 ];
 
 const AdminConsultationsScreen = () => {
+  const [activeTab, setActiveTab] = useState('pending');
+
   const renderConsultationItem = ({ item }) => (
     <View style={styles.consultationCard}>
       <Text style={styles.clientName}>{item.clientName}</Text>
@@ -26,11 +30,48 @@ const AdminConsultationsScreen = () => {
     </View>
   );
 
+  const filteredConsultations = consultationsData.filter(consultation => {
+    if (activeTab === 'pending') return consultation.status === 'Agendada';
+    if (activeTab === 'accepted') return consultation.status === 'Aceita';
+    if (activeTab === 'completed') return consultation.status === 'Concluída';
+    return true;
+  });
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Consultas Agendadas</Text>
+      <LinearGradient
+        colors={Colors.gradientPrimary}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <Text style={styles.headerTitle}>Consultas</Text>
+        <Text style={styles.headerSubtitle}>Gerencie as consultas</Text>
+      </LinearGradient>
+
+      <View style={styles.tabContainer}>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'pending' && styles.activeTabButton]}
+          onPress={() => setActiveTab('pending')}
+        >
+          <Text style={[styles.tabButtonText, activeTab === 'pending' && styles.activeTabButtonText]}>Pendentes</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'accepted' && styles.activeTabButton]}
+          onPress={() => setActiveTab('accepted')}
+        >
+          <Text style={[styles.tabButtonText, activeTab === 'accepted' && styles.activeTabButtonText]}>Aceitas</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.tabButton, activeTab === 'completed' && styles.activeTabButton]}
+          onPress={() => setActiveTab('completed')}
+        >
+          <Text style={[styles.tabButtonText, activeTab === 'completed' && styles.activeTabButtonText]}>Concluídas</Text>
+        </TouchableOpacity>
+      </View>
+
       <FlatList
-        data={consultationsData}
+        data={filteredConsultations}
         renderItem={renderConsultationItem}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.listContent}
@@ -43,23 +84,56 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    padding: 20,
   },
-  title: {
-    fontSize: 28,
-    fontFamily: 'Geologica_700Bold',
-    color: Colors.textPrimary,
-    marginBottom: 20,
-    textAlign: 'center',
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 40,
+    paddingBottom: 30,
+  },
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: Colors.white,
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '400',
+  },
+  tabContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: Colors.white,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.lightGrayBorder,
+  },
+  tabButton: {
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+  },
+  activeTabButton: {
+    backgroundColor: Colors.primary,
+  },
+  tabButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.textSecondary,
+  },
+  activeTabButtonText: {
+    color: Colors.white,
   },
   listContent: {
-    paddingBottom: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   consultationCard: {
     backgroundColor: Colors.white,
     borderRadius: 10,
     padding: 15,
-    marginBottom: 20, // Increased spacing between cards
+    marginBottom: 20,
     shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
@@ -71,25 +145,25 @@ const styles = StyleSheet.create({
   },
   clientName: {
     fontSize: 20,
-    fontFamily: 'Geologica_600SemiBold',
-    color: Colors.textPrimary,
+    // fontFamily: 'Geologica_600SemiBold',
+    color: Colors.text,
     marginBottom: 5,
   },
   service: {
     fontSize: 16,
-    fontFamily: 'Geologica_400Regular',
+    // fontFamily: 'Geologica_400Regular',
     color: Colors.textSecondary,
     marginBottom: 5,
   },
   dateTime: {
     fontSize: 14,
-    fontFamily: 'Geologica_400Regular',
+    // fontFamily: 'Geologica_400Regular',
     color: Colors.textSecondary,
     marginBottom: 10,
   },
   actionsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Changed to space-between
+    justifyContent: 'space-between',
     marginTop: 10,
   },
   actionButton: {
@@ -98,7 +172,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     minWidth: 100,
     alignItems: 'center',
-    marginHorizontal: 5, // Added horizontal margin
+    marginHorizontal: 5,
   },
   viewButton: {
     backgroundColor: Colors.primary,
@@ -108,7 +182,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: Colors.white,
-    fontFamily: 'Geologica_500Medium',
+    // fontFamily: 'Geologica_500Medium',
     fontSize: 14,
   },
 });

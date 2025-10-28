@@ -44,6 +44,7 @@ export const Colors = {
   bluePurple: '#8A2BE2',
   lightBluePurple: '#D8BFD8',
   lightOrangeBackground: '#FFE0B2',
+  gradientPrimary: ['rgb(163, 103, 240)', 'rgb(141, 126, 251)'],
 };
 
 

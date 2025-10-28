@@ -49,7 +49,7 @@ const MenuItem = ({ iconName, text, isDelete = false, onPress }) => (
 import { useNavigation } from '@react-navigation/native';
 import LoginScreen from './LoginScreen';
 
-const ConfigurationScreen = () => {
+const AdminConfigurationScreen = () => {
   const navigation = useNavigation();
   const [isModalVisible, setModalVisible] = useState(false);
   const [userImage, setUserImage] = useState(null);
@@ -111,20 +111,12 @@ const ConfigurationScreen = () => {
 
       {/* Menu de Opções */}
       <View style={styles.menuContainer}>
-        <MenuItem iconName="fingerprint" text="Segurança" onPress={() => navigation.navigate('Security')} />
-        <MenuItem iconName="chart-bar" text="Relatórios" onPress={() => navigation.navigate('AdminReports')} />
-        <MenuItem iconName="paw" text="Pets" onPress={() => navigation.navigate('Home') } />
-        <MenuItem iconName="calendar-alt" text="Consultas Agendadas" onPress={() => navigation.navigate('Veterinario', { screen: 'Consultas' })} />
+        <MenuItem iconName="lock" text="Mudar Senha" onPress={() => navigation.navigate('ChangePassword')} />
+        <MenuItem iconName="envelope" text="Mudar Email" onPress={() => navigation.navigate('ChangeEmail')} />
         <MenuItem 
           iconName="sign-out-alt" 
           text="Sair" 
           onPress={() => navigation.navigate('Login')} // Navega para a tela de Login
-        />
-        <MenuItem 
-          iconName="trash-alt" 
-          text="Excluir Conta" 
-          isDelete={true} 
-          onPress={() => setModalVisible(true)} // Abre o modal
         />
       </View>
 
@@ -226,4 +218,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ConfigurationScreen;
+export default AdminConfigurationScreen;

@@ -8,11 +8,13 @@ import {
   Image,
   FlatList,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { Colors } from '../Utils/Theme';
 import { LinearGradient } from 'expo-linear-gradient';
 
-const EmployeeServicesScreen = () => {
+  const EmployeeServicesScreen = () => {
+  const navigation = useNavigation();
   const [activeFilter, setActiveFilter] = useState('todas');
 
   // Dados do funcionário
@@ -196,6 +198,9 @@ const EmployeeServicesScreen = () => {
           <Text style={styles.statNumber}>{employeeData.stats.rate}%</Text>
           <Text style={styles.statLabel}>Taxa Sucesso</Text>
         </View>
+        <TouchableOpacity style={styles.statCard} onPress={() => navigation.navigate('AdminListScreen')}>
+          <Text style={styles.statLabel}>Ver Funcionários</Text>
+        </TouchableOpacity>
       </View>
 
       {/* CONTEÚDO PRINCIPAL */}

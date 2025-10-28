@@ -6,8 +6,7 @@ import { Colors } from '../Utils/Theme';
 const GradientHeader = ({ title, subtitle, children, style }) => {
   return (
     <LinearGradient
-      colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
-      style={[styles.headerGradient, style]}
+      colors={Colors.gradientPrimary}      style={[styles.headerGradient, style]}
     >
       {children || (
         <View style={styles.headerContent}>

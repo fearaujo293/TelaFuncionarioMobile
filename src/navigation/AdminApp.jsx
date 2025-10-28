@@ -13,11 +13,14 @@ import AdminChatScreen from '../screens/AdminChatScreen';
 import AddAdminScreen from '../screens/AddAdminScreen'; // Importar a nova tela
 import UserListScreen from '../screens/UserListScreen'; // Import UserListScreen
 import AllAppointmentsScreen from '../screens/AllAppointmentsScreen'; // Import AllAppointmentsScreen
-import NewAppointmentScreen from '../screens/NewAppointmentScreen'; // Import NewAppointmentScreen
+
 import UserChatScreen from '../screens/UserChatScreen'; // Import UserChatScreen
 import AdminConsultationsScreen from '../screens/AdminConsultationsScreen'; // Import AdminConsultationsScreen
 import AdminAllChatsScreen from '../screens/AdminAllChatsScreen'; // Import AdminAllChatsScreen
 import AdminReportsScreen from '../screens/AdminReportsScreen'; // Import AdminReportsScreen
+   import AdminConfigurationScreen from '../screens/AdminConfigurationScreen'; // Import AdminConfigurationScreen
+import ChangePasswordScreen from '../screens/ChangePasswordScreen'; // Import ChangePasswordScreen
+import ChangeEmailScreen from '../screens/ChangeEmailScreen'; // Import ChangeEmailScreen
 
 // Ícones personalizados (usando os existentes por enquanto)
 import iconeHome from '../assets/icone.png'; // Para Dashboard
@@ -28,11 +31,6 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 const newHeaderOptions = {
-  headerBackground: () => (
-    <View
-      style={{ flex: 1, backgroundColor: Colors.primary }}
-    />
-  ),
   headerTitleStyle: {
     color: 'white',
     fontSize: 24,
@@ -84,10 +82,41 @@ function AdminDashboardStack() {
       <Stack.Screen name="AdminDashboard" component={AdminDashboardScreen} options={{ title: 'Dashboard' }} />
       <Stack.Screen name="UserListScreen" component={UserListScreen} options={{ title: 'Lista de Clientes', headerBackVisible: true, headerLeft: undefined }} />
       <Stack.Screen name="AllAppointmentsScreen" component={AllAppointmentsScreen} options={{ title: 'Todas as Consultas', headerBackVisible: true, headerLeft: undefined }} />
-      <Stack.Screen name="NewAppointmentScreen" component={NewAppointmentScreen} options={{ title: 'Nova Consulta', headerBackVisible: true, headerLeft: undefined }} />
+
       <Stack.Screen name="AdminConsultations" component={AdminConsultationsScreen} options={{ title: 'Consultas', headerBackVisible: true, headerLeft: undefined }} />
       <Stack.Screen name="AdminAllChats" component={AdminAllChatsScreen} options={{ title: 'Todos os Chats', headerBackVisible: true, headerLeft: undefined }} />
-      <Stack.Screen name="AdminReports" component={AdminReportsScreen} options={{ title: 'Relatórios', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="AdminListScreen" component={AdminListScreen} options={{ title: 'Funcionários', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen
+          name="Configuration"
+          component={AdminConfigurationScreen}
+          options={{
+            title: 'Configurações',
+            headerShown: true,
+            headerStyle: { backgroundColor: Colors.primary },
+            headerTintColor: Colors.white,
+          }}
+        />
+        <Stack.Screen
+          name="ChangePassword"
+          component={ChangePasswordScreen}
+          options={{
+            title: 'Mudar Senha',
+            headerShown: true,
+            headerStyle: { backgroundColor: Colors.primary },
+            headerTintColor: Colors.white,
+          }}
+        />
+        <Stack.Screen
+          name="ChangeEmail"
+          component={ChangeEmailScreen}
+          options={{
+            title: 'Mudar Email',
+            headerShown: true,
+            headerStyle: { backgroundColor: Colors.primary },
+            headerTintColor: Colors.white,
+          }}
+        />
+
     </Stack.Navigator>
   );
 }

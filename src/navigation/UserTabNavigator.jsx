@@ -3,7 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Image, Animated, Easing, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import { Colors } from '../Utils/Theme';
 import AdminDashboardUsuario from '../screens/AdminDashboardUsuario';
 import AgendaScreen from '../screens/AgendaScreen';
 import AgendamentoScreen from '../screens/AgendamentoScreen';
@@ -34,8 +34,7 @@ const Stack = createNativeStackNavigator();
 const newHeaderOptions = {
   headerBackground: () => (
     <LinearGradient
-      colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
-      style={{ flex: 1 }}
+      colors={Colors.gradientPrimary}      style={{ flex: 1 }}
     />
   ),
   headerTitleStyle: {

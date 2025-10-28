@@ -1,123 +1,63 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View, TouchableOpacity, RefreshControl, Animated } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import Colors from '../Utils/Colors';
+import {
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  RefreshControl,
+  Animated,
+} from 'react-native';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
+import { Colors, CommonStyles } from '../Utils/Theme';
 import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const AdminDashboardScreen = () => {
   const navigation = useNavigation();
-  const [scheduledAppointments, setScheduledAppointments] = useState(0);
-  const [attendedPets, setAttendedPets] = useState(0);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [upcomingAppointments, setUpcomingAppointments] = useState([]); // State for upcoming appointments
-
-  // Animation for skeleton loader
-  const animatedValue = new Animated.Value(0);
-
-  useEffect(() => {
-    startAnimation();
-    loadSummaryData();
-  }, []);
-
-  const startAnimation = () => {
-    animatedValue.setValue(0);
-    Animated.loop(
-      Animated.timing(animatedValue, {
-        toValue: 1,
-        duration: 1000,
-        useNativeDriver: true,
-      })
-    ).start();
-  };
-
-  const loadSummaryData = async () => {
-    setIsLoading(true);
-    try {
-      // Substitua estas URLs pelos seus endpoints de API reais quando tiver um backend.
-      const summaryResponse = await fetch('YOUR_ACTUAL_API_BASE_URL/admin/summary');
-      const appointmentsResponse = await fetch('YOUR_ACTUAL_API_BASE_URL/admin/upcoming-appointments');
-
-      if (!summaryResponse.ok || !appointmentsResponse.ok) {
-        throw new Error('Failed to fetch admin dashboard data');
-      }
-
-      const summaryData = await summaryResponse.json();
-      const appointmentsData = await appointmentsResponse.json();
-
-      // Dados simulados para desenvolvimento
-      // const summaryData = {
-      //   scheduledAppointments: 12,
-      //   attendedPets: 8,
-      // };
-      // const appointmentsData = {
-      //   upcomingAppointments: [
-      //     { time: '10:00 AM', details: 'Consulta com Max' },
-      //     { time: '11:30 AM', details: 'Vacinação da Luna' },
-      //     { time: '02:00 PM', details: 'Banho e Tosa do Buddy' },
-      //   ],
-      // };
-
-      setScheduledAppointments(summaryData.scheduledAppointments || 0);
-      setAttendedPets(summaryData.attendedPets || 0);
-      setUpcomingAppointments(appointmentsData.upcomingAppointments || []);
-
-    } catch (error) {
-      console.error('Error loading summary data:', error);
-      // Fallback para dados padrão em caso de erro
-      setScheduledAppointments(0);
-      setAttendedPets(0);
-      setUpcomingAppointments([]);
-    } finally {
-      setIsLoading(false);
-      setIsRefreshing(false);
-    }
-  };
-
-  const onRefresh = () => {
-    setIsRefreshing(true);
-    loadSummaryData();
-  };
-
-  const handleViewAllAppointments = () => {
-    navigation.navigate('AllAppointmentsScreen');
-  };
-
-  const handleNewAppointment = () => {
-    navigation.navigate('NewAppointmentScreen');
-  };
-
-  const handleViewClients = () => {
-    navigation.navigate('UserListScreen'); // Navigate to UserListScreen
-  };
-
-  const handleChat = () => {
-    navigation.navigate('EmployeeChatTab', { screen: 'AdminChat' });
-  };
-
-  const handleViewConsultations = () => {
-    navigation.navigate('AdminConsultations');
-  };
-
-  const handleViewAllChats = () => {
-    navigation.navigate('AdminAllChats');
-  };
-
-  const handleViewReports = () => {
-    navigation.navigate('AdminReports');
-  };
-
-  const opacity = animatedValue.interpolate({
-    inputRange: [0, 0.5, 1],
-    outputRange: [0.5, 1, 0.5],
+  const [stats, setStats] = useState({
+    scheduledAppointments: 12,
+    attendedPets: 8,
   });
 
-  const SkeletonLoader = () => (
-    <Animated.View style={[styles.skeletonItem, { opacity }]}>
-      <View style={styles.skeletonLine} />
-      <View style={[styles.skeletonLine, { width: '60%' }]} />
-    </Animated.View>
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = async () => {
+    setIsLoading(true);
+    await new Promise(resolve => setTimeout(resolve, 800));
+    setIsLoading(false);
+  };
+
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await loadData();
+    setIsRefreshing(false);
+  };
+
+  const handleNavigate = (screenName, params = {}) => {
+    navigation.navigate(screenName, params);
+  };
+
+  const ActionButton = ({ icon, label, onPress, color = Colors.primary }) => (
+    <TouchableOpacity 
+      style={styles.actionButton}
+      onPress={onPress}
+      activeOpacity={0.8}
+    >
+      <LinearGradient
+        colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.actionButtonGradient}
+      >
+        <MaterialIcons name={icon} size={28} color={Colors.primary} />
+        <Text style={styles.actionButtonText}>{label}</Text>
+      </LinearGradient>
+    </TouchableOpacity>
   );
 
   return (
@@ -132,95 +72,96 @@ const AdminDashboardScreen = () => {
         />
       }
     >
-      <Text style={styles.header}>Dashboard do Funcionário</Text>
-
-      <View style={styles.sectionCard}>
-        <Text style={styles.sectionTitle}>Resumo do Dia</Text>
-        {isLoading ? (
-          <View>
-            <SkeletonLoader />
-            <SkeletonLoader />
-          </View>
-        ) : (
-          scheduledAppointments > 0 || attendedPets > 0 ? (
-            <>
-              <View style={styles.summaryItem}>
-                <FontAwesome name="calendar-check-o" size={20} color={Colors.primary} />
-                <Text style={styles.summaryText}>Consultas Agendadas: {scheduledAppointments}</Text>
-              </View>
-              <View style={styles.summaryItem}>
-                <FontAwesome name="paw" size={20} color={Colors.secondary} />
-                <Text style={styles.summaryText}>Pets Atendidos: {attendedPets}</Text>
-              </View>
-            </>
-          ) : (
-            <View style={styles.emptyStateContainer}>
-              <FontAwesome name="info-circle" size={50} color={Colors.gray} />
-              <Text style={styles.emptyStateText}>Nenhum resumo de atividades para hoje.</Text>
+      {/* RESUMO DO DIA */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>📊 Resumo</Text>
+        <View style={styles.statsContainer}>
+          <View style={[styles.statCard, { borderLeftColor: Colors.primary }]}>
+            <View style={[styles.statIcon, { backgroundColor: Colors.primaryLight }]}>
+              <MaterialIcons name="calendar-today" size={24} color={Colors.primary} />
             </View>
-          )
-        )}
-      </View>
-
-      <View style={styles.sectionCard}>
-        <Text style={styles.sectionTitle}>Próximas Consultas</Text>
-        {isLoading ? (
-          <View>
-            <SkeletonLoader />
-            <SkeletonLoader />
-            <SkeletonLoader />
-          </View>
-        ) : (
-          upcomingAppointments.length > 0 ? (
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.appointmentsScrollView}>
-              {upcomingAppointments.map((appointment, index) => (
-                <View key={index} style={styles.appointmentItem}>
-                  <Text style={styles.appointmentTime}>{appointment.time}</Text>
-                  <Text style={styles.appointmentDetails}>{appointment.details}</Text>
-                </View>
-              ))}
-            </ScrollView>
-          ) : (
-            <View style={styles.emptyStateContainer}>
-              <FontAwesome name="calendar-o" size={50} color={Colors.gray} />
-              <Text style={styles.emptyStateText}>Nenhuma consulta agendada para hoje.</Text>
+            <View style={styles.statContent}>
+              <Text style={styles.statLabel}>Agendadas</Text>
+              <Text style={styles.statValue}>{stats.scheduledAppointments}</Text>
             </View>
-          )
-        )}
-        <TouchableOpacity style={styles.viewAllButton} onPress={handleViewAllAppointments}>
-          <Text style={styles.viewAllButtonText}>Ver Todas as Consultas</Text>
-        </TouchableOpacity>
-      </View>
+          </View>
 
-      <View style={styles.sectionCard}>
-        <Text style={styles.sectionTitle}>Ações Rápidas</Text>
-        <View style={styles.quickActionsContainer}>
-          <TouchableOpacity style={styles.quickActionButton} onPress={handleNewAppointment} activeOpacity={0.7}>
-            <FontAwesome name="plus-circle" size={30} color={Colors.primary} />
-            <Text style={styles.quickActionButtonText}>Nova Consulta</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.quickActionButton} onPress={handleViewClients} activeOpacity={0.7}>
-            <FontAwesome name="users" size={30} color={Colors.secondary} />
-            <Text style={styles.quickActionButtonText}>Ver Clientes</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.quickActionButton} onPress={handleChat} activeOpacity={0.7}>
-            <FontAwesome name="comments" size={30} color={Colors.accent} />
-            <Text style={styles.quickActionButtonText}>Chat</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.quickActionButton} onPress={handleViewConsultations} activeOpacity={0.7}>
-            <FontAwesome name="calendar" size={30} color={Colors.textPrimary} />
-            <Text style={styles.quickActionButtonText}>Consultas</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.quickActionButton} onPress={handleViewAllChats} activeOpacity={0.7}>
-            <FontAwesome name="wechat" size={30} color={Colors.secondary} />
-            <Text style={styles.quickActionButtonText}>Todos os Chats</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.quickActionButton} onPress={handleViewReports} activeOpacity={0.7}>
-            <FontAwesome name="file-text" size={30} color={Colors.accent} />
-            <Text style={styles.quickActionButtonText}>Relatórios</Text>
-          </TouchableOpacity>
+          <View style={[styles.statCard, { borderLeftColor: Colors.secondary }]}>
+            <View style={[styles.statIcon, { backgroundColor: '#E0F7F6' }]}>
+              <MaterialIcons name="pets" size={24} color={Colors.secondary} />
+            </View>
+            <View style={styles.statContent}>
+              <Text style={styles.statLabel}>Pets Atendidos</Text>
+              <Text style={styles.statValue}>{stats.attendedPets}</Text>
+            </View>
+          </View>
         </View>
       </View>
+
+      {/* AÇÕES RÁPIDAS - GRID 2x3 */}
+      <View style={styles.section}>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>⚡ Ações Rápidas</Text>
+        </View>
+        
+        <View style={styles.actionsGrid}>
+          <ActionButton
+            icon="add-circle-outline"
+            label="Ver Funcionários"
+            onPress={() => handleNavigate('AdminListScreen')}
+          />
+
+          <ActionButton
+            icon="people"
+            label="Ver Clientes"
+            onPress={() => handleNavigate('UserListScreen')}
+            color={Colors.info}
+          />
+
+          <ActionButton
+            icon="event-note"
+            label="Consultas"
+            onPress={() => handleNavigate('AdminConsultations')}
+            color={Colors.warning}
+          />
+
+          <ActionButton
+            icon="chat-bubble"
+            label="Todos Chats"
+            onPress={() => handleNavigate('AdminAllChats')}
+            color={Colors.success}
+          />
+
+          <ActionButton
+            icon="list-alt"
+            label="Todas Consultas"
+            onPress={() => handleNavigate('AllAppointmentsScreen')}
+            color={Colors.secondary}
+          />
+
+          <ActionButton
+            icon="settings"
+            label="Configurações"
+            onPress={() => handleNavigate('Configuration')}
+            color={Colors.darkGray}
+          />
+
+
+        </View>
+      </View>
+
+      {/* INFORMAÇÕES ÚTEIS */}
+      <View style={styles.section}>
+        <View style={[styles.infoCard, { backgroundColor: Colors.primaryLight }]}>
+          <MaterialIcons name="info" size={24} color={Colors.primary} />
+          <View style={styles.infoContent}>
+            <Text style={[styles.infoTitle, { color: Colors.primary }]}>Sistema Ativo</Text>
+            <Text style={styles.infoSubtitle}>Todas as funcionalidades estão operacionais</Text>
+          </View>
+        </View>
+      </View>
+
+      <View style={styles.spacing} />
     </ScrollView>
   );
 };
@@ -229,124 +170,127 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    padding: 20,
   },
   header: {
-    fontSize: 30,
-    fontWeight: '800',
-    color: Colors.textPrimary,
-    marginBottom: 25,
-    textAlign: 'center',
+    paddingHorizontal: 24,
+    paddingTop: 40,
+    paddingBottom: 30,
   },
-  sectionCard: {
-    backgroundColor: Colors.white,
-    borderRadius: 20,
-    padding: 25,
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: Colors.white,
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '400',
+  },
+  section: {
+    paddingHorizontal: 16,
     marginBottom: 20,
-    elevation: 8,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: '700',
-    color: Colors.textPrimary,
-    marginBottom: 15,
+    color: Colors.text,
   },
-  summaryItem: {
+  statsContainer: {
+    gap: 12,
+  },
+  statCard: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12, // Aumentado o espaçamento
-  },
-  summaryText: {
-    fontSize: 16,
-    color: Colors.darkGray,
-    marginLeft: 10,
-  },
-  appointmentsScrollView: {
-    maxHeight: 150,
-    marginBottom: 10,
-  },
-  appointmentItem: {
-    backgroundColor: Colors.lightBackground,
-    borderRadius: 10,
-    padding: 15,
-    marginRight: 10,
-    width: 250,
-    justifyContent: 'center',
-  },
-  appointmentTime: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: Colors.textPrimary,
-    marginBottom: 5,
-  },
-  appointmentDetails: {
-    fontSize: 14,
-    color: Colors.darkGray,
-  },
-  viewAllButton: {
-    backgroundColor: Colors.secondary,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginTop: 15,
-    alignSelf: 'flex-start',
-  },
-  viewAllButtonText: {
-    color: Colors.white,
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  quickActionsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between', // Alterado para space-between
-    marginTop: 15,
-  },
-  quickActionButton: {
-    alignItems: 'center',
-    padding: 15,
-    backgroundColor: Colors.lightGray,
-    borderRadius: 15,
-    width: '48%', // Ajustado para 2 colunas com espaçamento
-    marginBottom: 15, // Aumentado o espaçamento inferior
-    elevation: 3,
+    backgroundColor: Colors.white,
+    borderRadius: 14,
+    padding: 16,
+    borderLeftWidth: 4,
+    elevation: 2,
     shadowColor: Colors.shadow,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 3,
+    shadowRadius: 4,
   },
-  quickActionButtonText: {
-    fontSize: 14,
-    color: Colors.textPrimary,
-    marginTop: 10,
+  statIcon: {
+    width: 56,
+    height: 56,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  statContent: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  statLabel: {
+    fontSize: 12,
+    color: Colors.textSecondary,
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  statValue: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: Colors.text,
+  },
+  actionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    justifyContent: 'space-between',
+  },
+  actionButton: {
+    width: '48%',
+    borderRadius: 16,
+    overflow: 'hidden',
+    elevation: 3,
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    backgroundColor: 'transparent',
+  },
+  actionButtonGradient: {
+    paddingVertical: 20,
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+  },
+  actionButtonText: {
+    fontSize: 12,
     fontWeight: '600',
+    color: Colors.white,
     textAlign: 'center',
   },
-  skeletonItem: {
-    backgroundColor: Colors.lightGray,
-    borderRadius: 8,
-    marginBottom: 10,
-    height: 20,
-    width: '100%',
-  },
-  skeletonLine: {
-    backgroundColor: Colors.gray,
-    height: 10,
-    borderRadius: 4,
-    marginVertical: 5,
-  },
-  emptyStateContainer: {
+  infoCard: {
+    flexDirection: 'row',
+    borderRadius: 14,
+    padding: 16,
     alignItems: 'center',
-    paddingVertical: 20,
   },
-  emptyStateText: {
-    fontSize: 16,
-    color: Colors.darkGray,
-    marginTop: 10,
+  infoContent: {
+    flex: 1,
+    marginLeft: 14,
+  },
+  infoTitle: {
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 4,
+  },
+  infoSubtitle: {
+    fontSize: 12,
+    color: Colors.textSecondary,
+  },
+  spacing: {
+    height: 40,
   },
 });
 

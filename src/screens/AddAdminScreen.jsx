@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Alert, ActivityIndicator } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import Colors from '../Utils/Colors';
+import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../Utils/Theme';
 import { useNavigation, useRoute } from '@react-navigation/native';
 
 const AddAdminScreen = () => {
@@ -62,7 +63,18 @@ const AddAdminScreen = () => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <Text style={styles.title}>{employee?.id ? 'Editar Funcionário' : 'Adicionar Novo Funcionário'}</Text>
+      <LinearGradient
+        colors={Colors.gradientPrimary}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color={Colors.white} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>{employee?.id ? 'Editar Funcionário' : 'Adicionar Novo Funcionário'}</Text>
+        <Text style={styles.headerSubtitle}>Preencha os dados do funcionário</Text>
+      </LinearGradient>
 
       <View style={styles.inputGroup}>
         <Text style={styles.label}>Nome Completo</Text>
@@ -156,15 +168,35 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   contentContainer: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
     alignItems: 'center',
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: Colors.primary,
-    marginBottom: 30,
-    marginTop: 10,
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 40,
+    paddingBottom: 30,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '100%',
+  },
+  backButton: {
+    position: 'absolute',
+    left: 24,
+    top: 40,
+    zIndex: 1,
+  },
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: Colors.white,
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '400',
   },
   inputGroup: {
     width: '100%',
@@ -197,10 +229,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 12,
     fontSize: 16,
-    color: Colors.textPrimary,
+    color: Colors.text,
   },
   saveButton: {
-    backgroundColor: Colors.success,
+    backgroundColor: Colors.primary,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',

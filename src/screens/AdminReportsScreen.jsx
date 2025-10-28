@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import Colors from '../Utils/Colors';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../Utils/Theme';
 
 const AdminReportsScreen = () => {
   const handleViewReport = (reportType) => {
@@ -10,7 +11,15 @@ const AdminReportsScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Relatórios Administrativos</Text>
+      <LinearGradient
+        colors={Colors.gradientPrimary}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <Text style={styles.headerTitle}>Relatórios Administrativos</Text>
+        <Text style={styles.headerSubtitle}>Visualize e gerencie os relatórios</Text>
+      </LinearGradient>
 
       <View style={styles.reportCard}>
         <Text style={styles.reportTitle}>Relatório de Consultas</Text>
@@ -51,21 +60,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    padding: 20,
   },
-  title: {
-    fontSize: 28,
-    fontFamily: 'Geologica_700Bold',
-    color: Colors.textPrimary,
-    marginBottom: 20,
-    textAlign: 'center',
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 40,
+    paddingBottom: 30,
+  },
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: Colors.white,
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '400',
   },
   reportCard: {
     backgroundColor: Colors.white,
     borderRadius: 10,
     padding: 15,
-    paddingVertical: 10, // Added vertical padding
-    marginBottom: 20, // Increased spacing between cards
+    paddingVertical: 10,
+    marginBottom: 20,
     shadowColor: Colors.shadow,
     shadowOffset: {
       width: 0,
@@ -78,7 +95,7 @@ const styles = StyleSheet.create({
   reportTitle: {
     fontSize: 20,
     fontFamily: 'Geologica_600SemiBold',
-    color: Colors.textPrimary,
+    color: Colors.text,
     marginBottom: 5,
   },
   reportDescription: {
@@ -93,10 +110,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     marginTop: 10,
-    zIndex: 1, // Ensure button is on top
-    width: '100%', // Ensure it has a defined width
-    flex: 1, // Ensure it takes up available space
-    height: 40, // Adicionando uma altura explícita
+    zIndex: 1,
+    width: '100%',
+    flex: 1,
+    height: 40,
   },
   buttonText: {
     color: Colors.white,

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
-import Colors from '../Utils/Colors';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../Utils/Theme';
 import { useNavigation } from '@react-navigation/native';
 
 const mockClients = [
@@ -38,7 +39,15 @@ const UserListScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Lista de Clientes</Text>
+      <LinearGradient
+        colors={Colors.gradientPrimary}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <Text style={styles.headerTitle}>Lista de Clientes</Text>
+        <Text style={styles.headerSubtitle}>Gerencie os clientes cadastrados</Text>
+      </LinearGradient>
       <FlatList
         data={clients}
         renderItem={renderClientItem}
@@ -53,17 +62,26 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    padding: 20,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: Colors.textPrimary,
-    marginBottom: 20,
-    textAlign: 'center',
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 40,
+    paddingBottom: 30,
+  },
+  headerTitle: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: Colors.white,
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '400',
   },
   listContent: {
     paddingBottom: 20,
+    paddingHorizontal: 20,
   },
   clientCard: {
     backgroundColor: Colors.white,
@@ -73,8 +91,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderWidth: 2, // Adiciona a largura da borda
-    borderColor: Colors.primary, // Define a cor da borda como roxa
+    borderWidth: 2,
+    borderColor: Colors.primary,
   },
   cardIcon: {
     marginRight: 15,
