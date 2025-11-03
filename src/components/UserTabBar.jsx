@@ -5,9 +5,9 @@ import { Colors } from '../Utils/Theme';
 import { Ionicons } from '@expo/vector-icons';
 
 const ICON_IMAGES = {
-  Home: require('../assets/Calendario.png.png'),
+  Home: require('../assets/CalendarioIcon.png'),
   Agenda: require('../assets/pet.png'),
-  Chat: require('../assets/Chat.png.png'),
+  Chat: require('../assets/ChatIcon.png'),
 };
 
 const TAB_ORDER = [

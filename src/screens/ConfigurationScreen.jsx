@@ -1,77 +1,78 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, Image, Alert } from 'react-native';
-// Recomenda-se usar uma biblioteca de ícones como react-native-vector-icons
-import Icon from 'react-native-vector-icons/FontAwesome5'; // Ou similar
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Switch, ScrollView, AsyncStorage } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
-import DeleteConfirmationModal from '../components/DeleteConfirmationModal';
-import { Colors, CommonStyles } from '../Utils/Theme';
-
-// --- Definições de Cores ---
-const COLORS = {
-  background: Colors.white, // BRANCO PURO
-  text: Colors.darkGray,
-  border: Colors.lightPurple,
-  delete: Colors.red, // Vermelho/Laranja para "Excluir"
-  iconSafe: Colors.purple, // Roxo/Azul escuro para ícones normais
-  avatarBg: Colors.veryLightPurple, // Branco-rosado claro do círculo superior
-};
-// --- Componente de Item de Menu ---
-const MenuItem = ({ iconName, text, isDelete = false, onPress }) => (
-  <TouchableOpacity 
-    style={[
-      styles.menuItem,
-      isDelete && styles.deleteItemContainer // Aplica estilos extras se for "Excluir"
-    ]}
-    onPress={onPress} // Agora usa a prop onPress
-  >
-    <Icon 
-      name={iconName} 
-      size={20} 
-      style={[
-        styles.icon,
-        { color: isDelete ? COLORS.delete : COLORS.iconSafe }
-      ]}
-    />
-    <Text 
-      style={[
-        styles.menuText,
-        isDelete && styles.deleteText // Aplica cor de texto se for "Excluir"
-      ]}
-    >
-      {text}
-    </Text>
-
-  </TouchableOpacity>
-);
-
-// --- Componente da Tela de Configuração Principal ---
 import { useNavigation } from '@react-navigation/native';
-import LoginScreen from './LoginScreen';
 
 const ConfigurationScreen = () => {
-  const navigation = useNavigation();
-  const [isModalVisible, setModalVisible] = useState(false);
-  const [userImage, setUserImage] = useState(null);
+    const navigation = useNavigation();
+    const [profileImage, setProfileImage] = useState(null);
+    const [notifications, setNotifications] = useState({
+        global: true,
+        reminders: true,
+    });
 
-  const handleDeleteAccount = () => {
-    // Lógica para excluir a conta
-    console.log('Conta excluída!');
-    setModalVisible(false);
-  };
+    useEffect(() => {
+        const loadProfileImage = async () => {
+            const savedImage = await AsyncStorage.getItem('profileImage');
+            if (savedImage) {
+                setProfileImage(savedImage);
+            }
+        };
+        loadProfileImage();
+    }, []);
 
-  const pickImage = async () => {
-    try {
-      // Solicitar permissão para acessar a galeria
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      
-      if (status !== 'granted') {
-        Alert.alert('Permissão necessária', 'Precisamos de acesso à sua galeria para selecionar uma imagem.');
-        return;
-      }
+    useEffect(() => {
+        console.log('Notification settings changed:', notifications);
+    }, [notifications]);
 
-      // Abrir a galeria para seleção de imagem
-      const result = await ImagePicker.launchImageLibraryAsync({
+    const handleLogout = () => {
+        Alert.alert(
+            "Sair",
+            "Tem certeza que deseja sair?",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                { text: "Sair", onPress: () => {
+          console.log("Cleaning up session...");
+          navigation.navigate('Login');
+        } }
+      ]
+        );
+    };
+
+    const handleDeleteAccount = () => {
+        Alert.alert(
+            "Excluir Conta",
+            "Tem certeza que deseja excluir sua conta? Esta ação é irreversível.",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                { text: "Excluir", onPress: () => console.log("API call to delete account"), style: "destructive" }
+            ]
+        );
+    };
+
+    const pickImage = async () => {
+        const { status: mediaLibraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (mediaLibraryStatus !== 'granted') {
+            Alert.alert('Permissão necessária', 'É necessário permitir o acesso à galeria para alterar a foto de perfil.');
+            return;
+        }
+
+        const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
+        if (cameraStatus !== 'granted') {
+            Alert.alert('Permissão necessária', 'É necessário permitir o acesso à câmera para alterar a foto de perfil.');
+            return;
+        }
+
+        try {
+      let result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,
         aspect: [1, 1],
@@ -79,151 +80,174 @@ const ConfigurationScreen = () => {
       });
 
       if (!result.canceled) {
-        setUserImage(result.assets[0].uri);
+        setProfileImage(result.assets[0].uri);
+        await AsyncStorage.setItem('profileImage', result.assets[0].uri);
+        // Simulate API call
+        console.log("Uploading image to the server: ", result.assets[0].uri);
       }
     } catch (error) {
-      console.error('Erro ao selecionar imagem:', error);
-      Alert.alert('Erro', 'Não foi possível selecionar a imagem.');
+      console.error("Error picking image: ", error);
+      // Handle error (e.g., show a notification to the user)
     }
-  };
+    };
 
-  return (
-    <View style={styles.container}>
-      {/* Cabeçalho */}
-      <LinearGradient
-        colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
-        style={styles.headerGradient}
-      >
-        <TouchableOpacity onPress={pickImage} style={styles.avatarContainer}>
-          {userImage ? (
-            <Image source={{ uri: userImage }} style={styles.userAvatar} />
-          ) : (
-            <View style={styles.userAvatar}>
-              <Icon name="user" size={40} color={Colors.primary} />
-            </View>
-          )}
-          <View style={styles.cameraIcon}>
-            <Icon name="camera" size={16} color={Colors.white} />
-          </View>
+    const MenuItem = ({ iconName, text, onPress, isDanger = false }) => (
+        <TouchableOpacity style={styles.menuItem} onPress={onPress}>
+            <Icon name={iconName} size={18} color={isDanger ? '#D9534F' : '#A367F0'} style={styles.menuIcon} />
+            <Text style={[styles.menuText, isDanger && styles.dangerText]}>{text}</Text>
+            <Icon name="chevron-right" size={16} color="#C7C7CD" />
         </TouchableOpacity>
-        <Text style={styles.username}>Usuario</Text>
-      </LinearGradient>
+    );
 
-      {/* Menu de Opções */}
-      <View style={styles.menuContainer}>
-        <MenuItem iconName="fingerprint" text="Segurança" onPress={() => navigation.navigate('Security')} />
-        <MenuItem iconName="chart-bar" text="Relatórios" onPress={() => navigation.navigate('AdminReports')} />
-        <MenuItem iconName="paw" text="Pets" onPress={() => navigation.navigate('Home') } />
-        <MenuItem iconName="calendar-alt" text="Consultas Agendadas" onPress={() => navigation.navigate('Veterinario', { screen: 'Consultas' })} />
-        <MenuItem 
-          iconName="sign-out-alt" 
-          text="Sair" 
-          onPress={() => navigation.navigate('Login')} // Navega para a tela de Login
-        />
-        <MenuItem 
-          iconName="trash-alt" 
-          text="Excluir Conta" 
-          isDelete={true} 
-          onPress={() => setModalVisible(true)} // Abre o modal
-        />
-      </View>
+    const NotificationOption = ({ label, value, onValueChange, iconName }) => (
+        <View style={styles.notificationOption}>
+            <Icon name={iconName} size={18} color={'#A367F0'} style={styles.menuIcon} />
+            <Text style={styles.menuText}>{label}</Text>
+            <Switch
+                value={value}
+                onValueChange={onValueChange}
+                thumbColor={'#FFF'}
+                trackColor={{ false: '#C7C7CD', true: '#A367F0' }}
+            />
+        </View>
+    );
 
-      <Modal
-        animationType="fade"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <DeleteConfirmationModal
-          onCancel={() => setModalVisible(false)}
-          onDelete={handleDeleteAccount}
-        />
-      </Modal>
-    </View>
-  );
+    return (
+        <ScrollView style={styles.container}>
+            <LinearGradient colors={['#A367F0', '#6A5ACD']} style={styles.header}>
+                <TouchableOpacity onPress={pickImage} style={styles.avatarContainer}>
+                    <Image source={profileImage ? { uri: profileImage } : require('../assets/pet.png')} style={styles.avatar} />
+                    <View style={styles.cameraIcon}>
+                        <Icon name="camera" size={15} color="#FFF" />
+                    </View>
+                </TouchableOpacity>
+                <Text style={styles.headerTitle}>Configurações</Text>
+            </LinearGradient>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Perfil</Text>
+                <MenuItem iconName="user-edit" text="Editar Perfil" onPress={() => console.log('API call to edit profile')} />
+                <MenuItem iconName="camera" text="Alterar Foto de Perfil" onPress={pickImage} />
+                <MenuItem iconName="paw" text="Meus Pets" onPress={() => navigation.navigate('PetList')} />
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Segurança</Text>
+                <MenuItem iconName="lock" text="Mudar Senha" onPress={() => navigation.navigate('ChangePasswordScreen')} />
+                <MenuItem iconName="envelope" text="Mudar Email" onPress={() => navigation.navigate('ChangeEmailScreen')} />
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Notificações</Text>
+                <NotificationOption
+                    label="Ativar Notificações"
+                    value={notifications.global}
+                    onValueChange={(value) => setNotifications(prev => ({ ...prev, global: value }))}
+                    iconName="bell"
+                />
+                <NotificationOption
+                    label="Lembretes de Consultas"
+                    value={notifications.reminders}
+                    onValueChange={(value) => setNotifications(prev => ({ ...prev, reminders: value }))}
+                    iconName="calendar-check"
+                />
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Sobre</Text>
+                <MenuItem iconName="info-circle" text="Sobre o App" onPress={() => console.log('API call to get app info')} />
+                <MenuItem iconName="file-contract" text="Termos de Serviço" onPress={() => console.log('API call to get terms of service')} />
+                <MenuItem iconName="user-secret" text="Política de Privacidade" onPress={() => console.log('API call to get privacy policy')} />
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Conta</Text>
+                <MenuItem iconName="sign-out-alt" text="Sair" onPress={handleLogout} isDanger />
+                <MenuItem iconName="trash-alt" text="Excluir Conta" onPress={handleDeleteAccount} isDanger />
+            </View>
+        </ScrollView>
+    );
 };
 
-// --- Estilos ---
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.white, // Fundo BRANCO
-  },
-
-  // Cabeçalho e Avatar
-  headerGradient: {
-    alignItems: 'center',
-    marginBottom: 30,
-    backgroundColor: Colors.primary,
-    paddingTop: 40,
-    paddingBottom: 20,
-  },
-  avatarContainer: {
-    position: 'relative',
-    marginBottom: 15,
-  },
-  userAvatar: {
-    width: 100,
-    height: 100,
-    backgroundColor: Colors.white,
-    borderRadius: 50,
-    borderWidth: 3,
-    borderColor: Colors.white,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  cameraIcon: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    backgroundColor: Colors.primary,
-    borderRadius: 12,
-    width: 24,
-    height: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 2,
-    borderColor: Colors.white,
-  },
-  username: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    color: Colors.white,
-  },
-  menuContainer: {
-    paddingHorizontal: 20,
-    marginTop: -30,
-  },
-  menuItem: {
-    ...CommonStyles.card,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.lightGray,
-    borderRadius: 10,
-    marginBottom: 10,
-    backgroundColor: Colors.cardBackground,
-    shadowColor: Colors.cardShadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  icon: {
-    marginRight: 20,
-    width: 28,
-    textAlign: 'center',
-  },
-  menuText: {
-    flexGrow: 1,
-    fontSize: 18,
-    color: Colors.textPrimary,
-  },
-  deleteText: {
-    color: COLORS.delete,
-    fontWeight: 'bold',
-  },
+    container: {
+        flex: 1,
+        backgroundColor: '#F2F2F7',
+    },
+    header: {
+        padding: 20,
+        paddingTop: 50,
+        alignItems: 'center',
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+    },
+    avatarContainer: {
+        position: 'relative',
+        marginBottom: 10,
+    },
+    avatar: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        borderWidth: 3,
+        borderColor: '#FFF',
+    },
+    cameraIcon: {
+        position: 'absolute',
+        bottom: 5,
+        right: 5,
+        backgroundColor: '#A367F0',
+        padding: 8,
+        borderRadius: 15,
+    },
+    headerTitle: {
+        fontSize: 22,
+        fontWeight: 'bold',
+        color: '#FFF',
+    },
+    section: {
+        marginTop: 20,
+        marginHorizontal: 20,
+        backgroundColor: '#FFF',
+        borderRadius: 12,
+        padding: 15,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 2,
+    },
+    sectionTitle: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#8E8E93',
+        marginBottom: 10,
+    },
+    menuItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: '#F2F2F7',
+    },
+    menuIcon: {
+        marginRight: 15,
+        width: 20,
+        textAlign: 'center',
+    },
+    menuText: {
+        flex: 1,
+        fontSize: 16,
+        color: '#000',
+    },
+    dangerText: {
+        color: '#D9534F',
+    },
+    notificationOption: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 12,
+    },
 });
 
 export default ConfigurationScreen;

@@ -5,10 +5,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 // Ícones personalizados
 import iconeHome from '../assets/icone.png';
-import iconeMao from '../assets/Chat.png.png';
+import iconeMao from '../assets/ChatIcon.png';
 import iconePet from '../assets/pet.png';
 import iconePessoa from '../assets/pessoa.png';
-import iconeVeterinario from '../assets/veterinario.png';
+import iconeVeterinario from '../assets/vet_icon.png';
 import DogCat from '../assets/DogCat.png';
 
 // Simulação do hook useTheme para o código ser executável

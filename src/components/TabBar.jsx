@@ -14,9 +14,9 @@ const ICONS = {
 
 const ICON_IMAGES = {
   Home: require('../assets/icone.png'),
-  Mao: require('../assets/Chat.png.png'),
+  Mao: require('../assets/ChatIcon.png'),
   Pet: require('../assets/pet.png'),
-  Veterinario: require('../assets/veterinario.png'),
+  Veterinario: require('../assets/vet_icon.png'),
   Pessoa: require('../assets/pessoa.png'),
 };
 

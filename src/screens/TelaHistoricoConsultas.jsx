@@ -1,293 +1,110 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { Colors } from '../Utils/Theme';
+import cat1 from '../assets/cat1.png';
+import dog1 from '../assets/dog1.png';
+import dog2 from '../assets/dog2.png';
+import { useNavigation } from '@react-navigation/native';
 
 const TelaHistoricoConsultas = () => {
-  const [activeFilter, setActiveFilter] = useState('Todas');
+  const [activeFilter, setActiveFilter] = useState('Agendada');
+  const navigation = useNavigation();
 
   const consultations = [
     {
       id: '1',
-      petName: 'Buddy',
-      clientName: 'João Silva',
-      date: '2023-10-26',
-      time: '10:00',
+      petName: 'Mascote 1',
       serviceType: 'Consulta Geral',
-      duration: '30 min',
-      rating: 4.5,
-      notes: 'Pet com tosse, receitado antibiótico.',
+      time: '10:00 AM',
+      status: 'Agendada',
+      image: cat1
     },
     {
       id: '2',
-      petName: 'Mia',
-      clientName: 'Maria Souza',
-      date: '2023-10-25',
-      time: '14:30',
+      petName: 'Mascote 2',
       serviceType: 'Vacinação',
-      duration: '15 min',
-      rating: 5.0,
-      notes: 'Vacina anual V8 aplicada.',
+      time: '02:30 PM',
+      status: 'Agendada',
+      image: dog1
     },
     {
       id: '3',
-      petName: 'Thor',
-      clientName: 'Pedro Santos',
-      date: '2023-10-24',
-      time: '09:00',
+      petName: 'Mascote 3',
       serviceType: 'Exame de Rotina',
-      duration: '45 min',
-      rating: 4.0,
-      notes: 'Check-up geral, tudo ok.',
+      time: '09:00 AM',
+      status: 'Andamento',
+      image: dog2
     },
     {
       id: '4',
-      petName: 'Luna',
-      clientName: 'Ana Costa',
-      date: '2023-10-23',
-      time: '11:00',
+      petName: 'Mascote 4',
       serviceType: 'Banho e Tosa',
-      duration: '60 min',
-      rating: 3.5,
-      notes: 'Tosa higiênica e banho.',
-    },
-    {
-      id: '5',
-      petName: 'Max',
-      clientName: 'Carlos Oliveira',
-      date: '2023-10-22',
-      time: '16:00',
-      serviceType: 'Pequena Cirurgia',
-      duration: '90 min',
-      rating: 5.0,
-      notes: 'Remoção de cisto.',
-    },
-    {
-      id: '6',
-      petName: 'Daisy',
-      clientName: 'Fernanda Lima',
-      date: '2023-10-21',
-      time: '13:00',
-      serviceType: 'Consulta de Retorno',
-      duration: '20 min',
-      rating: 4.8,
-      notes: 'Reavaliação da tosse, melhora significativa.',
-    },
-    {
-      id: '7',
-      petName: 'Rocky',
-      clientName: 'Gustavo Pereira',
-      date: '2023-10-20',
-      time: '10:30',
-      serviceType: 'Vacinação',
-      duration: '15 min',
-      rating: 5.0,
-      notes: 'Vacina antirrábica.',
-    },
-    {
-      id: '8',
-      petName: 'Bella',
-      clientName: 'Helena Almeida',
-      date: '2023-10-19',
-      time: '15:00',
-      serviceType: 'Exame de Sangue',
-      duration: '30 min',
-      rating: 4.2,
-      notes: 'Coleta para hemograma completo.',
-    },
-    {
-      id: '9',
-      petName: 'Charlie',
-      clientName: 'Isabela Rocha',
-      date: '2023-10-18',
-      time: '11:30',
-      serviceType: 'Consulta de Emergência',
-      duration: '60 min',
-      rating: 3.9,
-      notes: 'Atropelamento, sutura e medicação.',
-    },
-    {
-      id: '10',
-      petName: 'Lucy',
-      clientName: 'Juliana Martins',
-      date: '2023-10-17',
-      time: '09:30',
-      serviceType: 'Consulta Dermatológica',
-      duration: '40 min',
-      rating: 4.7,
-      notes: 'Alergia na pele, receitado antialérgico.',
-    },
-    {
-      id: '11',
-      petName: 'Zoe',
-      clientName: 'Lucas Fernandes',
-      date: '2023-10-16',
-      time: '14:00',
-      serviceType: 'Castração',
-      duration: '120 min',
-      rating: 5.0,
-      notes: 'Cirurgia de castração realizada com sucesso.',
-    },
-    {
-      id: '12',
-      petName: 'Oliver',
-      clientName: 'Mariana Gomes',
-      date: '2023-10-15',
-      time: '10:00',
-      serviceType: 'Consulta Odontológica',
-      duration: '50 min',
-      rating: 4.6,
-      notes: 'Limpeza de tártaro.',
-    },
-    {
-      id: '13',
-      petName: 'Coco',
-      clientName: 'Nicole Pires',
-      date: '2023-10-14',
-      time: '16:30',
-      serviceType: 'Vacinação',
-      duration: '15 min',
-      rating: 5.0,
-      notes: 'Reforço de vacina.',
-    },
-    {
-      id: '14',
-      petName: 'Teddy',
-      clientName: 'Otávio Rodrigues',
-      date: '2023-10-13',
-      time: '09:00',
-      serviceType: 'Fisioterapia',
-      duration: '60 min',
-      rating: 4.3,
-      notes: 'Sessão de fisioterapia para recuperação de cirurgia.',
-    },
-    {
-      id: '15',
-      petName: 'Ruby',
-      clientName: 'Patrícia Alves',
-      date: '2023-10-12',
-      time: '12:00',
-      serviceType: 'Consulta de Nutrição',
-      duration: '40 min',
-      rating: 4.9,
-      notes: 'Plano alimentar para perda de peso.',
-    },
-    {
-      id: '16',
-      petName: 'Duke',
-      clientName: 'Rafael Costa',
-      date: '2023-10-11',
-      time: '14:00',
-      serviceType: 'Exame de Imagem',
-      duration: '30 min',
-      rating: 4.0,
-      notes: 'Radiografia de tórax.',
-    },
-    {
-      id: '17',
-      petName: 'Milo',
-      clientName: 'Sofia Pereira',
-      date: '2023-10-10',
-      time: '10:00',
-      serviceType: 'Consulta de Comportamento',
-      duration: '60 min',
-      rating: 4.1,
-      notes: 'Problemas de ansiedade de separação.',
-    },
-    {
-      id: '18',
-      petName: 'Penny',
-      clientName: 'Thiago Lima',
-      date: '2023-10-09',
-      time: '15:30',
-      serviceType: 'Vacinação',
-      duration: '15 min',
-      rating: 5.0,
-      notes: 'Vacina contra gripe canina.',
-    },
-    {
-      id: '19',
-      petName: 'Gus',
-      clientName: 'Vitória Santos',
-      date: '2023-10-08',
-      time: '11:00',
-      serviceType: 'Consulta de Rotina',
-      duration: '30 min',
-      rating: 4.5,
-      notes: 'Check-up anual.',
-    },
-    {
-      id: '20',
-      petName: 'Willow',
-      clientName: 'Wallace Rocha',
-      date: '2023-10-07',
-      time: '14:00',
-      serviceType: 'Banho e Tosa',
-      duration: '60 min',
-      rating: 4.0,
-      notes: 'Banho e corte de unhas.',
-    },
+      time: '11:00 AM',
+      status: 'Concluída',
+      image: cat1
+    }
   ];
 
   const getFilteredConsultations = () => {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(today.getDate() - 7);
-    sevenDaysAgo.setHours(0, 0, 0, 0);
-
-    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    startOfMonth.setHours(0, 0, 0, 0);
-
     return consultations.filter(consultation => {
-      const consultationDate = new Date(consultation.date);
-      consultationDate.setHours(0, 0, 0, 0);
-
-      if (activeFilter === 'Todas') {
-        return true;
-      } else if (activeFilter === 'Hoje') {
-        return consultationDate.getTime() === today.getTime();
-      } else if (activeFilter === 'Semana') {
-        return consultationDate.getTime() >= sevenDaysAgo.getTime() && consultationDate.getTime() <= today.getTime();
-      } else if (activeFilter === 'Mês') {
-        return consultationDate.getTime() >= startOfMonth.getTime() && consultationDate.getTime() <= today.getTime();
+      if (activeFilter === 'Agendada') {
+        return consultation.status === 'Agendada';
+      } else if (activeFilter === 'Andamento') {
+        return consultation.status === 'Andamento';
+      } else if (activeFilter === 'Concluídas') {
+        return consultation.status === 'Concluída';
       }
-      return false;
+      return true;
     });
   };
 
-  const renderConsultationCard = ({ item }) => (
-    <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.petName}>{item.petName} - {item.clientName}</Text>
-        <View style={styles.ratingContainer}>
-          <FontAwesome name="star" size={16} color="#FFD700" />
-          <Text style={styles.ratingText}>{item.rating.toFixed(1)}</Text>
+  const renderConsultationCard = ({ item }) => {
+    let statusColor;
+    switch (item.status) {
+      case 'Agendada':
+        statusColor = Colors.info; // Blue for scheduled
+        break;
+      case 'Andamento':
+        statusColor = Colors.primary; // Primary color for in progress
+        break;
+      case 'Concluída':
+        statusColor = Colors.success; // Green for completed
+        break;
+      default:
+        statusColor = Colors.gray;
+    }
+
+    return (
+      <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('DetalhesConsultaScreen', { consultation: item })}>
+        <View style={styles.cardImageContainer}>
+          <Image source={item.image} style={styles.cardImage} resizeMode="cover" />
         </View>
-      </View>
-      <Text style={styles.cardText}>Data: {item.date} às {item.time}</Text>
-      <Text style={styles.cardText}>Serviço: {item.serviceType}</Text>
-      <Text style={styles.cardText}>Duração: {item.duration}</Text>
-      <Text style={styles.cardText}>Notas: {item.notes}</Text>
-      <TouchableOpacity style={styles.detailsButton}>
-        <Text style={styles.detailsButtonText}>Ver Detalhes</Text>
+        <View style={styles.cardInfoContainer}>
+          <Text style={styles.petName}>{item.petName}</Text>
+          <Text style={styles.serviceType}>{item.serviceType}</Text>
+          <Text style={styles.time}>{item.time}</Text>
+        </View>
+        <View style={[styles.statusBadge, { backgroundColor: statusColor }]}>
+          <Text style={styles.statusText}>{item.status}</Text>
+        </View>
       </TouchableOpacity>
-    </View>
-  );
+    );
+  };
 
   const filteredConsultations = getFilteredConsultations();
 
+  console.log('Active Filter:', activeFilter);
+  console.log('Filtered Consultations Length:', filteredConsultations.length);
+  if (filteredConsultations.length > 0) {
+    console.log('First Filtered Consultation:', filteredConsultations[0]);
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Histórico de Consultas</Text>
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        style={styles.filterContainer}
-        contentContainerStyle={styles.filterContentContainer}
-      >
-        {['Todas', 'Hoje', 'Semana', 'Mês'].map((filter) => (
+      <Text style={styles.title}>Minhas Consultas</Text>
+      <View style={styles.filterContainer}>
+        {['Agendada', 'Andamento', 'Concluídas'].map((filter) => (
           <TouchableOpacity
             key={filter}
             style={[
@@ -306,13 +123,16 @@ const TelaHistoricoConsultas = () => {
             </Text>
           </TouchableOpacity>
         ))}
-      </ScrollView>
+      </View>
       <FlatList
         data={filteredConsultations}
         renderItem={renderConsultationCard}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.flatListContent}
       />
+      <TouchableOpacity style={styles.scheduleButton}>
+        <Text style={styles.scheduleButtonText}>Agendar Consulta</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -320,91 +140,119 @@ const TelaHistoricoConsultas = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: Colors.background,
     paddingHorizontal: 16,
     paddingTop: 20,
+    paddingBottom: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#333',
+    color: Colors.textPrimary,
     marginBottom: 20,
     textAlign: 'center',
   },
   filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
     marginBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.lightGray,
   },
   filterContentContainer: {
-    paddingRight: 10,
+    // This style is no longer needed as filterContainer is not a ScrollView
   },
   filterButton: {
     paddingHorizontal: 15,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#E0E0E0',
-    marginRight: 10,
+    paddingVertical: 10,
+    borderRadius: 0,
+    backgroundColor: 'transparent',
+    marginHorizontal: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   filterButtonActive: {
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.primaryLight,
   },
   filterText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#666',
+    fontSize: 16,
+    fontWeight: '500',
+    color: Colors.textSecondary,
   },
   filterTextActive: {
-    color: '#FFFFFF',
+    color: Colors.textPrimary,
   },
   flatListContent: {
     paddingBottom: 20,
   },
   card: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    padding: 15,
+    backgroundColor: Colors.surface,
+    borderRadius: 15,
+    padding: 20,
     marginBottom: 15,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  cardHeader: {
+    elevation: 5,
+    shadowColor: Colors.shadow,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    justifyContent: 'space-between',
+    minHeight: 100,
+  },
+  cardImageContainer: {
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    overflow: 'hidden',
+    marginRight: 20,
+    borderWidth: 2,
+    borderColor: Colors.lightGray,
+  },
+  cardImage: {
+    width: '100%',
+    height: '100%',
+  },
+  cardInfoContainer: {
+    flex: 1,
+    justifyContent: 'center',
   },
   petName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.primary,
+    color: Colors.textPrimary,
   },
-  ratingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  serviceType: {
+    fontSize: 15,
+    color: Colors.textSecondary,
+    marginBottom: 4,
   },
-  ratingText: {
-    fontSize: 14,
-    color: '#FFD700',
-    marginLeft: 5,
+  time: {
+    fontSize: 15,
+    color: Colors.gray,
   },
-  cardText: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 5,
-  },
-  detailsButton: {
-    backgroundColor: Colors.secondary,
-    paddingVertical: 10,
+  statusBadge: {
+    backgroundColor: Colors.success, // Green for success status
+    paddingHorizontal: 10,
+    paddingVertical: 5,
     borderRadius: 8,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: Colors.white, // White text for status
+  },
+  scheduleButton: {
+    backgroundColor: Colors.primary,
+    paddingVertical: 15,
+    borderRadius: 12,
     alignItems: 'center',
     marginTop: 10,
   },
-  detailsButtonText: {
-    fontSize: 14,
+  scheduleButtonText: {
+    fontSize: 16,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: Colors.white,
   },
 });
 

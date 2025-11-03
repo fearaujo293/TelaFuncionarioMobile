@@ -17,16 +17,17 @@ import UserChatScreen from '../screens/UserChatScreen';
 import ConfigurationScreen from '../screens/ConfigurationScreen';
 import SecurityScreen from '../screens/SecurityScreen';
 import PrincipalScreen from '../screens/PrincipalScreen';
-import AdminConsultasScreen from '../screens/AdminConsultasScreen';
+import ConsultasScreen from '../screens/AdminConsultasScreen';
 import DetalhesConsultaScreen from '../screens/DetalhesConsultaScreen';
+import TelaHistoricoConsultas from '../screens/TelaHistoricoConsultas';
 
 // Ícones personalizados
-import iconeAgenda from '../assets/Calendario.png.png';
-import iconeChat from '../assets/Chat.png.png';
+import iconeAgenda from '../assets/CalendarioIcon.png';
+import iconeChat from '../assets/ChatIcon.png';
 import icone from '../assets/icone.png';
 import iconePet from '../assets/pet.png';
 import iconePessoa from '../assets/pessoa.png';
-import iconeVeterinario from '../assets/veterinario.png';
+import iconeVeterinario from '../assets/vet_icon.png';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -93,7 +94,7 @@ function HomeUserTabStack() {
 function ConsultasUserTabStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
-      <Stack.Screen name="MinhasConsultas" component={AdminConsultasScreen} options={{ title: 'Minhas Consultas' }} />
+      <Stack.Screen name="MinhasConsultas" component={TelaHistoricoConsultas} options={{ title: 'Minhas Consultas' }} />
       <Stack.Screen name="DetalhesConsulta" component={DetalhesConsultaScreen} options={{ title: 'Detalhes da Consulta', headerBackVisible: true, headerLeft: undefined }} />
     </Stack.Navigator>
   );

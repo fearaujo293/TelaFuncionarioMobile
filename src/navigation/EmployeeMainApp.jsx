@@ -2,7 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import EmployeeServicesScreen from '../screens/EmployeeServicesScreen';
 import EmployeeChatScreen from '../screens/EmployeeChatScreen';
-import ConfigurationScreen from '../screens/ConfigurationScreen';
+import EmployeeConfigurationScreen from '../screens/EmployeeConfigurationScreen';
 import EmployeeChatsListScreen from '../screens/EmployeeChatsListScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome } from '@expo/vector-icons';
@@ -60,7 +60,7 @@ const EmployeeMainApp = () => {
       />
       <Tab.Screen
         name="Configurações"
-        component={ConfigurationScreen}
+        component={EmployeeConfigurationScreen}
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="cog" color={color} size={size} />

@@ -1,10 +1,10 @@
 import React from 'react';
-import UserTabNavigator from './UserTabNavigator';
+import VeterinarianTabNavigator from './VeterinarianTabNavigator';
 
-const UserMainApp = () => {
+const VeterinarianMainApp = () => {
   return (
-    <UserTabNavigator />
+    <VeterinarianTabNavigator />
   );
 };
 
-export default UserMainApp;
+export default VeterinarianMainApp;

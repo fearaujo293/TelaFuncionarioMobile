@@ -1,0 +1,1 @@
+export const defaultPetImage = require('./dog1.png');

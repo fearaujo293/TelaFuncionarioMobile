@@ -16,6 +16,7 @@ import AdicionarPetScreen from '../screens/AdicionarPetScreen'; // Nova tela de 
 import PrincipalScreen from '../screens/PrincipalScreen'; // Importando PrincipalScreen
 import AdminConsultasScreen from '../screens/AdminConsultasScreen';
 import ChatScreen from '../screens/ChatScreen';
+import TelaHistoricoConsultas from '../screens/TelaHistoricoConsultas';
 
 // Novas telas do fluxo de agendamento
 import ScheduleFormScreen from '../screens/ScheduleFormScreen';
@@ -26,9 +27,9 @@ import SuccessScreen from '../screens/SuccessScreen';
 // Ícones personalizados
 import iconeHome from '../assets/icone.png';
 import iconePet from '../assets/pet.png';
-import iconeMao from '../assets/Chat.png.png';
+import iconeMao from '../assets/ChatIcon.png';
 import iconePessoa from '../assets/pessoa.png';
-import iconeVeterinario from '../assets/veterinario.png';
+import iconeVeterinario from '../assets/vet_icon.png';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -241,7 +242,7 @@ function MainTabs({ route }) {
           >
             <Stack.Screen
               name="Consultas"
-              component={ConsultasScreen}
+              component={TelaHistoricoConsultas}
               options={{ title: 'Minhas Consultas' }}
             />
             <Stack.Screen

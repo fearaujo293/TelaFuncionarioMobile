@@ -25,7 +25,7 @@ import ChangeEmailScreen from '../screens/ChangeEmailScreen'; // Import ChangeEm
 // Ícones personalizados (usando os existentes por enquanto)
 import iconeHome from '../assets/icone.png'; // Para Dashboard
 import iconePessoa from '../assets/pessoa.png'; // Para Funcionários
-import iconeMao from '../assets/Chat.png.png'; // Para Chat
+import iconeMao from '../assets/ChatIcon.png'; // Para Chat
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -86,36 +86,7 @@ function AdminDashboardStack() {
       <Stack.Screen name="AdminConsultations" component={AdminConsultationsScreen} options={{ title: 'Consultas', headerBackVisible: true, headerLeft: undefined }} />
       <Stack.Screen name="AdminAllChats" component={AdminAllChatsScreen} options={{ title: 'Todos os Chats', headerBackVisible: true, headerLeft: undefined }} />
       <Stack.Screen name="AdminListScreen" component={AdminListScreen} options={{ title: 'Funcionários', headerBackVisible: true, headerLeft: undefined }} />
-      <Stack.Screen
-          name="Configuration"
-          component={AdminConfigurationScreen}
-          options={{
-            title: 'Configurações',
-            headerShown: true,
-            headerStyle: { backgroundColor: Colors.primary },
-            headerTintColor: Colors.white,
-          }}
-        />
-        <Stack.Screen
-          name="ChangePassword"
-          component={ChangePasswordScreen}
-          options={{
-            title: 'Mudar Senha',
-            headerShown: true,
-            headerStyle: { backgroundColor: Colors.primary },
-            headerTintColor: Colors.white,
-          }}
-        />
-        <Stack.Screen
-          name="ChangeEmail"
-          component={ChangeEmailScreen}
-          options={{
-            title: 'Mudar Email',
-            headerShown: true,
-            headerStyle: { backgroundColor: Colors.primary },
-            headerTintColor: Colors.white,
-          }}
-        />
+
 
     </Stack.Navigator>
   );
@@ -136,6 +107,16 @@ function AdminChatStack() {
       <Stack.Screen name="AdminChat" component={AdminChatScreen} options={{ title: 'Chat' }} />
       <Stack.Screen name="AdminAllChats" component={AdminAllChatsScreen} options={{ title: 'Todos os Chats', headerBackVisible: true, headerLeft: undefined }} />
       <Stack.Screen name="UserChatScreen" component={UserChatScreen} options={({ route }) => ({ title: route.params.clientName, headerBackVisible: true, headerLeft: undefined })} />
+    </Stack.Navigator>
+  );
+}
+
+function AdminConfigurationStack() {
+  return (
+    <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
+      <Stack.Screen name="AdminConfiguration" component={AdminConfigurationScreen} options={{ title: 'Configurações' }} />
+      <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ title: 'Mudar Senha', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="ChangeEmail" component={ChangeEmailScreen} options={{ title: 'Mudar Email', headerBackVisible: true, headerLeft: undefined }} />
     </Stack.Navigator>
   );
 }
@@ -207,6 +188,24 @@ function AdminMainTabs({ route }) {
           tabBarIcon: ({ color, size }) => (
             <Image
               source={iconeMao}
+              style={{
+                width: size,
+                height: size,
+                tintColor: color,
+              }}
+              resizeMode="contain"
+            />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="ConfigurationTab"
+        component={AdminConfigurationStack}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Image
+              source={iconePessoa}
               style={{
                 width: size,
                 height: size,

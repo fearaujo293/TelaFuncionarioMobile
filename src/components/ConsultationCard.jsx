@@ -1,96 +1,89 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { defaultPetImage } from '../assets/defaultPetImage';
 import { Colors } from '../Utils/Theme';
 
 const ConsultationCard = ({ consultation, onPress }) => {
-  if (!consultation) {
-    return null;
-  }
-
-  const { pet, time, type, petImage, status } = consultation;
-
-  const getStatusColor = (status) => {
+  const getStatusStyle = (status) => {
     switch (status) {
-      case 'scheduled':
-        return Colors.mediumPurple;
-      case 'urgent':
-        return '#FF0000';
-      case 'completed':
-        return Colors.gray;
+      case 'Agendada':
+        return styles.statusAgendada;
+      case 'Andamento':
+        return styles.statusAndamento;
+      case 'Concluída':
+        return styles.statusConcluida;
       default:
-        return Colors.mediumPurple;
+        return {};
     }
   };
 
   return (
-    <TouchableOpacity style={styles.card} onPress={() => onPress(consultation)}>
+    <TouchableOpacity style={styles.card} onPress={onPress}>
+      <Image source={consultation.imageSource || defaultPetImage} style={styles.petImage} />
       <View style={styles.cardContent}>
-        {petImage && (
-          <Image source={petImage} style={styles.petImage} />
-        )}
-        <View style={styles.textContainer}>
-          <Text style={styles.petName}>{pet}</Text>
-          <Text style={styles.consultationTime}>{time}</Text>
-          <Text style={styles.consultationType}>{type}</Text>
-        </View>
+        <Text style={styles.petName}>{consultation.petName}</Text>
+        <Text style={styles.service}>{consultation.service}</Text>
+        <Text style={styles.time}>{consultation.time}</Text>
       </View>
-      <View style={[styles.statusIndicator, { backgroundColor: getStatusColor(status) }]} />
+      <View style={[styles.statusBadge, getStatusStyle(consultation.status)]}>
+        <Text style={styles.statusText}>{consultation.status}</Text>
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
+    flexDirection: 'row',
     backgroundColor: Colors.white,
-    borderRadius: 10,
-    marginHorizontal: 20,
+    borderRadius: 12,
+    padding: 16,
     marginVertical: 8,
-    padding: 15,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
     borderWidth: 1,
-    borderColor: Colors.lightPurple,
-  },
-  cardContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
+    borderColor: Colors.lightGrayBorder,
   },
   petImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 15,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 16,
   },
-  textContainer: {
+  cardContent: {
     flex: 1,
   },
   petName: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: Colors.darkHighlightPurple,
+    color: Colors.darkGray,
   },
-  consultationTime: {
+  service: {
     fontSize: 14,
-    color: Colors.mediumPurple,
-    marginTop: 2,
+    color: Colors.darkGray,
+    marginVertical: 4,
   },
-  consultationType: {
+  time: {
+    fontSize: 14,
+    color: Colors.darkGray,
+  },
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  statusText: {
+    color: Colors.white,
     fontSize: 12,
-    color: Colors.lightPurple,
-    marginTop: 2,
+    fontWeight: 'bold',
   },
-  statusIndicator: {
-    width: 10,
-    height: '100%',
-    borderRadius: 5,
-    marginLeft: 10,
+  statusAgendada: {
+    backgroundColor: Colors.purple,
+  },
+  statusAndamento: {
+    backgroundColor: Colors.orange,
+  },
+  statusConcluida: {
+    backgroundColor: Colors.green,
   },
 });
 

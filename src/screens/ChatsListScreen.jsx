@@ -17,7 +17,7 @@ const ChatsListScreen = () => {
       return {
         id: chatId,
         name: chat.chatPartnerInfo?.name || 'Veterinário',
-        avatar: chat.chatPartnerInfo?.avatar || require('../assets/veterinario.png'), // Default avatar
+        avatar: chat.chatPartnerInfo?.avatar || require('../assets/vet_icon.png'), // Default avatar
         lastMessage: last ? last.text : 'Nenhuma mensagem',
         time: last ? new Date(last.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '',
         // Para o usuário, considerar não lida quando a última mensagem é do veterinário

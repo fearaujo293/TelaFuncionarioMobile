@@ -1,22 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Switch, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Switch, ScrollView, AsyncStorage } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 
-const AdminConfigurationScreen = () => {
+const VeterinarianConfigurationScreen = () => {
     const navigation = useNavigation();
     const [profileImage, setProfileImage] = useState(null);
     const [notifications, setNotifications] = useState({
-        systemAlerts: true,
+        newAppointments: true,
     });
-    const [maintenanceMode, setMaintenanceMode] = useState(false);
+    const [isAvailable, setIsAvailable] = useState(true);
 
     useEffect(() => {
         const loadProfileImage = async () => {
-            const savedImage = await AsyncStorage.getItem('adminProfileImage');
+            const savedImage = await AsyncStorage.getItem('veterinarianProfileImage');
             if (savedImage) {
                 setProfileImage(savedImage);
             }
@@ -31,14 +30,14 @@ const AdminConfigurationScreen = () => {
     const pickImage = async () => {
         const { status: mediaLibraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (mediaLibraryStatus !== 'granted') {
-          Alert.alert('Permissão necessária', 'Desculpe, precisamos de permissão para acessar sua galeria de fotos.');
-          return;
+            Alert.alert('Desculpe, precisamos de permissão para acessar sua galeria de fotos.');
+            return;
         }
 
         const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
         if (cameraStatus !== 'granted') {
-          Alert.alert('Permissão necessária', 'Desculpe, precisamos de permissão para acessar sua câmera.');
-          return;
+            Alert.alert('Desculpe, precisamos de permissão para acessar sua câmera.');
+            return;
         }
 
         try {
@@ -50,11 +49,10 @@ const AdminConfigurationScreen = () => {
       });
 
       if (!result.canceled) {
-        const imageUri = result.assets[0].uri;
-        setProfileImage(imageUri);
-        await AsyncStorage.setItem('adminProfileImage', imageUri);
+        setProfileImage(result.assets[0].uri);
+        await AsyncStorage.setItem('veterinarianProfileImage', result.assets[0].uri);
         // Simulate API call
-        console.log("Uploading image to the server: ", imageUri);
+        console.log("Uploading image to the server: ", result.assets[0].uri);
       }
     } catch (error) {
       console.error("Error picking image: ", error);
@@ -72,14 +70,14 @@ const AdminConfigurationScreen = () => {
 
     const handleLogout = () => {
         Alert.alert(
-          "Sair",
-          "Tem certeza que deseja sair?",
-          [
-            {
-              text: "Cancelar",
-              style: "cancel"
-            },
-            { text: "Sair", onPress: () => {
+            "Sair",
+            "Tem certeza que deseja sair?",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                { text: "Sair", onPress: () => {
           console.log("Cleaning up session...");
           navigation.navigate('Login');
         } }
@@ -87,56 +85,50 @@ const AdminConfigurationScreen = () => {
         );
     };
 
-    const handleResetSystem = () => {
+    const handleDeleteAccount = () => {
         Alert.alert(
-          "Resetar Sistema",
-          "Tem certeza que deseja resetar o sistema? Todos os dados serão perdidos.",
-          [
-            {
-              text: "Cancelar",
-              style: "cancel"
-            },
-            { text: "Resetar", onPress: () => console.log("API call to reset system"), style: "destructive" }
-          ]
+            "Excluir Conta",
+            "Tem certeza que deseja excluir sua conta? Esta ação é irreversível.",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                { text: "Excluir", onPress: () => console.log("API call to delete account"), style: "destructive" }
+            ]
         );
     };
 
     return (
         <ScrollView style={styles.container}>
-            <LinearGradient colors={['#A367F0', '#D9534F']} style={styles.header}>
+            <LinearGradient colors={['#A367F0', '#6D52E8']} style={styles.header}>
                 <TouchableOpacity onPress={pickImage} style={styles.avatarContainer}>
-                    <Image source={profileImage ? { uri: profileImage } : require('../assets/pessoa.png')} style={styles.avatar} />
+                    <Image source={profileImage ? { uri: profileImage } : require('../assets/vet_icon.png')} style={styles.avatar} />
                     <View style={styles.cameraIcon}>
                         <Icon name="camera" size={15} color="#FFF" />
                     </View>
                 </TouchableOpacity>
-                <Text style={styles.headerTitle}>Configurações do Administrador</Text>
+                <Text style={styles.headerTitle}>Configurações do Veterinário</Text>
             </LinearGradient>
 
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Administrador</Text>
-                <MenuItem iconName="user-cog" text="Editar Perfil" onPress={() => console.log('API call to edit admin profile')} />
-                <MenuItem iconName="user-shield" text="Permissões Admin" onPress={() => console.log('API call to manage admin permissions')} />
+                <Text style={styles.sectionTitle}>Perfil Profissional</Text>
+                <MenuItem iconName="user-md" text="Editar Perfil" onPress={() => console.log('API call to edit veterinarian profile')} />
+                <MenuItem iconName="stethoscope" text="Editar Especialidades" onPress={() => console.log('API call to edit specialties')} />
+                <MenuItem iconName="star" text="Ver Avaliações" onPress={() => console.log('API call to get reviews')} />
+                <MenuItem iconName="clinic-medical" text="Clínica/Consultório" onPress={() => console.log('API call to get clinic/office info')} />
             </View>
 
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Gerenciamento de Usuários</Text>
-                <MenuItem iconName="users" text="Listar Usuários" onPress={() => console.log('API call to list users')} />
-                <MenuItem iconName="user-plus" text="Adicionar Usuário" onPress={() => console.log('API call to add user')} />
-                <MenuItem iconName="user-tie" text="Gerenciar Funcionários" onPress={() => console.log('API call to manage employees')} />
-            </View>
-
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Sistema</Text>
-                <MenuItem iconName="database" text="Backup de Dados" onPress={() => console.log('API call to backup data')} />
-                <MenuItem iconName="file-alt" text="Logs do Sistema" onPress={() => console.log('API call to view system logs')} />
-                <MenuItem iconName="server" text="Status do Servidor" onPress={() => console.log('API call to check server status')} />
+                <Text style={styles.sectionTitle}>Horários e Disponibilidade</Text>
+                <MenuItem iconName="calendar-alt" text="Definir Horários de Atendimento" onPress={() => console.log('API call to set office hours')} />
+                <MenuItem iconName="clock" text="Configurar Intervalos de Consulta" onPress={() => console.log('API call to set appointment intervals')} />
                 <View style={styles.notificationOption}>
-                    <Icon name="tools" size={18} color={'#A367F0'} style={styles.menuIcon} />
-                    <Text style={styles.menuText}>Modo Manutenção</Text>
+                    <Icon name="power-off" size={18} color={'#A367F0'} style={styles.menuIcon} />
+                    <Text style={styles.menuText}>Disponível para Agendamentos</Text>
                     <Switch
-                        value={maintenanceMode}
-                        onValueChange={setMaintenanceMode}
+                        value={isAvailable}
+                        onValueChange={setIsAvailable}
                         thumbColor={'#FFF'}
                         trackColor={{ false: '#C7C7CD', true: '#A367F0' }}
                     />
@@ -144,27 +136,19 @@ const AdminConfigurationScreen = () => {
             </View>
 
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Relatórios</Text>
-                <MenuItem iconName="chart-pie" text="Relatório Geral" onPress={() => console.log('API call to generate general report')} />
-                <MenuItem iconName="file-export" text="Exportar Dados" onPress={() => console.log('API call to export data')} />
-                <MenuItem iconName="analytics" text="Análise de Uso" onPress={() => console.log('API call for usage analysis')} />
-            </View>
-
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Configurações Gerais</Text>
-                <MenuItem iconName="cogs" text="Configurações do App" onPress={() => console.log('API call to manage app settings')} />
-                <MenuItem iconName="palette" text="Temas e Aparência" onPress={() => console.log('API call to manage themes')} />
-                <MenuItem iconName="envelope-open-text" text="Email e Notificações" onPress={() => console.log('API call to manage email and notifications')} />
+                <Text style={styles.sectionTitle}>Consultas</Text>
+                <MenuItem iconName="history" text="Histórico de Consultas" onPress={() => console.log('API call to get appointment history')} />
+                <MenuItem iconName="chart-bar" text="Relatórios" onPress={() => console.log('API call to get reports')} />
             </View>
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Notificações</Text>
                 <View style={styles.notificationOption}>
                     <Icon name="bell" size={18} color={'#A367F0'} style={styles.menuIcon} />
-                    <Text style={styles.menuText}>Alertas do Sistema</Text>
+                    <Text style={styles.menuText}>Nuevas Consultas</Text>
                     <Switch
-                        value={notifications.systemAlerts}
-                        onValueChange={(value) => setNotifications(prev => ({ ...prev, systemAlerts: value }))}
+                        value={notifications.newAppointments}
+                        onValueChange={(value) => setNotifications(prev => ({ ...prev, newAppointments: value }))}
                         thumbColor={'#FFF'}
                         trackColor={{ false: '#C7C7CD', true: '#A367F0' }}
                     />
@@ -175,20 +159,12 @@ const AdminConfigurationScreen = () => {
                 <Text style={styles.sectionTitle}>Segurança</Text>
                 <MenuItem iconName="lock" text="Mudar Senha" onPress={() => navigation.navigate('ChangePasswordScreen')} />
                 <MenuItem iconName="envelope" text="Mudar Email" onPress={() => navigation.navigate('ChangeEmailScreen')} />
-                <MenuItem iconName="shield-alt" text="Autenticação de 2 Fatores" onPress={() => {}} />
-            </View>
-
-            <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Suporte</Text>
-                <MenuItem iconName="question-circle" text="Central de Ajuda" onPress={() => {}} />
-                <MenuItem iconName="bug" text="Reportar Bug" onPress={() => {}} />
-                <MenuItem iconName="info-circle" text="Sobre o Sistema" onPress={() => {}} />
             </View>
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Conta</Text>
                 <MenuItem iconName="sign-out-alt" text="Sair" onPress={handleLogout} isDanger />
-                <MenuItem iconName="exclamation-triangle" text="Resetar Sistema" onPress={handleResetSystem} isDanger />
+                <MenuItem iconName="trash-alt" text="Excluir Conta" onPress={handleDeleteAccount} isDanger />
             </View>
         </ScrollView>
     );
@@ -275,4 +251,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default AdminConfigurationScreen;
+export default VeterinarianConfigurationScreen;

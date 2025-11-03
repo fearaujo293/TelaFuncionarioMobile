@@ -1,0 +1,1 @@
+export const defaultVetImage = require('./vet_icon.png');

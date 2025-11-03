@@ -1,190 +1,234 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Image, ActivityIndicator, Alert } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../Utils/Theme';
+import { consultationsData } from '../data/consultations';
 
-const consultationsData = [
-  { id: '1', clientName: 'João Silva', service: 'Corte de Cabelo', date: '2023-10-26', time: '10:00' },
-  { id: '2', clientName: 'Maria Souza', service: 'Manicure', date: '2023-10-26', time: '11:30' },
-  { id: '3', clientName: 'Pedro Lima', service: 'Barba', date: '2023-10-27', time: '14:00' },
-  { id: '4', clientName: 'Ana Costa', service: 'Coloração', date: '2023-10-27', time: '16:00' },
-];
+const ConsultasScreen = ({ navigation }) => {
+  const [activeTab, setActiveTab] = useState('Pendentes');
+  const [consultas, setConsultas] = useState({
+    Pendentes: [
+      {
+        id: '1',
+        petName: 'Luna',
+        ownerName: 'João Silva',
+        date: '2025-02-10',
+        time: '10:00',
+        service: 'Consulta de Rotina',
+        status: 'Pendente',
+        imageSource: require('../assets/cat1.png'),
+        veterinario: 'Dr. Silva',
+        sintomas: 'Meu gato acordou vomitando, está dormindo mais que o normal.',
+        localizacao: 'R. Bento Branco, 379 – Santo Amaro, São Paulo – SP',
+        implementos: ['Termômetro', 'Estetoscópio', 'Soro'],
+      },
+      {
+        id: '2',
+        petName: 'Rex',
+        ownerName: 'Maria Souza',
+        date: '2025-02-11',
+        time: '14:30',
+        service: 'Vacinação',
+        status: 'Pendente',
+        imageSource: require('../assets/dog1.png'),
+        veterinario: 'Dra. Costa',
+        sintomas: 'Vacinação anual de rotina.',
+        localizacao: 'Av. Paulista, 1000 – Bela Vista, São Paulo – SP',
+        implementos: ['Vacina', 'Algodão', 'Álcool'],
+      },
+    ],
+    Aceitas: [
+      {
+        id: '3',
+        petName: 'Buddy',
+        ownerName: 'Carlos Santos',
+        date: '2025-02-08',
+        time: '09:00',
+        service: 'Exame de Sangue',
+        status: 'Aceita',
+        imageSource: require('../assets/dog2.png'),
+        veterinario: 'Dr. Oliveira',
+        sintomas: 'Exames de rotina para check-up.',
+        localizacao: 'R. Augusta, 2000 – Cerqueira César, São Paulo – SP',
+        implementos: ['Coletor de sangue', 'Tubos de ensaio'],
+      },
+    ],
+    Concluídas: [
+      {
+        id: '4',
+        petName: 'Milo',
+        ownerName: 'Fernanda Lima',
+        date: '2025-01-20',
+        time: '11:00',
+        service: 'Tosa Higiênica',
+        status: 'Concluída',
+        veterinario: 'Dra. Almeida',
+        sintomas: 'Tosa para manter a higiene do pet.',
+        localizacao: 'Av. Brasil, 500 – Jardim América, Rio de Janeiro – RJ',
+        implementos: ['Máquina de tosa', 'Tesoura', 'Pente'],
+      },
+    ],
+  });
+  const [consultations, setConsultations] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-const AdminConsultationsScreen = () => {
-  const [activeTab, setActiveTab] = useState('pending');
+  useEffect(() => {
+    // Simula o carregamento de dados
+    setTimeout(() => {
+      setConsultations(consultationsData);
+      setLoading(false);
+    }, 2000);
+  }, []);
 
   const renderConsultationItem = ({ item }) => (
-    <View style={styles.consultationCard}>
-      <Text style={styles.clientName}>{item.clientName}</Text>
-      <Text style={styles.service}>{item.service}</Text>
-      <Text style={styles.dateTime}>{item.date} às {item.time}</Text>
-      <View style={styles.actionsContainer}>
-        <TouchableOpacity style={[styles.actionButton, styles.viewButton]}>
-          <Text style={styles.buttonText}>Ver Detalhes</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.actionButton, styles.cancelButton]}>
-          <Text style={styles.buttonText}>Cancelar</Text>
-        </TouchableOpacity>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => navigation.navigate('DetalhesConsulta', { consultation: item })}
+    >
+      <Image source={item.imageSource} style={styles.petImage} />
+      <View style={styles.cardContent}>
+        <Text style={styles.serviceName}>{item.serviceName}</Text>
+        <Text style={styles.date}>{item.date}</Text>
+        <Text style={styles.time}>{item.time}</Text>
+        <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
+          <Text style={styles.statusText}>{item.status}</Text>
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
-  const filteredConsultations = consultationsData.filter(consultation => {
-    if (activeTab === 'pending') return consultation.status === 'Agendada';
-    if (activeTab === 'accepted') return consultation.status === 'Aceita';
-    if (activeTab === 'completed') return consultation.status === 'Concluída';
-    return true;
-  });
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Confirmada':
+        return '#4CAF50'; // Verde
+      case 'Pendente':
+        return '#FFC107'; // Amarelo
+      case 'Cancelada':
+        return '#F44336'; // Vermelho
+      default:
+        return '#9E9E9E'; // Cinza
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+        <Text style={styles.loadingText}>Carregando consultas...</Text>
+      </View>
+    );
+  }
+
+  if (consultations.length === 0) {
+    return (
+      <View style={styles.emptyContainer}>
+        <Ionicons name="clipboard-outline" size={80} color={Colors.textGray} />
+        <Text style={styles.emptyTitle}>Nenhuma consulta encontrada</Text>
+        <Text style={styles.emptySubtitle}>Parece que você não tem consultas agendadas.</Text>
+      </View>
+    );
+  }
 
   return (
-    <View style={styles.container}>
-      <LinearGradient
-        colors={Colors.gradientPrimary}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <Text style={styles.headerTitle}>Consultas</Text>
-        <Text style={styles.headerSubtitle}>Gerencie as consultas</Text>
-      </LinearGradient>
-
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'pending' && styles.activeTabButton]}
-          onPress={() => setActiveTab('pending')}
-        >
-          <Text style={[styles.tabButtonText, activeTab === 'pending' && styles.activeTabButtonText]}>Pendentes</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'accepted' && styles.activeTabButton]}
-          onPress={() => setActiveTab('accepted')}
-        >
-          <Text style={[styles.tabButtonText, activeTab === 'accepted' && styles.activeTabButtonText]}>Aceitas</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tabButton, activeTab === 'completed' && styles.activeTabButton]}
-          onPress={() => setActiveTab('completed')}
-        >
-          <Text style={[styles.tabButtonText, activeTab === 'completed' && styles.activeTabButtonText]}>Concluídas</Text>
-        </TouchableOpacity>
-      </View>
-
+    <LinearGradient colors={Colors.gradientPrimary} style={styles.container}>
       <FlatList
-        data={filteredConsultations}
+        data={consultations}
+        keyExtractor={(item) => item.id}
         renderItem={renderConsultationItem}
-        keyExtractor={item => item.id}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={styles.flatListContent}
       />
-    </View>
+    </LinearGradient>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
-  header: {
-    paddingHorizontal: 24,
-    paddingTop: 40,
-    paddingBottom: 30,
+  flatListContent: {
+    padding: 16,
   },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: Colors.white,
+  card: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 16,
+    marginBottom: 12,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  petImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginRight: 16,
+  },
+  cardContent: {
+    flex: 1,
+  },
+  serviceName: {
+    fontSize: 18,
+    fontFamily: 'Geologica_600SemiBold',
     marginBottom: 4,
   },
-  headerSubtitle: {
+  date: {
     fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.9)',
-    fontWeight: '400',
+    color: Colors.textGray,
   },
-  tabContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    backgroundColor: Colors.white,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.lightGrayBorder,
-  },
-  tabButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 20,
-  },
-  activeTabButton: {
-    backgroundColor: Colors.primary,
-  },
-  tabButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: Colors.textSecondary,
-  },
-  activeTabButtonText: {
-    color: Colors.white,
-  },
-  listContent: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  consultationCard: {
-    backgroundColor: Colors.white,
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 20,
-    shadowColor: Colors.shadow,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
-  clientName: {
-    fontSize: 20,
-    // fontFamily: 'Geologica_600SemiBold',
-    color: Colors.text,
-    marginBottom: 5,
-  },
-  service: {
-    fontSize: 16,
-    // fontFamily: 'Geologica_400Regular',
-    color: Colors.textSecondary,
-    marginBottom: 5,
-  },
-  dateTime: {
+  time: {
     fontSize: 14,
-    // fontFamily: 'Geologica_400Regular',
-    color: Colors.textSecondary,
-    marginBottom: 10,
+    color: Colors.textGray,
+    marginBottom: 8,
   },
-  actionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-  },
-  actionButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 15,
+  statusBadge: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
     borderRadius: 5,
-    minWidth: 100,
+    alignSelf: 'flex-start',
+  },
+  statusText: {
+    color: '#fff',
+    fontSize: 12,
+    fontFamily: 'Geologica_500Medium',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
-    marginHorizontal: 5,
+    backgroundColor: Colors.background,
   },
-  viewButton: {
-    backgroundColor: Colors.primary,
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    color: Colors.textGray,
+    fontFamily: 'Geologica_400Regular',
   },
-  cancelButton: {
-    backgroundColor: Colors.error,
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.background,
+    padding: 20,
   },
-  buttonText: {
-    color: Colors.white,
-    // fontFamily: 'Geologica_500Medium',
-    fontSize: 14,
+  emptyTitle: {
+    fontSize: 20,
+    fontFamily: 'Geologica_600SemiBold',
+    color: Colors.textPrimary,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  emptySubtitle: {
+    fontSize: 16,
+    fontFamily: 'Geologica_400Regular',
+    color: Colors.textGray,
+    marginTop: 5,
+    textAlign: 'center',
   },
 });
 
-export default AdminConsultationsScreen;
+export default ConsultasScreen;
