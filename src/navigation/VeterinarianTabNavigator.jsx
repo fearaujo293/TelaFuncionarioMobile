@@ -2,6 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Image } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../Utils/Theme';
 
 // Telas
@@ -13,10 +14,12 @@ import EmployeeChatScreen from '../screens/EmployeeChatScreen';
 import VeterinarianConfigurationScreen from '../screens/VeterinarianConfigurationScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 import ChangeEmailScreen from '../screens/ChangeEmailScreen';
+import DetalhesConsultaScreen from '../screens/DetalhesConsultaScreen';
+import AgendamentoScreen from '../screens/AgendamentoScreen';
 
 // Ícones
 import iconeHome from '../assets/pet.png';
-import iconeConsulta from '../assets/CalendarioIcon.png';
+import iconeVeterinario from '../assets/vet_icon.png';
 import iconeAgenda from '../assets/CalendarioIcon.png'; 
 import iconeChat from '../assets/ChatIcon.png';
 import iconeConfig from '../assets/pessoa.png';
@@ -27,6 +30,12 @@ const Stack = createStackNavigator();
 const HomeVeterinarianTabStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="HomeVeterinarian" component={VeteScreen} />
+    {/* Aliases para compatibilidade com VeteScreen dentro de diferentes navegadores */}
+    <Stack.Screen name="DetalhesConsulta" component={DetalhesConsultaScreen} />
+    <Stack.Screen name="Agendamento" component={AgendamentoScreen} />
+    {/* Mantém nomes antigos se algum fluxo ainda referenciar */}
+    <Stack.Screen name="DetalhesConsultaScreen" component={DetalhesConsultaScreen} />
+    <Stack.Screen name="AgendamentoScreen" component={AgendamentoScreen} />
   </Stack.Navigator>
 );
 
@@ -62,16 +71,29 @@ const VeterinarianTabNavigator = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: Colors.purple,
-        tabBarInactiveTintColor: Colors.gray,
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarStyle: {
+          height: 60,
+          paddingBottom: 5,
+          paddingTop: 5,
+          borderTopWidth: 0,
+        },
+        tabBarBackground: () => (
+          <LinearGradient
+            colors={Colors.gradientPrimary}
+            style={{ flex: 1 }}
+          />
+        ),
+        tabBarActiveTintColor: 'white',
+        tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.7)',
+        tabBarShowLabel: false,
+        tabBarIcon: ({ color, size }) => {
           let iconName;
           if (route.name === 'Home') {
             iconName = iconeHome;
-          } else if (route.name === 'Minhas Consultas') {
-            iconName = iconeConsulta;
           } else if (route.name === 'Agenda') {
             iconName = iconeAgenda;
+          } else if (route.name === 'Minhas Consultas') {
+            iconName = iconeVeterinario;
           } else if (route.name === 'Chat') {
             iconName = iconeChat;
           } else if (route.name === 'Configurações') {
@@ -81,9 +103,10 @@ const VeterinarianTabNavigator = () => {
         },
       })}
     >
+      {/* Ordem ajustada: Home, Agenda, Minhas Consultas, Chat, Configurações */}
       <Tab.Screen name="Home" component={HomeVeterinarianTabStack} />
-      <Tab.Screen name="Minhas Consultas" component={MinhasConsultasStack} />
       <Tab.Screen name="Agenda" component={AgendaVeterinarianTabStack} />
+      <Tab.Screen name="Minhas Consultas" component={MinhasConsultasStack} />
       <Tab.Screen name="Chat" component={ChatVeterinarianTabStack} />
       <Tab.Screen name="Configurações" component={ConfigurationVeterinarianTabStack} />
     </Tab.Navigator>

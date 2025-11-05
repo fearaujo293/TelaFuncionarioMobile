@@ -182,10 +182,10 @@ import { LinearGradient } from 'expo-linear-gradient';
 
       {/* ESTATÍSTICAS RÁPIDAS */}
       <View style={styles.quickStatsContainer}>
-        <View style={styles.statCard}>
+        <TouchableOpacity style={styles.statCard} onPress={() => navigation.navigate('TelaHistoricoConsultas')}>
           <Text style={styles.statNumber}>{employeeData.stats.today}</Text>
           <Text style={styles.statLabel}>Consultas Hoje</Text>
-        </View>
+        </TouchableOpacity>
         <View style={styles.statCard}>
           <Text style={styles.statNumber}>{employeeData.stats.completed}</Text>
           <Text style={styles.statLabel}>Concluídas</Text>
@@ -200,6 +200,9 @@ import { LinearGradient } from 'expo-linear-gradient';
         </View>
         <TouchableOpacity style={styles.statCard} onPress={() => navigation.navigate('AdminListScreen')}>
           <Text style={styles.statLabel}>Ver Funcionários</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.statCard} onPress={() => navigation.navigate('AgendamentoScreen')}>
+          <Text style={styles.statLabel}>Agendar Consulta</Text>
         </TouchableOpacity>
       </View>
 

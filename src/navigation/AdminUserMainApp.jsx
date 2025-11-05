@@ -1,30 +1,29 @@
 import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Image, Animated, Easing, Text } from 'react-native';
+import { Image, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 
-// Suas telas originais
+// Telas do usuário
 import PetList from '../screens/PetList';
 import AgendamentoScreen from '../screens/AgendamentoScreen.jsx';
-import PetsScreen from '../screens/Petscreen';  // Tela de detalhes do pet
+import PetsScreen from '../screens/Petscreen';
 import ConfigurationScreen from '../screens/ConfigurationScreen';
 import ConsultasScreen from '../screens/VeteScreen';
-import DetalhesConsultaSharedScreen from '../screens/DetalhesConsultaSharedScreen';
-import AdicionarPetScreen from '../screens/AdicionarPetScreen'; // Nova tela de adicionar pet
-import PrincipalScreen from '../screens/PrincipalScreen'; // Importando PrincipalScreen
-import AdminConsultasScreen from '../screens/AdminConsultasScreen';
-import ChatScreen from '../screens/ChatScreen';
-import TelaHistoricoConsultas from '../screens/TelaHistoricoConsultas';
+import DetalhesConsultaScreen from '../screens/DetalhesConsultaScreen';
+import AdicionarPetScreen from '../screens/AdicionarPetScreen';
+import PrincipalScreen from '../screens/PrincipalScreen';
+import ChatsListScreen from '../screens/ChatsListScreen';
+import UserChatScreen from '../screens/UserChatScreen';
+import SecurityScreen from '../screens/SecurityScreen';
 
-// Novas telas do fluxo de agendamento
+// Fluxo de agendamento
 import ScheduleFormScreen from '../screens/ScheduleFormScreen';
 import VeteSelectScreen from '../screens/VeteSelectScreen';
 import ReviewScreen from '../screens/ReviewScreen';
 import SuccessScreen from '../screens/SuccessScreen';
 
-// Ícones personalizados
+// Ícones
 import iconeHome from '../assets/icone.png';
 import iconePet from '../assets/pet.png';
 import iconeMao from '../assets/ChatIcon.png';
@@ -48,11 +47,9 @@ const newHeaderOptions = {
   },
   headerTintColor: 'white',
   headerTitleAlign: 'center',
-  headerBackVisible: false,
-  headerLeft: () => null,
+  headerBackVisible: true,
 };
 
-// Configurações de transição suave
 const slideTransition = {
   gestureDirection: 'horizontal',
   transitionSpec: {
@@ -87,7 +84,7 @@ const slideTransition = {
   },
 };
 
-// Stack interno para a aba Pets (lista, adicionar, detalhes)
+// Stack para Pets
 function PetsStack() {
   return (
     <Stack.Navigator
@@ -103,7 +100,6 @@ function PetsStack() {
         component={AdicionarPetScreen}
         options={{ title: 'Adicionar Pet' }}
       />
-      {/* Removido AgendamentoScreen daqui */}
       <Stack.Screen
         name="PetDetails"
         component={PetsScreen}
@@ -113,33 +109,120 @@ function PetsStack() {
   );
 }
 
+// Stack para Home
 function HomeTabStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
-      <Stack.Screen name="HomeTab" component={PrincipalScreen} options={{ title: 'Home' }} />
+      <Stack.Screen 
+        name="HomeTab" 
+        component={PrincipalScreen} 
+        options={{ title: 'Home' }} 
+      />
     </Stack.Navigator>
   );
 }
 
+// Stack para Chat
 function ChatTabStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
-      <Stack.Screen name="ChatsList" component={require('../screens/ChatsListScreen').default} options={{ title: 'Conversas' }} />
-      <Stack.Screen name="Chat" component={require('../screens/ChatScreen').default} options={({ route }) => ({ title: route.params?.vet?.name || 'Chat', headerBackVisible: true, headerLeft: undefined })} />
-      <Stack.Screen name="UserChatScreen" component={require('../screens/UserChatScreen').default} options={({ route }) => ({ title: route.params?.clientName || 'Chat', headerBackVisible: true, headerLeft: undefined })} />
+      <Stack.Screen 
+        name="ChatsList" 
+        component={ChatsListScreen} 
+        options={{ title: 'Conversas' }} 
+      />
+      <Stack.Screen 
+        name="UserChatScreen" 
+        component={UserChatScreen} 
+        options={({ route }) => ({ 
+          title: route.params?.clientName || 'Chat',
+          headerBackVisible: true,
+        })} 
+      />
     </Stack.Navigator>
   );
 }
 
+// Stack para Configurações
 function ConfigurationTabStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
-      <Stack.Screen name="ConfigurationTab" component={ConfigurationScreen} options={{ title: 'Configurações' }} />
-      <Stack.Screen name="Security" component={require('../screens/SecurityScreen').default} options={{ title: 'Segurança' }} />
+      <Stack.Screen 
+        name="ConfigurationTab" 
+        component={ConfigurationScreen} 
+        options={{ title: 'Configurações' }} 
+      />
+      <Stack.Screen 
+        name="Security" 
+        component={SecurityScreen} 
+        options={{ title: 'Segurança' }} 
+      />
     </Stack.Navigator>
   );
 }
 
+// Stack para Veterinário/Consultas
+function ConsultasTabStack() {
+  return (
+    <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
+      <Stack.Screen
+        name="Consultas"
+        component={ConsultasScreen}
+        options={{ title: 'Minhas Consultas' }}
+      />
+      <Stack.Screen
+        name="Agendamento"
+        component={AgendamentoScreen}
+        options={{ 
+          title: 'Agendar Consulta',
+          headerBackVisible: true,
+        }}
+      />
+      <Stack.Screen
+        name="ScheduleFormScreen"
+        component={ScheduleFormScreen}
+        options={{ 
+          title: 'Detalhes do Agendamento',
+          headerBackVisible: true,
+        }}
+      />
+      <Stack.Screen
+        name="VeteSelectScreen"
+        component={VeteSelectScreen}
+        options={{ 
+          title: 'Selecionar Veterinário',
+          headerBackVisible: true,
+        }}
+      />
+      <Stack.Screen
+        name="ReviewScreen"
+        component={ReviewScreen}
+        options={{ 
+          title: 'Revisar Agendamento',
+          headerBackVisible: true,
+        }}
+      />
+      <Stack.Screen
+        name="SuccessScreen"
+        component={SuccessScreen}
+        options={{ 
+          title: 'Agendamento Concluído',
+          headerBackVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="DetalhesConsulta"
+        component={DetalhesConsultaScreen}
+        options={{ 
+          title: 'Detalhes da Consulta',
+          headerBackVisible: true,
+        }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+// Navegação Principal com Tabs
 function MainTabs({ route }) {
   const { initialTab } = route.params || {};
 
@@ -161,8 +244,8 @@ function MainTabs({ route }) {
         ),
         tabBarActiveTintColor: 'white',
         tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.7)',
-        headerShown: false, // Cabeçalho está dentro das stacks quando necessário
-        tabBarShowLabel: false, // Somente ícones
+        headerShown: false,
+        tabBarShowLabel: false,
       }}
     >
       <Tab.Screen
@@ -221,6 +304,7 @@ function MainTabs({ route }) {
 
       <Tab.Screen
         name="Veterinario"
+        component={ConsultasTabStack}
         options={{
           tabBarIcon: ({ color, size }) => (
             <Image
@@ -234,50 +318,7 @@ function MainTabs({ route }) {
             />
           ),
         }}
-      >
-        {() => (
-          <Stack.Navigator
-            screenOptions={newHeaderOptions}
-            initialRouteName="Consultas" // Explicitly set initial route
-          >
-            <Stack.Screen
-              name="Consultas"
-              component={TelaHistoricoConsultas}
-              options={{ title: 'Minhas Consultas' }}
-            />
-            <Stack.Screen
-              name="Agendamento"
-              component={AgendamentoScreen}
-              options={{ title: 'Agendar Consulta', headerBackVisible: true, headerLeft: undefined }}
-            />
-            <Stack.Screen
-              name="ScheduleFormScreen"
-              component={ScheduleFormScreen}
-              options={{ title: 'Detalhes do Agendamento', headerBackVisible: true, headerLeft: undefined }}
-            />
-            <Stack.Screen
-              name="VeteSelectScreen"
-              component={VeteSelectScreen}
-              options={{ title: 'Selecionar Veterinário', headerBackVisible: true, headerLeft: undefined }}
-            />
-            <Stack.Screen
-              name="ReviewScreen"
-              component={ReviewScreen}
-              options={{ title: 'Revisar Agendamento' }}
-            />
-            <Stack.Screen
-              name="SuccessScreen"
-              component={SuccessScreen}
-              options={{ title: 'Agendamento Concluído' }}
-            />
-            <Stack.Screen
-              name="DetalhesConsulta"
-              component={DetalhesConsultaSharedScreen}
-              options={{ title: 'Detalhes da Consulta', headerBackVisible: true, headerLeft: undefined }}
-            />
-          </Stack.Navigator>
-        )}
-      </Tab.Screen>
+      />
 
       <Tab.Screen
         name="Configurações"

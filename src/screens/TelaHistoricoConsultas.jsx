@@ -130,7 +130,7 @@ const TelaHistoricoConsultas = () => {
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.flatListContent}
       />
-      <TouchableOpacity style={styles.scheduleButton}>
+      <TouchableOpacity style={styles.scheduleButton} onPress={() => navigation.navigate('AgendamentoScreen')}>
         <Text style={styles.scheduleButtonText}>Agendar Consulta</Text>
       </TouchableOpacity>
     </View>

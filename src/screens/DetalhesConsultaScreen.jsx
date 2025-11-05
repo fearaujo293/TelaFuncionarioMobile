@@ -7,34 +7,31 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
- 
-const DetalhesConsultaScreen = ({ navigation, route }) => {
+import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+
+const DetalhesConsultaScreen = ({ route }) => {
+  const navigation = useNavigation();
   const { consulta } = route.params || {};
   
   // Se não houver dados da consulta, usar dados padrão
   const consultaData = consulta || {
-    petName: "Rex",
-    service: "Consulta Geral com Dr. Felipe A.",
-    doctorName: "Dr. Felipe A.", // Adicionado nome do doutor padrão
-    time: "10:00 AM",
-    date: "2025-07-01",
+    petName: "Pet",
+    service: "Serviço",
+    time: "Horário",
+    date: "Data",
     sintomas: "Sintomas não informados",
     localizacao: "Localização não informada",
     implementos: [],
     imageSource: require('../assets/cat1.png'),
-    status: "Pendente" // Adicionado status padrão para testes
+    status: "Pendente",
+    ownerName: "Cliente",
+    veterinario: "Veterinário"
   };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Header */}
-        <View style={styles.headerContainer}>
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
-        </View>
-
         {/* Main Card */}
         <View style={styles.mainCard}>
           {/* Pet Info */}
@@ -44,15 +41,26 @@ const DetalhesConsultaScreen = ({ navigation, route }) => {
               style={styles.petImage}
             />
             <Text style={styles.petName}>{consultaData.petName}</Text>
+            <Text style={styles.ownerName}>Dono: {consultaData.ownerName}</Text>
           </View>
 
           {/* Consultation Details */}
           <View style={styles.section}>
             <View style={styles.detailRow}>
-              <Text style={styles.detailText}>{consultaData.time} | {consultaData.date && consultaData.date.split('-').reverse().join('/')}</Text>
+              <FontAwesome name="calendar" size={14} color="#8D7EFB" />
+              <Text style={styles.detailText}>{consultaData.date}</Text>
             </View>
             <View style={styles.detailRow}>
+              <FontAwesome name="clock-o" size={14} color="#8D7EFB" />
+              <Text style={styles.detailText}>{consultaData.time}</Text>
+            </View>
+            <View style={styles.detailRow}>
+              <FontAwesome name="heartbeat" size={14} color="#8D7EFB" />
               <Text style={styles.detailText}>{consultaData.service}</Text>
+            </View>
+            <View style={styles.detailRow}>
+              <FontAwesome name="user-md" size={14} color="#8D7EFB" />
+              <Text style={styles.detailText}>{consultaData.veterinario}</Text>
             </View>
           </View>
  
@@ -80,16 +88,18 @@ const DetalhesConsultaScreen = ({ navigation, route }) => {
           </View>
  
           {/* Required Implements */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Implementos Necessários</Text>
-            <View style={styles.tagsContainer}>
-              {consultaData.implementos.map((implemento, index) => (
-                <View key={index} style={[styles.tag, styles.tagGreen]}>
-                  <Text style={styles.tagTextGreen}>{implemento}</Text>
-                </View>
-              ))}
+          {consultaData.implementos && consultaData.implementos.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Implementos Necessários</Text>
+              <View style={styles.tagsContainer}>
+                {consultaData.implementos.map((implemento, index) => (
+                  <View key={index} style={[styles.tag, styles.tagGreen]}>
+                    <Text style={styles.tagTextGreen}>{implemento}</Text>
+                  </View>
+                ))}
+              </View>
             </View>
-          </View>
+          )}
  
           {/* Observation */}
           <View style={styles.section}>
@@ -107,56 +117,44 @@ const DetalhesConsultaScreen = ({ navigation, route }) => {
             <Text style={styles.contactText}>
               Contato da Clínica: (11) 5555-1234
             </Text>
-            <View style={styles.mapIconsContainer}>
-              {/* Placeholder for map icons */}
-              {/* Imagens removidas conforme solicitado */}
-            </View>
           </View>
 
-          {/* Botões de ação - diferentes por status */}
+          {/* Botões de ação */}
           <View style={styles.actionButtonsContainer}>
-            {consultaData.status === 'Pendente' && (
-              <View style={styles.pendingActionButtonsContainer}>
-                <TouchableOpacity
-                  style={[styles.actionButton, styles.acceptButton]}
-                  onPress={() => console.log('Aceitar', consultaData.id)}
-                >
-                  <Text style={styles.actionButtonText}>Aceitar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={[styles.actionButton, styles.rejectButton]}
-                  onPress={() => console.log('Rejeitar', consultaData.id)}
-                >
-                  <Text style={styles.actionButtonText}>Rejeitar</Text>
-                </TouchableOpacity>
-              </View>
+            {consultaData.status === 'Agendada' && (
+              <TouchableOpacity 
+                style={[styles.actionButton, styles.confirmButton]}
+                onPress={() => console.log('Consulta confirmada')}
+              >
+                <Text style={styles.actionButtonText}>✓ Confirmar</Text>
+              </TouchableOpacity>
             )}
-            {consultaData.status === 'Aceita' && (
-              <TouchableOpacity style={styles.cancelConsultationButton} onPress={() => console.log('Cancelar consulta')}>
-                <Text style={styles.actionButtonText}>Cancelar Consulta</Text>
+            
+            {consultaData.status === 'Andamento' && (
+              <TouchableOpacity 
+                style={[styles.actionButton, styles.inProgressButton]}
+                onPress={() => console.log('Consulta em andamento')}
+              >
+                <Text style={styles.actionButtonText}>⏳ Em Andamento</Text>
               </TouchableOpacity>
             )}
             
             {consultaData.status === 'Concluída' && (
-              <TouchableOpacity style={styles.generateReportButton} onPress={() => console.log('Gerar Relatório', consultaData.id)}>
-                <Text style={styles.actionButtonText}>Gerar Relatório</Text>
+              <TouchableOpacity 
+                style={[styles.actionButton, styles.completedButton]}
+                onPress={() => console.log('Consulta concluída')}
+              >
+                <Text style={styles.actionButtonText}>✓ Concluída</Text>
               </TouchableOpacity>
             )}
-            
-            {consultaData.status === 'Agendada' && (
-              // Nenhum botão para consultas agendadas - área em branco
-              null
-            )}
-            
-            {consultaData.status === 'Andamento' && (
-              <>
-                <TouchableOpacity style={styles.emergencyButton} onPress={() => {}}>
-                  <Text style={styles.emergencyButtonText}>Clique Aqui</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelButton} onPress={() => {}}>
-                  <Text style={styles.cancelButtonText}>Cancelar</Text>
-                </TouchableOpacity>
-              </>
+
+            {consultaData.status === 'Pendente' && (
+              <TouchableOpacity 
+                style={[styles.actionButton, styles.pendingButton]}
+                onPress={() => console.log('Pendente de confirmação')}
+              >
+                <Text style={styles.actionButtonText}>⏱ Pendente</Text>
+              </TouchableOpacity>
             )}
           </View>
         </View>
@@ -173,18 +171,8 @@ const styles = StyleSheet.create({
   scrollContent: {
     alignItems: 'center',
     paddingVertical: 20,
+    paddingHorizontal: 16,
   },
-  headerContainer: {
-    width: '90%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  backButton: {
-    padding: 5,
-  },
-
   mainCard: {
     backgroundColor: '#FFFFFF',
     borderRadius: 12,
@@ -197,47 +185,61 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 3,
+    width: '100%',
   },
   petInfoContainer: {
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E5E7EB',
   },
   petImage: {
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    marginBottom: 8,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 12,
     alignSelf: 'center',
     resizeMode: 'contain',
+    borderWidth: 2,
+    borderColor: '#A367F0',
   },
   petName: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#6E59D9',
+    marginBottom: 4,
+  },
+  ownerName: {
+    fontSize: 14,
+    color: '#6B7280',
   },
   section: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
   detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#F0EBFF',
     borderRadius: 8,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    marginBottom: 4,
-    alignSelf: 'flex-start',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    marginBottom: 8,
     borderWidth: 1,
     borderColor: '#8D7EFB',
   },
   detailText: {
-    fontSize: 13,
+    fontSize: 14,
     color: '#6E59D9',
     fontWeight: '600',
+    marginLeft: 10,
+    flex: 1,
   },
   sectionTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#8D7EFB',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   descriptionBox: {
     backgroundColor: '#F7F5FF',
@@ -247,102 +249,22 @@ const styles = StyleSheet.create({
     borderColor: '#E7E3FB',
   },
   descriptionText: {
-    fontSize: 13,
-    color: '#4B5563'
+    fontSize: 14,
+    color: '#4B5563',
+    lineHeight: 20,
+    marginBottom: 8,
   },
   tagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginTop: 4,
+    marginTop: 8,
+    gap: 8,
   },
   tag: {
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 12,
-    marginRight: 8,
     marginBottom: 8,
-  },
-  actionButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 8,
-  },
-  pendingActionButtonsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginTop: 20,
-    width: '100%',
-  },
-  actionButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 15,
-    alignItems: 'center',
-    flex: 1,
-    marginHorizontal: 5,
-  },
-  actionButtonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  acceptButton: {
-    backgroundColor: '#4CAF50', // Verde
-  },
-  rejectButton: {
-    backgroundColor: '#F44336', // Vermelho
-  },
-  cancelConsultationButton: {
-    backgroundColor: '#F44336', // Vermelho
-    width: '100%',
-    paddingVertical: 15,
-    borderRadius: 15,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  generateReportButton: {
-    backgroundColor: '#4CAF50', // Verde
-    width: '100%',
-    paddingVertical: 15,
-    borderRadius: 15,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  reportButton: {
-    backgroundColor: '#A367F0',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  reportButtonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-  cancelButton: {
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-  },
-  cancelButtonText: {
-    color: '#A367F0',
-    fontWeight: 'bold',
-    fontSize: 16,
-    textDecorationLine: 'underline',
-  },
-  emergencyButton: {
-    backgroundColor: '#FF6B6B',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginRight: 12,
-  },
-  emergencyButtonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 16,
   },
   tagGreen: {
     backgroundColor: '#F0ECFF',
@@ -350,57 +272,55 @@ const styles = StyleSheet.create({
   tagTextGreen: {
     color: '#6E59D9',
     fontSize: 12,
-  },
-  tagRed: {
-    backgroundColor: '#E6D7FB',
-  },
-  tagTextRed: {
-    color: '#6E59D9',
-    fontSize: 12,
+    fontWeight: '500',
   },
   observationText: {
-    fontSize: 12,
-    color: '#6E59D9'
-  },
-  sectionTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#8D7EFB',
-    marginBottom: 4,
+    fontSize: 13,
+    color: '#6E59D9',
+    fontStyle: 'italic',
+    lineHeight: 18,
   },
   locationText: {
-    fontSize: 16,
-    color: '#4B5563',
-    lineHeight: 24,
-    width: '70%',
-    marginRight: 24,
-  },
-  contactText: {
     fontSize: 14,
     color: '#4B5563',
-    marginTop: 4,
+    lineHeight: 20,
+    marginBottom: 8,
   },
-  mapIconsContainer: {
-    flexDirection: 'row',
+  contactText: {
+    fontSize: 13,
+    color: '#4B5563',
+    marginBottom: 12,
+  },
+  actionButtonsContainer: {
+    marginTop: 20,
+    paddingTop: 20,
+    borderTopWidth: 1,
+    borderTopColor: '#E5E7EB',
+  },
+  actionButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    width: '100%',
+    marginBottom: 10,
   },
-  mapIcon: {
-    width: 60,
-    height: 60,
-    borderRadius: 12,
-    backgroundColor: '#FFFFFF',
-    marginLeft: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
-    resizeMode: 'contain',
+  actionButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 16,
   },
-  iconImage: {
-    width: 24,
-    height: 24,
-  }
+  confirmButton: {
+    backgroundColor: '#4CAF50',
+  },
+  inProgressButton: {
+    backgroundColor: '#FF9800',
+  },
+  completedButton: {
+    backgroundColor: '#2196F3',
+  },
+  pendingButton: {
+    backgroundColor: '#9C27B0',
+  },
 });
  
 export default DetalhesConsultaScreen;

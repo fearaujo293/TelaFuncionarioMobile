@@ -4,6 +4,9 @@ import EmployeeServicesScreen from '../screens/EmployeeServicesScreen';
 import EmployeeChatScreen from '../screens/EmployeeChatScreen';
 import EmployeeConfigurationScreen from '../screens/EmployeeConfigurationScreen';
 import EmployeeChatsListScreen from '../screens/EmployeeChatsListScreen';
+import TelaHistoricoConsultas from '../screens/TelaHistoricoConsultas';
+import DetalhesConsultaScreen from '../screens/DetalhesConsultaScreen';
+import AgendamentoScreen from '../screens/AgendamentoScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome } from '@expo/vector-icons';
 import { Colors } from '../Utils/Theme';
@@ -11,6 +14,16 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const Tab = createBottomTabNavigator();
 const ChatStack = createStackNavigator();
+const ServicesStack = createStackNavigator();
+
+const ServicesFlow = () => (
+  <ServicesStack.Navigator screenOptions={{ headerShown: false }}>
+    <ServicesStack.Screen name="EmployeeServices" component={EmployeeServicesScreen} />
+    <ServicesStack.Screen name="TelaHistoricoConsultas" component={TelaHistoricoConsultas} />
+    <ServicesStack.Screen name="DetalhesConsultaScreen" component={DetalhesConsultaScreen} />
+    <ServicesStack.Screen name="AgendamentoScreen" component={AgendamentoScreen} />
+  </ServicesStack.Navigator>
+);
 
 const ChatFlow = () => (
   <ChatStack.Navigator screenOptions={{ headerShown: false }}>
@@ -42,7 +55,7 @@ const EmployeeMainApp = () => {
       }}>
       <Tab.Screen
         name="Serviços"
-        component={EmployeeServicesScreen}
+        component={ServicesFlow}
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="briefcase" color={color} size={size} />
