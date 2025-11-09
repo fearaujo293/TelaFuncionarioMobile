@@ -7,6 +7,12 @@ import EmployeeChatsListScreen from '../screens/EmployeeChatsListScreen';
 import TelaHistoricoConsultas from '../screens/TelaHistoricoConsultas';
 import DetalhesConsultaScreen from '../screens/DetalhesConsultaScreen';
 import AgendamentoScreen from '../screens/AgendamentoScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
+import WorkHoursScreen from '../screens/WorkHoursScreen';
+import PaymentMethodsScreen from '../screens/PaymentMethodsScreen';
+import PrivacySettingsScreen from '../screens/PrivacySettingsScreen';
+import AppearanceSettingsScreen from '../screens/AppearanceSettingsScreen';
+import HelpSupportScreen from '../screens/HelpSupportScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { FontAwesome } from '@expo/vector-icons';
 import { Colors } from '../Utils/Theme';
@@ -15,6 +21,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 const Tab = createBottomTabNavigator();
 const ChatStack = createStackNavigator();
 const ServicesStack = createStackNavigator();
+const Stack = createStackNavigator();
 
 const ServicesFlow = () => (
   <ServicesStack.Navigator screenOptions={{ headerShown: false }}>
@@ -30,6 +37,18 @@ const ChatFlow = () => (
     <ChatStack.Screen name="EmployeeChatsList" component={EmployeeChatsListScreen} />
     <ChatStack.Screen name="EmployeeChatScreen" component={EmployeeChatScreen} />
   </ChatStack.Navigator>
+);
+
+const EmployeeConfigurationStack = () => (
+  <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Screen name="EmployeeConfiguration" component={EmployeeConfigurationScreen} />
+    <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+    <Stack.Screen name="WorkHours" component={WorkHoursScreen} />
+    <Stack.Screen name="PaymentMethods" component={PaymentMethodsScreen} />
+    <Stack.Screen name="PrivacySettings" component={PrivacySettingsScreen} />
+    <Stack.Screen name="AppearanceSettings" component={AppearanceSettingsScreen} />
+    <Stack.Screen name="HelpSupport" component={HelpSupportScreen} />
+  </Stack.Navigator>
 );
 
 const EmployeeMainApp = () => {
@@ -73,7 +92,7 @@ const EmployeeMainApp = () => {
       />
       <Tab.Screen
         name="Configurações"
-        component={EmployeeConfigurationScreen}
+        component={EmployeeConfigurationStack}
         options={{
           tabBarIcon: ({ color, size }) => (
             <FontAwesome name="cog" color={color} size={size} />

@@ -16,6 +16,17 @@ import ChatScreen from '../screens/ChatScreen';
 import UserChatScreen from '../screens/UserChatScreen';
 import ConfigurationScreen from '../screens/ConfigurationScreen';
 import SecurityScreen from '../screens/SecurityScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
+import NotificationsSettingsScreen from '../screens/NotificationsSettingsScreen';
+import PrivacySettingsScreen from '../screens/PrivacySettingsScreen';
+import AppearanceSettingsScreen from '../screens/AppearanceSettingsScreen';
+import HelpSupportScreen from '../screens/HelpSupportScreen';
+import ChangePasswordScreen from '../screens/ChangePasswordScreen';
+import ChangeEmailScreen from '../screens/ChangeEmailScreen';
+import AboutAppScreen from '../screens/AboutAppScreen';
+import TermsOfServiceScreen from '../screens/TermsOfServiceScreen';
+import PrivacyPolicyScreen from '../screens/PrivacyPolicyScreen';
+import PetList from '../screens/PetList';
 import PrincipalScreen from '../screens/PrincipalScreen';
 import ConsultasScreen from '../screens/AdminConsultasScreen';
 import DetalhesConsultaScreen from '../screens/DetalhesConsultaScreen';
@@ -112,9 +123,21 @@ function ChatUserTabStack() {
 function ConfigurationUserTabStack() {
   return (
     <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
+      <Stack.Screen name="TempTestScreen" component={() => <Text>Stack de Configurações Renderizado!</Text>} options={{ title: 'Teste' }} />
       <Stack.Screen name="Configuration" component={ConfigurationScreen} options={{ title: 'Configurações' }} />
       <Stack.Screen name="Security" component={SecurityScreen} options={{ title: 'Segurança' }} />
-    </Stack.Navigator>
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: 'Editar Perfil', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="NotificationsSettings" component={NotificationsSettingsScreen} options={{ title: 'Notificações', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="PrivacySettings" component={PrivacySettingsScreen} options={{ title: 'Privacidade', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="AppearanceSettings" component={AppearanceSettingsScreen} options={{ title: 'Aparência', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="HelpSupport" component={HelpSupportScreen} options={{ title: 'Ajuda e Suporte', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen} options={{ title: 'Mudar Senha', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="ChangeEmailScreen" component={ChangeEmailScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="AboutAppScreen" component={AboutAppScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="TermsOfServiceScreen" component={TermsOfServiceScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="PrivacyPolicyScreen" component={PrivacyPolicyScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="PetList" component={PetList} options={{ title: 'Meus Pets', headerBackVisible: true, headerLeft: undefined }} />
+        </Stack.Navigator>
   );
 }
 

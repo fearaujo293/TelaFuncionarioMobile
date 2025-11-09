@@ -115,7 +115,9 @@ const AdminConfigurationScreen = () => {
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Administrador</Text>
-                <MenuItem iconName="user-cog" text="Editar Perfil" onPress={() => console.log('API call to edit admin profile')} />
+                <MenuItem iconName="user-cog" text="Editar Perfil" onPress={() => navigation.navigate('EditProfile')} />
+          <MenuItem iconName="clock" text="Horário de Trabalho" onPress={() => navigation.navigate('WorkHours')} />
+          <MenuItem iconName="credit-card" text="Métodos de Pagamento" onPress={() => navigation.navigate('PaymentMethods')} />
                 <MenuItem iconName="user-shield" text="Permissões Admin" onPress={() => console.log('API call to manage admin permissions')} />
             </View>
 

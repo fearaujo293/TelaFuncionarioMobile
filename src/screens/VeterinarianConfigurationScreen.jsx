@@ -113,7 +113,16 @@ const VeterinarianConfigurationScreen = () => {
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Perfil Profissional</Text>
-                <MenuItem iconName="user-md" text="Editar Perfil" onPress={() => console.log('API call to edit veterinarian profile')} />
+                <MenuItem iconName="user-md" text="Editar Perfil" onPress={() => navigation.navigate('EditProfileScreen')} />
+                <MenuItem iconName="clock" text="Horário de Trabalho" onPress={() => navigation.navigate('WorkHoursScreen')} />
+                <MenuItem iconName="credit-card" text="Métodos de Pagamento" onPress={() => navigation.navigate('PaymentMethodsScreen')} />
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Preferências</Text>
+                <MenuItem iconName="user-secret" text="Privacidade" onPress={() => navigation.navigate('PrivacySettingsScreen')} />
+                <MenuItem iconName="paint-brush" text="Aparência" onPress={() => navigation.navigate('AppearanceSettingsScreen')} />
+                <MenuItem iconName="question-circle" text="Ajuda e Suporte" onPress={() => navigation.navigate('HelpSupportScreen')} />
                 <MenuItem iconName="stethoscope" text="Editar Especialidades" onPress={() => console.log('API call to edit specialties')} />
                 <MenuItem iconName="star" text="Ver Avaliações" onPress={() => console.log('API call to get reviews')} />
                 <MenuItem iconName="clinic-medical" text="Clínica/Consultório" onPress={() => console.log('API call to get clinic/office info')} />

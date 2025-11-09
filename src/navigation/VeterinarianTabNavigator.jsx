@@ -16,6 +16,12 @@ import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 import ChangeEmailScreen from '../screens/ChangeEmailScreen';
 import DetalhesConsultaScreen from '../screens/DetalhesConsultaScreen';
 import AgendamentoScreen from '../screens/AgendamentoScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
+import WorkHoursScreen from '../screens/WorkHoursScreen';
+import PaymentMethodsScreen from '../screens/PaymentMethodsScreen';
+import PrivacySettingsScreen from '../screens/PrivacySettingsScreen';
+import AppearanceSettingsScreen from '../screens/AppearanceSettingsScreen';
+import HelpSupportScreen from '../screens/HelpSupportScreen';
 
 // Ícones
 import iconeHome from '../assets/pet.png';
@@ -63,6 +69,12 @@ const ConfigurationVeterinarianTabStack = () => (
     <Stack.Screen name="ConfigurationVeterinarian" component={VeterinarianConfigurationScreen} />
     <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} />
     <Stack.Screen name="ChangeEmail" component={ChangeEmailScreen} />
+    <Stack.Screen name="EditProfileScreen" component={EditProfileScreen} />
+    <Stack.Screen name="WorkHoursScreen" component={WorkHoursScreen} />
+    <Stack.Screen name="PaymentMethodsScreen" component={PaymentMethodsScreen} />
+    <Stack.Screen name="PrivacySettingsScreen" component={PrivacySettingsScreen} />
+    <Stack.Screen name="AppearanceSettingsScreen" component={AppearanceSettingsScreen} />
+    <Stack.Screen name="HelpSupportScreen" component={HelpSupportScreen} />
   </Stack.Navigator>
 );
 

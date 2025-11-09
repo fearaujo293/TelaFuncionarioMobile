@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Switch, ScrollView, AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Switch, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
@@ -126,15 +127,23 @@ const ConfigurationScreen = () => {
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Perfil</Text>
-                <MenuItem iconName="user-edit" text="Editar Perfil" onPress={() => console.log('API call to edit profile')} />
+                <MenuItem iconName="user-edit" text="Editar Perfil" onPress={() => navigation.navigate('Configurações', { screen: 'EditProfile' })} />
                 <MenuItem iconName="camera" text="Alterar Foto de Perfil" onPress={pickImage} />
-                <MenuItem iconName="paw" text="Meus Pets" onPress={() => navigation.navigate('PetList')} />
+          <MenuItem iconName="bell" text="Notificações"
+            onPress={() => navigation.navigate('Configurações', { screen: 'NotificationsSettings' })} />
+          <MenuItem iconName="eye" text="Privacidade"
+            onPress={() => navigation.navigate('Configurações', { screen: 'PrivacySettings' })} />
+          <MenuItem iconName="palette" text="Aparência"
+            onPress={() => navigation.navigate('Configurações', { screen: 'AppearanceSettings' })} />
+          <MenuItem iconName="question-circle" text="Ajuda e Suporte"
+            onPress={() => navigation.navigate('Configurações', { screen: 'HelpSupport' })} />
+          <MenuItem iconName="paw" text="Meus Pets" onPress={() => navigation.navigate('Configurações', { screen: 'PetList' })} />
             </View>
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Segurança</Text>
-                <MenuItem iconName="lock" text="Mudar Senha" onPress={() => navigation.navigate('ChangePasswordScreen')} />
-                <MenuItem iconName="envelope" text="Mudar Email" onPress={() => navigation.navigate('ChangeEmailScreen')} />
+                <MenuItem iconName="lock" text="Mudar Senha" onPress={() => navigation.navigate('Configurações', { screen: 'ChangePasswordScreen' })} />
+                <MenuItem iconName="envelope" text="Mudar Email" onPress={() => navigation.navigate('Configurações', { screen: 'ChangeEmailScreen' })} />
             </View>
 
             <View style={styles.section}>
@@ -155,9 +164,9 @@ const ConfigurationScreen = () => {
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Sobre</Text>
-                <MenuItem iconName="info-circle" text="Sobre o App" onPress={() => console.log('API call to get app info')} />
-                <MenuItem iconName="file-contract" text="Termos de Serviço" onPress={() => console.log('API call to get terms of service')} />
-                <MenuItem iconName="user-secret" text="Política de Privacidade" onPress={() => console.log('API call to get privacy policy')} />
+                <MenuItem iconName="info-circle" text="Sobre o App" onPress={() => navigation.navigate('Configurações', { screen: 'AboutAppScreen' })} />
+                <MenuItem iconName="file-contract" text="Termos de Serviço" onPress={() => navigation.navigate('Configurações', { screen: 'TermsOfServiceScreen' })} />
+                <MenuItem iconName="user-secret" text="Política de Privacidade" onPress={() => navigation.navigate('Configurações', { screen: 'PrivacyPolicyScreen' })} />
             </View>
 
             <View style={styles.section}>

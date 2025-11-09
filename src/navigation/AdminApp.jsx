@@ -18,9 +18,12 @@ import UserChatScreen from '../screens/UserChatScreen'; // Import UserChatScreen
 import AdminConsultationsScreen from '../screens/AdminConsultationsScreen'; // Import AdminConsultationsScreen
 import AdminAllChatsScreen from '../screens/AdminAllChatsScreen'; // Import AdminAllChatsScreen
 import AdminReportsScreen from '../screens/AdminReportsScreen'; // Import AdminReportsScreen
-   import AdminConfigurationScreen from '../screens/AdminConfigurationScreen'; // Import AdminConfigurationScreen
+import AdminConfigurationScreen from '../screens/AdminConfigurationScreen'; // Import AdminConfigurationScreen
 import ChangePasswordScreen from '../screens/ChangePasswordScreen'; // Import ChangePasswordScreen
 import ChangeEmailScreen from '../screens/ChangeEmailScreen'; // Import ChangeEmailScreen
+import EditProfileScreen from '../screens/EditProfileScreen';
+import WorkHoursScreen from '../screens/WorkHoursScreen';
+import PaymentMethodsScreen from '../screens/PaymentMethodsScreen';
 
 // Ícones personalizados (usando os existentes por enquanto)
 import iconeHome from '../assets/icone.png'; // Para Dashboard
@@ -117,6 +120,9 @@ function AdminConfigurationStack() {
       <Stack.Screen name="AdminConfiguration" component={AdminConfigurationScreen} options={{ title: 'Configurações' }} />
       <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ title: 'Mudar Senha', headerBackVisible: true, headerLeft: undefined }} />
       <Stack.Screen name="ChangeEmail" component={ChangeEmailScreen} options={{ title: 'Mudar Email', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: 'Editar Perfil', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="WorkHours" component={WorkHoursScreen} options={{ title: 'Horário de Trabalho', headerBackVisible: true, headerLeft: undefined }} />
+      <Stack.Screen name="PaymentMethods" component={PaymentMethodsScreen} options={{ title: 'Métodos de Pagamento', headerBackVisible: true, headerLeft: undefined }} />
     </Stack.Navigator>
   );
 }

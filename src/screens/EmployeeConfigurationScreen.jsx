@@ -119,20 +119,24 @@ const EmployeeConfigurationScreen = () => {
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Perfil</Text>
-                <MenuItem iconName="user-edit" text="Editar Perfil" onPress={() => console.log('API call to edit employee profile')} />
-                <MenuItem iconName="id-badge" text="Meu Cargo" onPress={() => console.log('API call to get employee role')} />
-                <MenuItem iconName="id-card" text="Dados Funcionário" onPress={() => console.log('API call to get employee data')} />
+                <MenuItem iconName="user-edit" text="Editar Perfil" onPress={() => navigation.navigate('EditProfile')} />
+                <MenuItem iconName="calendar-day" text="Horário de Trabalho" onPress={() => navigation.navigate('WorkHours')} />
+                <MenuItem iconName="credit-card" text="Métodos de Pagamento" onPress={() => navigation.navigate('PaymentMethods')} />
             </View>
 
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Serviços</Text>
-                <MenuItem iconName="concierge-bell" text="Meus Serviços" onPress={() => console.log('API call to get employee services')} />
-                <MenuItem iconName="tasks" text="Tarefas do Dia" onPress={() => console.log('API call to get daily tasks')} />
+                <Text style={styles.sectionTitle}>Privacidade</Text>
+                <MenuItem iconName="user-secret" text="Privacidade" onPress={() => navigation.navigate('PrivacySettings')} />
             </View>
 
             <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Disponibilidade</Text>
-                <MenuItem iconName="calendar-day" text="Horário de Trabalho" onPress={() => console.log('API call to get work schedule')} />
+                <Text style={styles.sectionTitle}>Aparência</Text>
+                <MenuItem iconName="paint-brush" text="Aparência" onPress={() => navigation.navigate('AppearanceSettings')} />
+            </View>
+
+            <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Suporte</Text>
+                <MenuItem iconName="question-circle" text="Ajuda e Suporte" onPress={() => navigation.navigate('HelpSupport')} />
                 <View style={styles.notificationOption}>
                     <Icon name="toggle-on" size={18} color={'#A367F0'} style={styles.menuIcon} />
                     <Text style={styles.menuText}>Status Online</Text>
