@@ -9,90 +9,12 @@ import {
   FlatList,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useVeterinarianContext } from '../context/VeterinarianContext';
 
 const VeteScreen = () => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState('Agendada');
-
-  // Dados das consultas
-  const consultasData = {
-    Agendada: [
-      {
-        id: 1,
-        petName: "Luna",
-        service: "Consulta Geral", 
-        time: "10:00 AM",
-        imageSource: require('../assets/cat1.png'),
-        status: "Agendada",
-        date: "2025-02-15",
-        sintomas: "Meu gato acordou vomitando, está dormindo mais que o normal e não está comendo nada.",
-        localizacao: "R. Bento Branco de Andrade Filho, 379 – Santo Amaro, São Paulo – SP, 04757-000",
-        implementos: ["Termômetro", "Estetoscópio", "Soro"],
-        ownerName: "João Silva",
-        veterinario: "Dr. Silva"
-      },
-      {
-        id: 2,
-        petName: "Rex", 
-        service: "Vacinação",
-        time: "02:30 PM",
-        imageSource: require('../assets/dog1.png'),
-        status: "Agendada",
-        date: "2025-02-16",
-        sintomas: "Vacinação anual de rotina para meu cachorro.",
-        localizacao: "Av. Paulista, 1000 – Bela Vista, São Paulo – SP, 01310-000",
-        implementos: ["Vacina", "Algodão", "Álcool"],
-        ownerName: "Maria Souza",
-        veterinario: "Dra. Costa"
-      }
-    ],
-    Andamento: [
-      {
-        id: 3,
-        petName: "Buddy",
-        service: "Exame de Sangue", 
-        time: "09:00 AM",
-        imageSource: require('../assets/dog2.png'),
-        status: "Andamento",
-        date: "2025-02-10",
-        sintomas: "Meu cachorro está com fraqueza e perda de apetite, precisa de exame de sangue.",
-        localizacao: "R. Augusta, 500 – Consolação, São Paulo – SP, 01305-000",
-        implementos: ["Agulha", "Tubo de coleta", "Algodão"],
-        ownerName: "Carlos Santos",
-        veterinario: "Dr. Oliveira"
-      }
-    ],
-    Concluídas: [
-      {
-        id: 4,
-        petName: "Miau",
-        service: "Tosa", 
-        time: "04:00 PM",
-        imageSource: require('../assets/cat1.png'),
-        status: "Concluída",
-        date: "2025-02-05",
-        sintomas: "Tosa de rotina para meu gato de pelo longo.",
-        localizacao: "R. Oscar Freire, 800 – Jardim Paulista, São Paulo – SP, 01426-000",
-        implementos: ["Tesoura", "Máquina de tosa", "Pente"],
-        ownerName: "Ana Costa",
-        veterinario: "Dra. Lima"
-      },
-      {
-        id: 5,
-        petName: "Max",
-        service: "Banho", 
-        time: "01:00 PM",
-        imageSource: require('../assets/dog1.png'),
-        status: "Concluída",
-        date: "2025-02-04",
-        sintomas: "Banho e higienização completa para meu cachorro.",
-        localizacao: "R. Haddock Lobo, 500 – Jardim Paulista, São Paulo – SP, 01414-000",
-        implementos: ["Shampoo", "Condicionador", "Toalha"],
-        ownerName: "Pedro Lima",
-        veterinario: "Dr. Pereira"
-      }
-    ]
-  };
+  const { appointments } = useVeterinarianContext(); // ✅ Context isolado
 
   const handleCardPress = (consulta) => {
     // Formatar data para o formato esperado
@@ -127,7 +49,7 @@ const VeteScreen = () => {
     </TouchableOpacity>
   );
 
-  const currentConsultas = consultasData[activeTab] || [];
+  const currentConsultas = appointments[activeTab] || [];
 
   return (
     <View style={styles.container}>
@@ -289,20 +211,19 @@ const styles = StyleSheet.create({
     left: '10%',
     right: '10%',
     backgroundColor: '#A367F0',
-    height: 48,
-    borderRadius: 8,
-    justifyContent: 'center',
+    borderRadius: 25,
+    paddingVertical: 12,
     alignItems: 'center',
-    elevation: 3,
+    elevation: 4,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3,
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
   scheduleButtonText: {
     color: '#FFFFFF',
-    fontSize: 16,
     fontWeight: 'bold',
+    fontSize: 14,
   },
 });
 

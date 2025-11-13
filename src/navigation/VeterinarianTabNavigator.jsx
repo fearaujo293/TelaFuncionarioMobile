@@ -9,6 +9,7 @@ import { Colors } from '../Utils/Theme';
 import VeteScreen from '../screens/VeteScreen';
 import AllAppointmentsScreen from '../screens/AllAppointmentsScreen';
 import AgendaScreen from '../screens/AgendaScreen';
+import VeterinarianHomeScreen from '../screens/VeterinarianHomeScreen';
 import EmployeeChatsListScreen from '../screens/EmployeeChatsListScreen';
 import EmployeeChatScreen from '../screens/EmployeeChatScreen';
 import VeterinarianConfigurationScreen from '../screens/VeterinarianConfigurationScreen';
@@ -35,13 +36,7 @@ const Stack = createStackNavigator();
 
 const HomeVeterinarianTabStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="HomeVeterinarian" component={VeteScreen} />
-    {/* Aliases para compatibilidade com VeteScreen dentro de diferentes navegadores */}
-    <Stack.Screen name="DetalhesConsulta" component={DetalhesConsultaScreen} />
-    <Stack.Screen name="Agendamento" component={AgendamentoScreen} />
-    {/* Mantém nomes antigos se algum fluxo ainda referenciar */}
-    <Stack.Screen name="DetalhesConsultaScreen" component={DetalhesConsultaScreen} />
-    <Stack.Screen name="AgendamentoScreen" component={AgendamentoScreen} />
+    <Stack.Screen name="HomeVeterinarian" component={VeterinarianHomeScreen} />
   </Stack.Navigator>
 );
 
