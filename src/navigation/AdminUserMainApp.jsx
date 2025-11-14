@@ -29,6 +29,7 @@ import iconePet from '../assets/pet.png';
 import iconeMao from '../assets/ChatIcon.png';
 import iconePessoa from '../assets/pessoa.png';
 import iconeVeterinario from '../assets/vet_icon.png';
+import { VeterinarianProvider } from '../context/VeterinarianContext';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -164,12 +165,13 @@ function ConfigurationTabStack() {
 // Stack para Veterinário/Consultas
 function ConsultasTabStack() {
   return (
-    <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
-      <Stack.Screen
-        name="Consultas"
-        component={ConsultasScreen}
-        options={{ title: 'Minhas Consultas' }}
-      />
+    <VeterinarianProvider>
+      <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
+        <Stack.Screen
+          name="Consultas"
+          component={ConsultasScreen}
+          options={{ title: 'Minhas Consultas' }}
+        />
       <Stack.Screen
         name="Agendamento"
         component={AgendamentoScreen}
@@ -210,15 +212,16 @@ function ConsultasTabStack() {
           headerBackVisible: false,
         }}
       />
-      <Stack.Screen
-        name="DetalhesConsulta"
-        component={DetalhesConsultaScreen}
-        options={{ 
-          title: 'Detalhes da Consulta',
-          headerBackVisible: true,
-        }}
-      />
-    </Stack.Navigator>
+        <Stack.Screen
+          name="DetalhesConsulta"
+          component={DetalhesConsultaScreen}
+          options={{ 
+            title: 'Detalhes da Consulta',
+            headerBackVisible: true,
+          }}
+        />
+      </Stack.Navigator>
+    </VeterinarianProvider>
   );
 }
 
@@ -310,8 +313,8 @@ function MainTabs({ route }) {
             <Image
               source={iconeVeterinario}
               style={{
-                width: size,
-                height: size,
+                width: size + 8,
+                height: size + 8,
                 tintColor: color,
               }}
               resizeMode="contain"

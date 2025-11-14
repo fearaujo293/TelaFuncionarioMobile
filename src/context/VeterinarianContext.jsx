@@ -61,12 +61,22 @@ export const VeterinarianProvider = ({ children }) => {
     });
   };
 
+  const addAppointment = (status, appointment) => {
+    setAppointments(prev => {
+      const updated = { ...prev };
+      updated[status] = [...(updated[status] || []), appointment];
+      AsyncStorage.setItem('vet_appointments', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   return (
     <VeterinarianContext.Provider
       value={{
         appointments,
         updateAppointment,
         moveAppointment,
+        addAppointment,
         setAppointments
       }}
     >

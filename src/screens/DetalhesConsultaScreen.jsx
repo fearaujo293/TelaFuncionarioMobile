@@ -8,7 +8,10 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../Utils/Theme';
 import { useNavigation } from '@react-navigation/native';
+import GradientHeader from '../components/GradientHeader';
 
 const DetalhesConsultaScreen = ({ route }) => {
   const navigation = useNavigation();
@@ -29,8 +32,24 @@ const DetalhesConsultaScreen = ({ route }) => {
     veterinario: "Veterinário"
   };
 
+  const getStatusBadgeStyle = (status) => {
+    switch (status) {
+      case 'Agendada':
+        return { bg: '#FFF3E0', text: '#FF8C00' };
+      case 'Andamento':
+        return { bg: '#F3E5F5', text: '#A367F0' };
+      case 'Concluída':
+        return { bg: '#E8F5E9', text: '#2E7D32' };
+      case 'Pendente':
+        return { bg: '#F0F9FF', text: '#0EA5E9' };
+      default:
+        return { bg: '#F3E5F5', text: '#A367F0' };
+    }
+  };
+
   return (
     <View style={styles.container}>
+      <GradientHeader title="Detalhes da Consulta" />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Main Card */}
         <View style={styles.mainCard}>
@@ -44,26 +63,40 @@ const DetalhesConsultaScreen = ({ route }) => {
             <Text style={styles.ownerName}>Dono: {consultaData.ownerName}</Text>
           </View>
 
-          {/* Consultation Details */}
-          <View style={styles.section}>
-            <View style={styles.detailRow}>
-              <FontAwesome name="calendar" size={14} color="#8D7EFB" />
-              <Text style={styles.detailText}>{consultaData.date}</Text>
+          <View style={styles.parallelGridRow}>
+            <View style={styles.parallelInfoCard}>
+              <View style={styles.parallelInfoLine}>
+                <FontAwesome name="calendar" size={14} color="#8D7EFB" />
+                <Text style={styles.parallelInfoLabel}>Data</Text>
+                <Text style={styles.parallelInfoValue}>{consultaData.date}</Text>
+              </View>
+              <View style={styles.parallelInfoLine}>
+                <FontAwesome name="clock-o" size={14} color="#8D7EFB" />
+                <Text style={styles.parallelInfoLabel}>Hora</Text>
+                <Text style={styles.parallelInfoValue}>{consultaData.time}</Text>
+              </View>
             </View>
-            <View style={styles.detailRow}>
-              <FontAwesome name="clock-o" size={14} color="#8D7EFB" />
-              <Text style={styles.detailText}>{consultaData.time}</Text>
-            </View>
-            <View style={styles.detailRow}>
-              <FontAwesome name="heartbeat" size={14} color="#8D7EFB" />
-              <Text style={styles.detailText}>{consultaData.service}</Text>
-            </View>
-            <View style={styles.detailRow}>
-              <FontAwesome name="user-md" size={14} color="#8D7EFB" />
-              <Text style={styles.detailText}>{consultaData.veterinario}</Text>
+            <View style={styles.parallelInfoCard}>
+              <View style={styles.parallelInfoLine}>
+                <FontAwesome name="heartbeat" size={14} color="#8D7EFB" />
+                <Text style={styles.parallelInfoLabel}>Serviço</Text>
+                <Text style={styles.parallelInfoValue}>{consultaData.service}</Text>
+              </View>
+              <View style={styles.parallelInfoLine}>
+                <FontAwesome name="user-md" size={14} color="#8D7EFB" />
+                <Text style={styles.parallelInfoLabel}>Veterinário</Text>
+                <Text style={styles.parallelInfoValue}>{consultaData.veterinario}</Text>
+              </View>
             </View>
           </View>
  
+          {/* Status Badge */}
+          <View style={[styles.statusBadge, { backgroundColor: getStatusBadgeStyle(consultaData.status).bg }]}>
+            <Text style={[styles.statusText, { color: getStatusBadgeStyle(consultaData.status).text }]}>
+              {consultaData.status}
+            </Text>
+          </View>
+
           {/* Symptom Description */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Descrição dos Sintomas</Text>
@@ -122,38 +155,34 @@ const DetalhesConsultaScreen = ({ route }) => {
           {/* Botões de ação */}
           <View style={styles.actionButtonsContainer}>
             {consultaData.status === 'Agendada' && (
-              <TouchableOpacity 
-                style={[styles.actionButton, styles.confirmButton]}
-                onPress={() => console.log('Consulta confirmada')}
-              >
-                <Text style={styles.actionButtonText}>✓ Confirmar</Text>
+              <TouchableOpacity onPress={() => console.log('Consulta confirmada')} style={styles.actionButtonWrapper}>
+                <LinearGradient colors={Colors.gradientPrimary} style={styles.actionButtonGradient}>
+                  <Text style={styles.actionButtonText}>✓ Confirmar</Text>
+                </LinearGradient>
               </TouchableOpacity>
             )}
             
             {consultaData.status === 'Andamento' && (
-              <TouchableOpacity 
-                style={[styles.actionButton, styles.inProgressButton]}
-                onPress={() => console.log('Consulta em andamento')}
-              >
-                <Text style={styles.actionButtonText}>⏳ Em Andamento</Text>
+              <TouchableOpacity onPress={() => console.log('Consulta em andamento')} style={styles.actionButtonWrapper}>
+                <LinearGradient colors={Colors.gradientPrimary} style={styles.actionButtonGradient}>
+                  <Text style={styles.actionButtonText}>⏳ Em Andamento</Text>
+                </LinearGradient>
               </TouchableOpacity>
             )}
             
             {consultaData.status === 'Concluída' && (
-              <TouchableOpacity 
-                style={[styles.actionButton, styles.completedButton]}
-                onPress={() => console.log('Consulta concluída')}
-              >
-                <Text style={styles.actionButtonText}>✓ Concluída</Text>
+              <TouchableOpacity onPress={() => console.log('Consulta concluída')} style={styles.actionButtonWrapper}>
+                <LinearGradient colors={Colors.gradientPrimary} style={styles.actionButtonGradient}>
+                  <Text style={styles.actionButtonText}>✓ Concluída</Text>
+                </LinearGradient>
               </TouchableOpacity>
             )}
 
             {consultaData.status === 'Pendente' && (
-              <TouchableOpacity 
-                style={[styles.actionButton, styles.pendingButton]}
-                onPress={() => console.log('Pendente de confirmação')}
-              >
-                <Text style={styles.actionButtonText}>⏱ Pendente</Text>
+              <TouchableOpacity onPress={() => console.log('Pendente de confirmação')} style={styles.actionButtonWrapper}>
+                <LinearGradient colors={Colors.gradientPrimary} style={styles.actionButtonGradient}>
+                  <Text style={styles.actionButtonText}>⏱ Pendente</Text>
+                </LinearGradient>
               </TouchableOpacity>
             )}
           </View>
@@ -179,7 +208,9 @@ const styles = StyleSheet.create({
     padding: 16,
     marginBottom: 16,
     borderWidth: 1,
-    borderColor: '#8D7EFB',
+    borderColor: '#E5E7EB',
+    borderLeftWidth: 4,
+    borderLeftColor: '#A367F0',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -254,6 +285,47 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginBottom: 8,
   },
+  statusBadge: {
+    alignSelf: 'flex-start',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  parallelGridRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 16,
+  },
+  parallelInfoCard: {
+    flex: 1,
+    backgroundColor: '#F0EBFF',
+    borderRadius: 10,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#8D7EFB',
+  },
+  parallelInfoLine: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginBottom: 8,
+  },
+  parallelInfoLabel: {
+    fontSize: 12,
+    color: '#6B7280',
+    fontWeight: '600',
+  },
+  parallelInfoValue: {
+    fontSize: 12,
+    color: '#374151',
+    fontWeight: '700',
+    marginLeft: 'auto',
+  },
   tagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -297,29 +369,19 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
   },
-  actionButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
+  actionButtonWrapper: {
     borderRadius: 8,
-    alignItems: 'center',
+    overflow: 'hidden',
     marginBottom: 10,
+  },
+  actionButtonGradient: {
+    paddingVertical: 12,
+    alignItems: 'center',
   },
   actionButtonText: {
     color: '#FFFFFF',
     fontWeight: 'bold',
     fontSize: 16,
-  },
-  confirmButton: {
-    backgroundColor: '#4CAF50',
-  },
-  inProgressButton: {
-    backgroundColor: '#FF9800',
-  },
-  completedButton: {
-    backgroundColor: '#2196F3',
-  },
-  pendingButton: {
-    backgroundColor: '#9C27B0',
   },
 });
  

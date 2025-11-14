@@ -9,9 +9,16 @@ import {
   Modal
 } from 'react-native';
 
+import GradientHeader from '../components/GradientHeader';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../Utils/Theme';
+import { useVeterinarianContext } from '../context/VeterinarianContext';
+
 const ReviewScreen = ({ navigation, route }) => {
   // Estado para controlar a visibilidade do modal
   const [modalVisible, setModalVisible] = useState(false);
+  const { addAppointment } = useVeterinarianContext();
+  const [createdAppointmentId, setCreatedAppointmentId] = useState(null);
   
   // Recebe dados via navegação
   const {
@@ -35,17 +42,21 @@ const ReviewScreen = ({ navigation, route }) => {
   const petImageSource = pet.image || pet.photo || 'https://via.placeholder.com/100';
    
   const handleConfirmAppointment = () => {
-    // Simulação de envio para API
-    console.log('Dados do agendamento:', {
-      petId: pet.id,
-      vetId: vet.id,
-      specialty,
+    const newAppointment = {
+      id: Date.now().toString(),
+      status: 'Agendada',
+      petName: pet.name,
+      service: specialty,
       date: formattedDate,
       time: formattedTime,
-      reason
-    });
+      ownerName: 'Você',
+      imageSource: petImageSource ? { uri: petImageSource } : undefined,
+      sintomas: reason,
+      localizacao: undefined,
+    };
 
-    // Exibir o modal personalizado
+    addAppointment('Agendada', newAppointment);
+    setCreatedAppointmentId(newAppointment.id);
     setModalVisible(true);
   };
   
@@ -55,7 +66,8 @@ const ReviewScreen = ({ navigation, route }) => {
     navigation.navigate('SuccessScreen', {
       date: formattedDate,
       time: formattedTime,
-      vet: vet
+      vet: vet,
+      createdAppointmentId: createdAppointmentId
     });
   };
 
@@ -63,9 +75,7 @@ const ReviewScreen = ({ navigation, route }) => {
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
         {/* Header */}
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Consultas</Text>
-        </View>
+        <GradientHeader title="Revisar Agendamento" />
 
         {/* Card de Resumo */}
         <View style={styles.summaryCard}>
@@ -132,10 +142,12 @@ const ReviewScreen = ({ navigation, route }) => {
 
         {/* Botão Concluído */}
         <TouchableOpacity
-          style={styles.confirmButton}
+          style={styles.confirmButtonWrapper}
           onPress={handleConfirmAppointment}
         >
-          <Text style={styles.confirmButtonText}>Concluído</Text>
+          <LinearGradient colors={Colors.gradientPrimary} style={styles.confirmButtonGradient}>
+            <Text style={styles.confirmButtonText}>Concluído</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </ScrollView>
       
@@ -191,6 +203,8 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginTop: 20,
+    borderLeftWidth: 4,
+    borderLeftColor: '#A367F0',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
@@ -297,13 +311,15 @@ const styles = StyleSheet.create({
     color: '#374151',
     fontWeight: '500',
   },
-  confirmButton: {
-    backgroundColor: '#A367F0',
-    padding: 16,
+  confirmButtonWrapper: {
     borderRadius: 8,
-    alignItems: 'center',
+    overflow: 'hidden',
     marginTop: 30,
     marginBottom: 30,
+  },
+  confirmButtonGradient: {
+    padding: 16,
+    alignItems: 'center',
   },
   confirmButtonText: {
     color: '#FFFFFF',

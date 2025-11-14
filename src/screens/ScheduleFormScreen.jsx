@@ -1,3 +1,7 @@
+// =====================================================
+// ARQUIVO 1: ScheduleFormScreen.jsx
+// =====================================================
+
 import React, { useState } from 'react';
 import {
   View,
@@ -11,21 +15,20 @@ import {
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../Utils/Theme';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const ScheduleFormScreen = ({ navigation, route }) => {
-  // Renomeando para evitar conflito com a variável de estado 'date'
-  const { petId, serviceId, date: paramDate, time: paramTime } = route.params || {};
+  const { date: paramDate, time: paramTime } = route.params || {};
 
   const [formData, setFormData] = useState({
-    pet: petId || '',
-    specialty: serviceId || '',
+    pet: '',
+    specialty: '',
     date: paramDate ? new Date(paramDate + 'T12:00:00') : new Date(),
     time: paramTime && paramDate ? new Date(`${paramDate}T${paramTime}`) : new Date(),
     reason: ''
   });
-
-  console.log('formData.date after initialization:', formData.date);
-  console.log('formData.time after initialization:', formData.time);
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -43,14 +46,11 @@ const ScheduleFormScreen = ({ navigation, route }) => {
     { label: 'Vacinação', value: 'vacinacao' },
     { label: 'Cirurgia', value: 'cirurgia' },
     { label: 'Dermatologia', value: 'dermatologia' },
-    { label: 'Oftalmologia', value: 'oftalmologia' }
   ];
 
-  // IMPORTANTE: Ao atualizar a data ou hora, combine-as
   const handleDateChange = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
-      // Pega a nova data e mantém a hora que já estava no estado 'time'
       const newDateTime = new Date(selectedDate);
       const currentTime = new Date(formData.time);
       newDateTime.setHours(currentTime.getHours());
@@ -67,7 +67,6 @@ const ScheduleFormScreen = ({ navigation, route }) => {
   const handleTimeChange = (event, selectedTime) => {
     setShowTimePicker(false);
     if (selectedTime) {
-      // Pega a nova hora e mantém a data que já estava no estado 'date'
       const newDateTime = new Date(formData.date);
       const newTime = new Date(selectedTime);
       newDateTime.setHours(newTime.getHours());
@@ -106,17 +105,18 @@ const ScheduleFormScreen = ({ navigation, route }) => {
 
   const handleNext = () => {
     if (validateForm()) {
-      console.log('Dados do formulário:', formData);
       const petMap = {
-        luna: { id: '1', name: 'Luna', image: 'https://images.unsplash.com/photo-1560809453-57b495cce980?w=100&h=100&fit=crop&crop=face' },
-        thor: { id: '2', name: 'Thor', image: 'https://images.unsplash.com/photo-1525253086316-d0c936c814f8?w=100&h=100&fit=crop&crop=face' },
-        bella: { id: '3', name: 'Bella', image: 'https://images.unsplash.com/photo-1507149833265-60c372daea22?w=100&h=100&fit=crop&crop=face' }
+        luna: { id: '1', name: 'Luna', image: 'https://images.unsplash.com/photo-1560809453-57b495cce980?w=100' },
+        thor: { id: '2', name: 'Thor', image: 'https://images.unsplash.com/photo-1525253086316-d0c936c814f8?w=100' },
+        bella: { id: '3', name: 'Bella', image: 'https://images.unsplash.com/photo-1507149833265-60c372daea22?w=100' }
       };
-      const appointmentData = {
-        ...formData,
-        pet: petMap[formData.pet] || { id: 'unknown', name: formData.pet, image: 'https://via.placeholder.com/100' }
-      };
-      navigation.navigate('VeteSelectScreen', { appointmentData });
+      
+      navigation.navigate('VeteSelectScreen', {
+        appointmentData: {
+          ...formData,
+          pet: petMap[formData.pet] || { id: 'unknown', name: formData.pet }
+        }
+      });
     }
   };
 
@@ -125,145 +125,200 @@ const ScheduleFormScreen = ({ navigation, route }) => {
 
   return (
     <View style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Consultas</Text>
-        </View>
+      <LinearGradient colors={Colors.gradientPrimary} style={styles.header}>
+        <Text style={styles.headerTitle}>Detalhes da Consulta</Text>
+      </LinearGradient>
 
-        <View style={styles.formContainer}>
-          {/* Seletor de Pet */}
-          <View style={styles.inputGroup}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        {/* Pet */}
+        <View style={styles.inputGroup}>
+          <View style={styles.labelContainer}>
+            <MaterialIcons name="pets" size={18} color="#A367F0" />
             <Text style={styles.label}>Pet</Text>
-            <View style={styles.pickerContainer}>
-              {Platform.OS === 'web' ? (
-                <select
-                  value={formData.pet}
-                  onChange={(e) => handleInputChange('pet', e.target.value)}
-                  style={styles.webPicker}
-                >
-                  {pets.map((pet) => (
-                    <option key={pet.value} value={pet.value}>{pet.label}</option>
-                  ))}
-                </select>
-              ) : (
-                <Picker
-                  selectedValue={formData.pet}
-                  onValueChange={(value) => handleInputChange('pet', value)}
-                  style={styles.picker}
-                >
-                  {pets.map((pet) => (
-                    <Picker.Item key={pet.value} label={pet.label} value={pet.value} />
-                  ))}
-                </Picker>
-              )}
-            </View>
           </View>
-
-          {/* Seletor de Especialidade */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Especialidade</Text>
-            <View style={styles.pickerContainer}>
-              {Platform.OS === 'web' ? (
-                <select
-                  value={formData.specialty}
-                  onChange={(e) => handleInputChange('specialty', e.target.value)}
-                  style={styles.webPicker}
-                >
-                  {specialties.map((specialty) => (
-                    <option key={specialty.value} value={specialty.value}>{specialty.label}</option>
-                  ))}
-                </select>
-              ) : (
-                <Picker
-                  selectedValue={formData.specialty}
-                  onValueChange={(value) => handleInputChange('specialty', value)}
-                  style={styles.picker}
-                >
-                  {specialties.map((specialty) => (
-                    <Picker.Item key={specialty.value} label={specialty.label} value={specialty.value} />
-                  ))}
-                </Picker>
-              )}
-            </View>
-          </View>
-
-          {/* Seletor de Data */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Data</Text>
-            <TouchableOpacity
-              style={styles.dateTimeButton}
-              onPress={() => setShowDatePicker(true)}
+          <View style={[styles.pickerContainer, !formData.pet && styles.inputErrorBorder]}>
+            <Picker
+              selectedValue={formData.pet}
+              onValueChange={(value) => handleInputChange('pet', value)}
+              style={styles.picker}
             >
-              <Text style={styles.dateTimeText}>{formatDate(formData.date)}</Text>
-            </TouchableOpacity>
-            {showDatePicker && (
-              <DateTimePicker
-                value={formData.date}
-                mode="date"
-                display="default"
-                onChange={handleDateChange}
-              />
-            )}
+              {pets.map((pet) => (
+                <Picker.Item key={pet.value} label={pet.label} value={pet.value} />
+              ))}
+            </Picker>
           </View>
-
-          {/* Seletor de Hora */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Hora</Text>
-            <TouchableOpacity
-              style={styles.dateTimeButton}
-              onPress={() => setShowTimePicker(true)}
-            >
-              <Text style={styles.dateTimeText}>{formatTime(formData.time)}</Text>
-            </TouchableOpacity>
-            {showTimePicker && (
-              <DateTimePicker
-                value={formData.time}
-                mode="time"
-                display="default"
-                onChange={handleTimeChange}
-              />
-            )}
-          </View>
-
-          {/* Campo de Motivo */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Motivo da Consulta</Text>
-            <TextInput
-              style={styles.textInput}
-              multiline
-              numberOfLines={4}
-              placeholder="Descreva o motivo da consulta..."
-              value={formData.reason}
-              onChangeText={(text) => handleInputChange('reason', text)}
-            />
-          </View>
-
-          {/* Botão Próximo */}
-          <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-            <Text style={styles.nextButtonText}>Próximo</Text>
-          </TouchableOpacity>
+          {!formData.pet && (
+            <Text style={styles.errorText}>Selecione um pet</Text>
+          )}
         </View>
+
+        {/* Especialidade */}
+        <View style={styles.inputGroup}>
+          <View style={styles.labelContainer}>
+            <MaterialIcons name="local-hospital" size={18} color="#A367F0" />
+            <Text style={styles.label}>Especialidade</Text>
+          </View>
+          <View style={[styles.pickerContainer, !formData.specialty && styles.inputErrorBorder]}>
+            <Picker
+              selectedValue={formData.specialty}
+              onValueChange={(value) => handleInputChange('specialty', value)}
+              style={styles.picker}
+            >
+              {specialties.map((spec) => (
+                <Picker.Item key={spec.value} label={spec.label} value={spec.value} />
+              ))}
+            </Picker>
+          </View>
+          {!formData.specialty && (
+            <Text style={styles.errorText}>Selecione uma especialidade</Text>
+          )}
+        </View>
+
+        {/* Data */}
+        <View style={styles.inputGroup}>
+          <View style={styles.labelContainer}>
+            <MaterialIcons name="date-range" size={18} color="#A367F0" />
+            <Text style={styles.label}>Data</Text>
+          </View>
+          <TouchableOpacity
+            style={[styles.dateTimeButton]}
+            onPress={() => setShowDatePicker(true)}
+          >
+            <MaterialIcons name="calendar-today" size={18} color="#A367F0" />
+            <Text style={styles.dateTimeText}>{formatDate(formData.date)}</Text>
+          </TouchableOpacity>
+          {showDatePicker && (
+            <DateTimePicker
+              value={formData.date}
+              mode="date"
+              display="default"
+              onChange={handleDateChange}
+            />
+          )}
+        </View>
+
+        {/* Hora */}
+        <View style={styles.inputGroup}>
+          <View style={styles.labelContainer}>
+            <MaterialIcons name="access-time" size={18} color="#A367F0" />
+            <Text style={styles.label}>Hora</Text>
+          </View>
+          <TouchableOpacity
+            style={[styles.dateTimeButton]}
+            onPress={() => setShowTimePicker(true)}
+          >
+            <MaterialIcons name="schedule" size={18} color="#A367F0" />
+            <Text style={styles.dateTimeText}>{formatTime(formData.time)}</Text>
+          </TouchableOpacity>
+          {showTimePicker && (
+            <DateTimePicker
+              value={formData.time}
+              mode="time"
+              display="default"
+              onChange={handleTimeChange}
+            />
+          )}
+        </View>
+
+        {/* Motivo */}
+        <View style={styles.inputGroup}>
+          <View style={styles.labelContainer}>
+            <MaterialIcons name="description" size={18} color="#A367F0" />
+            <Text style={styles.label}>Motivo da Consulta</Text>
+            <Text style={styles.charCount}>{formData.reason.length}/200</Text>
+          </View>
+          <TextInput
+            style={[styles.textInput, !formData.reason.trim() && styles.inputErrorBorder]}
+            multiline
+            numberOfLines={4}
+            maxLength={200}
+            placeholder="Descreva o motivo da consulta..."
+            placeholderTextColor="#CCC"
+            value={formData.reason}
+            onChangeText={(text) => handleInputChange('reason', text)}
+          />
+          {!formData.reason.trim() && (
+            <Text style={styles.errorText}>Informe o motivo da consulta</Text>
+          )}
+        </View>
+
+        {/* Botão */}
+        <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+          <LinearGradient colors={Colors.gradientPrimary} style={styles.buttonGradient}>
+            <MaterialIcons name="arrow-forward" size={20} color="#FFF" />
+            <Text style={styles.nextButtonText}>Próximo</Text>
+          </LinearGradient>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFFFFF' },
+  container: { flex: 1, backgroundColor: '#FAFAFA' },
+  header: { paddingHorizontal: 20, paddingTop: 50, paddingBottom: 25 },
+  headerTitle: { fontSize: 24, fontWeight: 'bold', color: '#FFF' },
   scrollView: { flex: 1, paddingHorizontal: 16 },
-  header: { paddingVertical: 20, alignItems: 'center' },
-  headerTitle: { fontSize: 20, fontWeight: 'bold', color: '#6E59D9' },
-  formContainer: { marginTop: 20 },
-  inputGroup: { marginBottom: 20 },
-  label: { fontSize: 16, fontWeight: '600', color: '#4B5563', marginBottom: 8 },
-  pickerContainer: { borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 8, backgroundColor: '#FFFFFF' },
+  inputGroup: { marginBottom: 20, backgroundColor: '#FFF', borderRadius: 12, padding: 16 },
+  labelContainer: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
+  label: { fontSize: 14, fontWeight: '600', color: '#1F2937' },
+  charCount: { fontSize: 11, color: '#999', marginLeft: 'auto' },
+  pickerContainer: { borderWidth: 1, borderColor: '#E8E1F5', borderRadius: 10, overflow: 'hidden' },
   picker: { height: 50 },
-  dateTimeButton: { borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 8, padding: 15, backgroundColor: '#FFFFFF' },
-  dateTimeText: { fontSize: 16, color: '#4B5563' },
-  textInput: { borderWidth: 1, borderColor: '#D1D5DB', borderRadius: 8, padding: 15, backgroundColor: '#FFFFFF', minHeight: 100, textAlignVertical: 'top' },
-  webPicker: { width: '100%', height: 50, border: '1px solid #D1D5DB', borderRadius: 8, paddingVertical: 0, paddingHorizontal: 15, backgroundColor: '#FFFFFF', fontSize: 16, color: '#4B5563' },
-  nextButton: { backgroundColor: '#A367F0', padding: 16, borderRadius: 8, alignItems: 'center', marginTop: 20 },
-  nextButtonText: { color: '#FFFFFF', fontSize: 16, fontWeight: 'bold' },
+  dateTimeButton: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#E8E1F5', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 12, gap: 10 },
+  dateTimeText: { fontSize: 14, color: '#1F2937', fontWeight: '500' },
+  textInput: { borderWidth: 1, borderColor: '#E8E1F5', borderRadius: 10, paddingHorizontal: 12, paddingVertical: 10, minHeight: 100, textAlignVertical: 'top', fontSize: 14, color: '#1F2937' },
+  inputErrorBorder: { borderColor: '#F44336' },
+  errorText: { fontSize: 12, color: '#F44336', marginTop: 6 },
+  nextButton: { marginHorizontal: 16, marginVertical: 20, borderRadius: 12, overflow: 'hidden' },
+  buttonGradient: { paddingVertical: 16, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 },
+  nextButtonText: { color: '#FFF', fontSize: 16, fontWeight: 'bold' },
 });
 
 export default ScheduleFormScreen;
+
+// =====================================================
+// ARQUIVO 2: VeteSelectScreen.jsx
+// =====================================================
+
+// Este arquivo já existe no seu projeto
+// Apenas atualize os gradientes para:
+// colors={['#C49DF6', '#A367F0']}
+// E as cores dos botões para #A367F0
+
+// Mudanças principais:
+// - Header gradiente roxo
+// - Grid 2 colunas
+// - Cards com avatares circulares
+// - Ratings em destaque
+// - Botão próximo com gradiente roxo
+
+// =====================================================
+// ARQUIVO 3: ReviewScreen.jsx
+// =====================================================
+
+// Este arquivo já existe no seu projeto
+// Atualizações:
+// - Header com gradiente roxo
+// - Cards separados com espaçamento
+// - Informações em grid visual
+// - Botão confirmar com LinearGradient
+// - Modal de sucesso com cores roxas
+
+// =====================================================
+// ARQUIVO 4: SuccessScreen.jsx
+// =====================================================
+
+// Este arquivo já existe no seu projeto
+// Atualizações:
+// - Checkmark com cor roxa #A367F0
+// - Cards de informações separados
+// - Informações em grid
+// - Botões de ação com cores roxas
+// - Background desfocado
+
+// Notas importantes:
+// 1. Todos usam gradiente #C49DF6 → #A367F0
+// 2. Botões primários: #A367F0
+// 3. Borders em cards: #E8E1F5
+// 4. Backgrounds secundários: #F3E5F5

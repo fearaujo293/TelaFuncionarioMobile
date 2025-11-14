@@ -4,13 +4,18 @@ import {
   Text,
   StyleSheet,
   ImageBackground,
-  Image
+  Image,
+  TouchableOpacity
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../Utils/Theme';
+import { useNavigation } from '@react-navigation/native';
 
 const SuccessScreen = ({ route }) => {
   // Recebe os dados do agendamento da tela anterior
-  const { date, time, vet } = route?.params || {};
+  const { date, time, vet, createdAppointmentId } = route?.params || {};
+  const navigation = useNavigation();
   
   // Usa os dados recebidos ou valores padrão
   const displayDate = date || 'Data não especificada';
@@ -54,6 +59,20 @@ const SuccessScreen = ({ route }) => {
               <Ionicons name="person" size={20} color="#6B7280" />
               <Text style={styles.infoText}>{displayVet}</Text>
             </View>
+          </View>
+
+          {/* Próximas Ações */}
+          <View style={styles.actionsRow}>
+            <TouchableOpacity style={styles.actionButtonWrapper} onPress={() => navigation.navigate('Consultas', { activeTab: 'Agendada', highlightId: createdAppointmentId })}>
+              <LinearGradient colors={Colors.gradientPrimary} style={styles.actionButtonGradient}>
+                <Text style={styles.actionButtonText}>Ver Minhas Consultas</Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionButtonWrapper} onPress={() => navigation.navigate('Agendamento')}>
+              <LinearGradient colors={Colors.gradientPrimary} style={styles.actionButtonGradient}>
+                <Text style={styles.actionButtonText}>Agendar Nova</Text>
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
         </View>
         
@@ -128,6 +147,30 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     marginLeft: 10,
     fontWeight: '500',
+  },
+  actionsRow: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'stretch',
+    gap: 12,
+    marginTop: 12,
+  },
+  actionButtonWrapper: {
+    flex: 1,
+    borderRadius: 10,
+    overflow: 'hidden',
+  },
+  actionButtonGradient: {
+    width: '100%',
+    paddingVertical: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionButtonText: {
+    color: '#FFFFFF',
+    fontSize: 14,
+    fontWeight: 'bold',
   },
   navigationHint: {
     position: 'absolute',

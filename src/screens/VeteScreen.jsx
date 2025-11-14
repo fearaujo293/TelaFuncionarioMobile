@@ -8,95 +8,181 @@ import {
   ScrollView,
   FlatList,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../Utils/Theme';
+import { useRoute } from '@react-navigation/native';
 import { useVeterinarianContext } from '../context/VeterinarianContext';
 
-const VeteScreen = () => {
-  const navigation = useNavigation();
+const VeteScreen = ({ navigation }) => {
   const [activeTab, setActiveTab] = useState('Agendada');
-  const { appointments } = useVeterinarianContext(); // ✅ Context isolado
+  const { appointments } = useVeterinarianContext();
+  const route = useRoute();
+  const highlightId = route?.params?.highlightId;
 
-  const handleCardPress = (consulta) => {
-    // Formatar data para o formato esperado
-    const formattedConsulta = {
-      ...consulta,
-      data: consulta.date.split('-').reverse().join('/'),
-    };
-    // Navegar para tela de detalhes (nome de rota unificado)
-    navigation.navigate('DetalhesConsulta', { consulta: formattedConsulta });
+  const tabData = [
+    { id: 'Agendada', label: 'Agendadas', icon: 'calendar-today', count: appointments?.Agendada?.length || 0 },
+    { id: 'Andamento', label: 'Andamento', icon: 'schedule', count: appointments?.Andamento?.length || 0 },
+    { id: 'Concluídas', label: 'Concluídas', icon: 'check-circle', count: appointments?.Concluídas?.length || 0 },
+  ];
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'Agendada': return '#FFA500';
+      case 'Andamento': return '#A367F0';
+      case 'Concluídas': return '#4CAF50';
+      default: return '#A367F0';
+    }
   };
 
-  const handleAgendarConsulta = () => {
-    // Navegar para tela de agendamento (nome de rota unificado)
-    navigation.navigate('Agendamento');
+  const getStatusBadgeStyle = (status) => {
+    switch (status) {
+      case 'Agendada':
+        return { bg: '#FFF3E0', text: '#FF8C00' };
+      case 'Andamento':
+        return { bg: '#F3E5F5', text: '#A367F0' };
+      case 'Concluídas':
+        return { bg: '#E8F5E9', text: '#2E7D32' };
+      default:
+        return { bg: '#F3E5F5', text: '#A367F0' };
+    }
   };
 
-  const renderConsultaCard = ({ item }) => (
-    <TouchableOpacity 
-      style={styles.card} 
-      onPress={() => handleCardPress(item)}
-      activeOpacity={0.7}
-    >
-      <Image source={item.imageSource} style={styles.petImage} />
-      <View style={styles.cardInfo}>
-        <Text style={styles.petName}>{item.petName}</Text>
-        <Text style={styles.service}>{item.service}</Text>
-        <Text style={styles.time}>{item.time}</Text>
-      </View>
-      <View style={[styles.statusBadgeCard, styles[`status${item.status}`]]}>
-        <Text style={styles.statusTextCard}>{item.status}</Text>
-      </View>
-    </TouchableOpacity>
-  );
+  const renderConsultationCard = ({ item }) => {
+    const statusStyle = getStatusBadgeStyle(item.status);
+    
+    return (
+      <TouchableOpacity
+        style={[
+          styles.card,
+          { borderLeftColor: getStatusColor(item.status) },
+          highlightId && item.id === highlightId && styles.cardHighlight
+        ]}
+        onPress={() => navigation.navigate('DetalhesConsulta', { consulta: item })}
+        activeOpacity={0.85}
+      >
+        {/* Header com Avatar e Status */}
+        <View style={styles.cardHeader}>
+          <View style={styles.avatarSection}>
+            <View style={styles.avatarContainer}>
+              {item.imageSource ? (
+                <Image source={item.imageSource} style={styles.avatar} />
+              ) : (
+                <Text style={styles.avatarText}>🐾</Text>
+              )}
+            </View>
 
-  const currentConsultas = appointments[activeTab] || [];
+            <View style={styles.petInfo}>
+              <Text style={styles.petName}>{item.petName}</Text>
+              <Text style={styles.petType}>{item.service}</Text>
+            </View>
+          </View>
+
+          <View style={[styles.statusBadge, { backgroundColor: statusStyle.bg }]}>
+            <Text style={[styles.statusText, { color: statusStyle.text }]}>
+              {item.status}
+            </Text>
+          </View>
+        </View>
+
+        <View style={styles.compactInfoRow}>
+          <View style={styles.compactItem}>
+            <MaterialIcons name="date-range" size={18} color="#6B7280" />
+            <Text style={styles.compactText}>{item.date}</Text>
+          </View>
+          <View style={styles.compactItem}>
+            <MaterialIcons name="access-time" size={18} color="#6B7280" />
+            <Text style={styles.compactText}>{item.time}</Text>
+          </View>
+          <View style={styles.compactItem}>
+            <FontAwesome5 name="user" size={14} color="#6B7280" />
+            <Text style={styles.compactText} numberOfLines={1}>{item.ownerName}</Text>
+          </View>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const currentConsultations = appointments?.[activeTab] || [];
+
+  React.useEffect(() => {
+    if (route?.params?.activeTab) {
+      setActiveTab(route.params.activeTab);
+    }
+  }, [route?.params?.activeTab]);
 
   return (
     <View style={styles.container}>
-      {/* Tabs */}
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'Agendada' && styles.activeTab]}
-          onPress={() => setActiveTab('Agendada')}
-        >
-          <Text style={[styles.tabText, activeTab === 'Agendada' && styles.activeTabText]}>
-            Agendada
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'Andamento' && styles.activeTab]}
-          onPress={() => setActiveTab('Andamento')}
-        >
-          <Text style={[styles.tabText, activeTab === 'Andamento' && styles.activeTabText]}>
-            Andamento
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.tab, activeTab === 'Concluídas' && styles.activeTab]}
-          onPress={() => setActiveTab('Concluídas')}
-        >
-          <Text style={[styles.tabText, activeTab === 'Concluídas' && styles.activeTabText]}>
-            Concluídas
-          </Text>
-        </TouchableOpacity>
+      {/* Header Gradiente */}
+      <LinearGradient
+        colors={Colors.gradientPrimary}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <Text style={styles.headerTitle}>Minhas Consultas</Text>
+        <Text style={styles.headerSubtitle}>Gerencie seus agendamentos</Text>
+      </LinearGradient>
+
+      {/* Tabs Customizadas */}
+      <View style={styles.tabsContainer}>
+        {tabData.map((tab) => (
+          <TouchableOpacity
+            key={tab.id}
+            style={styles.tab}
+            onPress={() => setActiveTab(tab.id)}
+            activeOpacity={0.85}
+          >
+            {activeTab === tab.id ? (
+              <LinearGradient colors={Colors.gradientPrimary} style={styles.tabContent}>
+                <MaterialIcons name={tab.icon} size={24} color="#FFF" />
+                <Text style={[styles.tabText, styles.activeTabText]}>{tab.label}</Text>
+                <View style={[styles.tabBadge, styles.activeTabBadge]}>
+                  <Text style={[styles.tabBadgeText, styles.activeTabBadgeText]}>{tab.count}</Text>
+                </View>
+              </LinearGradient>
+            ) : (
+              <View style={[styles.tabContent, styles.tabContentInactive]}>
+                <MaterialIcons name={tab.icon} size={24} color="#999" />
+                <Text style={styles.tabText}>{tab.label}</Text>
+                <View style={styles.tabBadge}>
+                  <Text style={styles.tabBadgeText}>{tab.count}</Text>
+                </View>
+              </View>
+            )}
+          </TouchableOpacity>
+        ))}
       </View>
 
       {/* Lista de Consultas */}
       <FlatList
-        data={currentConsultas}
-        renderItem={renderConsultaCard}
-        keyExtractor={(item) => item.id.toString()}
+        data={currentConsultations}
+        renderItem={renderConsultationCard}
+        keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
         contentContainerStyle={styles.listContent}
         scrollEnabled={true}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <MaterialIcons name="event-busy" size={64} color="#DDD" />
+            <Text style={styles.emptyText}>Nenhuma consulta</Text>
+            <Text style={styles.emptySubtext}>
+              Não há {activeTab.toLowerCase()} no momento
+            </Text>
+          </View>
+        }
       />
 
-      {/* Botão de Agendar */}
-      <TouchableOpacity 
-        style={styles.scheduleButton} 
-        onPress={handleAgendarConsulta}
-        activeOpacity={0.8}
+      {/* FAB - Agendar */}
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={() => navigation.navigate('Agendamento')}
       >
-        <Text style={styles.scheduleButtonText}>+ Agendar Consulta</Text>
+        <LinearGradient
+          colors={Colors.gradientPrimary}
+          style={styles.fabGradient}
+        >
+          <MaterialIcons name="add" size={32} color="#FFF" />
+        </LinearGradient>
       </TouchableOpacity>
     </View>
   );
@@ -105,126 +191,203 @@ const VeteScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAFAFA',
   },
-  tabContainer: {
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 25,
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FFF',
+    marginBottom: 4,
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+  },
+  tabsContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
     paddingVertical: 12,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFF',
+    marginBottom: 8,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: '#EEE',
   },
   tab: {
     flex: 1,
+    marginHorizontal: 4,
+    borderRadius: 10,
+  },
+  tabContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingVertical: 10,
     paddingHorizontal: 8,
-    borderRadius: 8,
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    marginHorizontal: 4,
+    borderRadius: 10,
+    gap: 6,
   },
-  activeTab: {
-    backgroundColor: '#A367F0',
+  tabContentInactive: {
+    backgroundColor: '#F5F5F5',
   },
   tabText: {
     fontSize: 12,
-    fontWeight: 'bold',
-    color: '#8D7EFB',
+    fontWeight: '600',
+    color: '#666',
   },
   activeTabText: {
-    color: '#FFFFFF',
-    fontSize: 12,
+    color: '#FFF',
+  },
+  tabBadge: {
+    backgroundColor: '#E0E0E0',
+    borderRadius: 10,
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  activeTabBadge: {
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  tabBadgeText: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#666',
+  },
+  activeTabBadgeText: {
+    color: '#FFF',
   },
   listContent: {
     paddingHorizontal: 12,
-    paddingTop: 8,
-    paddingBottom: 80,
+    paddingVertical: 8,
+    paddingBottom: 100,
   },
   card: {
-    flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    height: 80,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    backgroundColor: '#FFF',
+    borderRadius: 16,
     marginBottom: 12,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#C79DFD',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  petImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginRight: 12,
-    backgroundColor: '#F5F5F5',
-  },
-  cardInfo: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  petName: {
-    fontWeight: 'bold',
-    color: '#A367F0',
-    fontSize: 14,
-    marginBottom: 2,
-  },
-  service: {
-    fontSize: 12,
-    color: '#8D7EFB',
-    marginBottom: 2,
-  },
-  time: {
-    fontSize: 11,
-    color: '#C49DF6',
-  },
-  statusBadgeCard: {
-    borderRadius: 12,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    marginLeft: 8,
-  },
-  statusTextCard: {
-    fontSize: 9,
-    fontWeight: 'bold',
-    color: '#FFFFFF',
-  },
-  statusAgendada: {
-    backgroundColor: 'rgba(141, 126, 251, 0.85)',
-  },
-  statusAndamento: {
-    backgroundColor: 'rgba(196, 157, 246, 0.85)',
-  },
-  statusConcluída: {
-    backgroundColor: 'rgba(163, 103, 240, 0.85)',
-  },
-  scheduleButton: {
-    position: 'absolute',
-    bottom: 20,
-    left: '10%',
-    right: '10%',
-    backgroundColor: '#A367F0',
-    borderRadius: 25,
-    paddingVertical: 12,
-    alignItems: 'center',
-    elevation: 4,
+    padding: 16,
+    borderLeftWidth: 4,
+    elevation: 3,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  scheduleButtonText: {
-    color: '#FFFFFF',
+  cardHighlight: {
+    borderWidth: 1,
+    borderColor: '#A367F0',
+  },
+  cardHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 12,
+  },
+  avatarSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    flex: 1,
+  },
+  avatarContainer: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#F3E5F5',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#E1BEE7',
+  },
+  avatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+  },
+  avatarText: {
+    fontSize: 28,
+  },
+  petInfo: {
+    flex: 1,
+  },
+  petName: {
+    fontSize: 16,
     fontWeight: 'bold',
+    color: '#1F2937',
+    marginBottom: 2,
+  },
+  petType: {
+    fontSize: 13,
+    color: '#6B7280',
+  },
+  statusBadge: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  statusText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  compactInfoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    marginTop: 6,
+  },
+  compactItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    flexShrink: 1,
+  },
+  compactText: {
+    fontSize: 12,
+    color: '#1F2937',
+    fontWeight: '600',
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 20,
+    right: 20,
+    borderRadius: 60,
+    overflow: 'hidden',
+    elevation: 8,
+    shadowColor: '#A367F0',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  fabGradient: {
+    width: 56,
+    height: 56,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 60,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#999',
+    marginTop: 16,
+  },
+  emptySubtext: {
     fontSize: 14,
+    color: '#CCC',
+    marginTop: 8,
   },
 });
 
 export default VeteScreen;
+

@@ -5,15 +5,65 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Image,
   FlatList,
   Alert
 } from 'react-native';
-import { Colors, CommonStyles } from '../Utils/Theme';
-import VetCard from '../components/VetCard';
-import { veterinarians } from '../data/veterinarians';
-
+import { LinearGradient } from 'expo-linear-gradient';
+import GradientHeader from '../components/GradientHeader';
+import { Colors } from '../Utils/Theme';
 const VeteSelectScreen = ({ navigation, route }) => {
   const [selectedVetId, setSelectedVetId] = useState(null);
+
+  // Dados mockados de veterinários - serão substituídos pela API posteriormente
+  const veterinarians = [
+    {
+      id: '1',
+      name: 'Dra. Ana Silva',
+      specialty: 'Clínica Geral',
+      photo: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=150&h=150&fit=crop&crop=face',
+      rating: 4.8
+    },
+    {
+      id: '2',
+      name: 'Dr. Carlos Santos',
+      specialty: 'Cirurgia',
+      photo: 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=150&h=150&fit=crop&crop=face',
+      rating: 4.9
+    },
+    {
+      id: '3',
+      name: 'Dra. Maria Oliveira',
+      specialty: 'Dermatologia',
+      photo: 'https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=150&h=150&fit=crop&crop=face',
+      rating: 4.7
+    },
+    {
+      id: '4',
+      name: 'Dr. João Pereira',
+      specialty: 'Oftalmologia',
+      photo: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&h=150&fit=crop&crop=face',
+      rating: 4.6
+    },
+    {
+      id: '5',
+      name: 'Dra. Paula Costa',
+      specialty: 'Cardiologia',
+      photo: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=150&h=150&fit=crop&crop=face',
+      rating: 4.8
+    },
+    {
+      id: '6',
+      name: 'Dr. Ricardo Almeida',
+      specialty: 'Neurologia',
+      photo: 'https://images.unsplash.com/photo-1622902046580-2b47f47f5471?w=150&h=150&fit=crop&crop=face',
+      rating: 4.9
+    }
+  ];
+
+  const handleVetSelection = (vetId) => {
+    setSelectedVetId(vetId);
+  };
 
   const handleNext = () => {
     if (!selectedVetId) {
@@ -21,32 +71,49 @@ const VeteSelectScreen = ({ navigation, route }) => {
       return;
     }
 
+    // Salvar selectedVetId no estado global (será implementado com Redux/Context)
     const formData = route?.params?.appointmentData || {};
     const selectedVet = veterinarians.find(v => v.id === selectedVetId);
+    console.log('Veterinário selecionado:', selectedVetId);
+    console.log('Dados para ReviewScreen:', { ...formData, vet: selectedVet });
     navigation.navigate('ReviewScreen', { ...formData, vet: selectedVet });
   };
 
   const renderVetCard = ({ item }) => (
-    <VetCard
-      vet={item}
-      isSelected={selectedVetId === item.id}
-      onPress={() => setSelectedVetId(item.id)}
-    />
+    <TouchableOpacity
+      style={[
+        styles.vetCard,
+        selectedVetId === item.id && styles.selectedVetCard
+      ]}
+      onPress={() => handleVetSelection(item.id)}
+    >
+      <Image
+        source={{ uri: item.photo }}
+        style={styles.vetImage}
+        resizeMode="cover"
+      />
+      <View style={styles.vetInfo}>
+        <Text style={styles.vetName}>{item.name}</Text>
+        <Text style={styles.vetSpecialty}>{item.specialty}</Text>
+        <Text style={styles.vetRating}>⭐ {item.rating}</Text>
+      </View>
+    </TouchableOpacity>
   );
 
   return (
     <View style={styles.container}>
       <ScrollView style={styles.scrollView}>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Consultas</Text>
-        </View>
+        {/* Header */}
+        <GradientHeader title="Selecionar Veterinário" />
 
+        {/* Instrução */}
         <View style={styles.instructionContainer}>
           <Text style={styles.instructionText}>
             Selecione o veterinário para a consulta
           </Text>
         </View>
 
+        {/* Grid de Veterinários */}
         <FlatList
           data={veterinarians}
           renderItem={renderVetCard}
@@ -57,15 +124,15 @@ const VeteSelectScreen = ({ navigation, route }) => {
           scrollEnabled={false}
         />
 
+        {/* Botão Próximo */}
         <TouchableOpacity
-          style={[
-            styles.nextButton,
-            !selectedVetId && styles.nextButtonDisabled
-          ]}
+          style={[styles.nextButtonWrapper, !selectedVetId && styles.nextButtonDisabled]}
           onPress={handleNext}
           disabled={!selectedVetId}
         >
-          <Text style={styles.nextButtonText}>Próximo</Text>
+          <LinearGradient colors={Colors.gradientPrimary} style={styles.nextButtonGradient}>
+            <Text style={styles.nextButtonText}>Próximo</Text>
+          </LinearGradient>
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -75,7 +142,7 @@ const VeteSelectScreen = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: '#FFFFFF',
   },
   scrollView: {
     flex: 1,
@@ -85,18 +152,13 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     alignItems: 'center',
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: Colors.darkPurple,
-  },
   instructionContainer: {
     marginBottom: 20,
     alignItems: 'center',
   },
   instructionText: {
     fontSize: 16,
-    color: Colors.darkGray,
+    color: '#6B7280',
     textAlign: 'center',
   },
   vetList: {
@@ -104,17 +166,74 @@ const styles = StyleSheet.create({
   },
   columnWrapper: {
     justifyContent: 'space-between',
+    marginBottom: 16,
   },
-  nextButton: {
-    ...CommonStyles.button,
+  vetCard: {
+    width: '48%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+    padding: 12,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#E5E7EB',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  selectedVetCard: {
+    borderColor: '#9C4DFF',
+    backgroundColor: '#F5F3FF',
+  },
+  vetImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    marginBottom: 8,
+  },
+  vetInfo: {
+    alignItems: 'center',
+  },
+  vetName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#374151',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  vetSpecialty: {
+    fontSize: 12,
+    color: '#6B7280',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  vetRating: {
+    fontSize: 12,
+    color: '#FFFFFF',
+    fontWeight: '700',
+    backgroundColor: '#F59E0B',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  nextButtonWrapper: {
+    borderRadius: 8,
+    overflow: 'hidden',
     marginTop: 20,
     marginBottom: 30,
   },
+  nextButtonGradient: {
+    padding: 16,
+    alignItems: 'center',
+  },
   nextButtonDisabled: {
-    backgroundColor: Colors.mediumGray,
+    backgroundColor: '#D1D5DB',
   },
   nextButtonText: {
-    ...CommonStyles.buttonText,
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
