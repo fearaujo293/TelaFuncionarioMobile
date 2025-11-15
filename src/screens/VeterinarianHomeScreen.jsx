@@ -23,7 +23,7 @@ const VeterinarianHomeScreen = () => {
 
       {/* Card Principal */}
       <LinearGradient
-        colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
+        colors={Colors.gradientPrimary}
         style={styles.promoCard}
       >
         <View style={styles.promoTextContainer}>
@@ -116,6 +116,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     color: '#FFFFFF',
     marginBottom: 32,
+    elevation: 4,
+    shadowColor: '#A367F0',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 8,
   },
   promoTextContainer: {
     maxWidth: '50%',
@@ -175,13 +180,18 @@ const styles = StyleSheet.create({
     width: '23%', // Adjust as needed for 4 columns with spacing
   },
   categoryIconContainer: {
-    backgroundColor: '#7F57F1',
+    backgroundColor: '#6A0DAD',
     borderRadius: 20,
     width: 64,
     height: 64,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
+    elevation: 3,
+    shadowColor: '#A367F0',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 4,
   },
   categoryIcon: {
     width: 32,

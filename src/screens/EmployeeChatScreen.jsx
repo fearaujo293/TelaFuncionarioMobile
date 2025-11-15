@@ -47,7 +47,7 @@ const EmployeeChatScreen = () => {
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0} // Ajuste conforme necessário
     >
       <LinearGradient
-        colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
+        colors={Colors.gradientPrimary}
         style={styles.headerGradient}
       >
         <Text style={styles.headerTitle}>Chat com {chatPartnerInfo.name}</Text>
@@ -89,11 +89,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   headerGradient: {
-    backgroundColor: Colors.primary,
     paddingTop: 50,
     paddingBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   headerTitle: {
     fontSize: 22,
@@ -110,15 +111,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     borderRadius: 20,
     marginBottom: 10,
-    elevation: 1,
-    shadowColor: Colors.cardShadow,
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    elevation: 2,
+    shadowColor: Colors.purple,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 4,
   },
   employeeMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: Colors.lightGray,
+    backgroundColor: '#f3f4f6',
     borderTopLeftRadius: 5,
     marginRight: 40,
   },
@@ -130,11 +131,11 @@ const styles = StyleSheet.create({
   },
   messageText: {
     fontSize: 16,
-    color: Colors.textPrimary,
+    color: '#1F2937',
   },
   messageTime: {
     fontSize: 12,
-    color: Colors.textSecondary,
+    color: '#6B7280',
     alignSelf: 'flex-end',
     marginTop: 5,
   },
@@ -175,7 +176,7 @@ const styles = StyleSheet.create({
     paddingBottom: 12,
     marginRight: 10,
     fontSize: 16,
-    backgroundColor: Colors.cardBackground,
+    backgroundColor: Colors.white,
   },
   sendButton: {
     backgroundColor: Colors.primary,
@@ -184,6 +185,11 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 2,
+    shadowColor: Colors.purple,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 4,
   },
 });
 

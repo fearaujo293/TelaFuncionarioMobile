@@ -10,6 +10,7 @@ import { useNavigation } from '@react-navigation/native';
 const TelaHistoricoConsultas = () => {
   const [activeFilter, setActiveFilter] = useState('Agendada');
   const navigation = useNavigation();
+  const todayStr = new Date().toISOString().split('T')[0];
 
   const consultations = [
     {
@@ -124,6 +125,18 @@ const TelaHistoricoConsultas = () => {
           </TouchableOpacity>
         ))}
       </View>
+      {(activeFilter === 'Andamento' || activeFilter === 'Concluídas') && (
+        <View style={styles.statusStatsContainer}>
+          <View style={styles.statusStatCard}>
+            <Text style={styles.statNumber}>{filteredConsultations.length}</Text>
+            <Text style={styles.statLabel}>Total</Text>
+          </View>
+          <View style={styles.statusStatCard}>
+            <Text style={styles.statNumber}>{filteredConsultations.filter(c => (c.date || '').split('T')[0] === todayStr).length}</Text>
+            <Text style={styles.statLabel}>Hoje</Text>
+          </View>
+        </View>
+      )}
       <FlatList
         data={filteredConsultations}
         renderItem={renderConsultationCard}
@@ -184,6 +197,35 @@ const styles = StyleSheet.create({
   },
   flatListContent: {
     paddingBottom: 20,
+  },
+  statusStatsContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  statusStatCard: {
+    flex: 1,
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    padding: 12,
+    marginHorizontal: 4,
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#A367F0',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 4,
+  },
+  statNumber: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: Colors.textPrimary,
+    marginBottom: 2,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: Colors.textSecondary,
+    fontWeight: '500',
   },
   card: {
     backgroundColor: Colors.surface,

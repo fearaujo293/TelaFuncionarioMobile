@@ -133,7 +133,9 @@ const AgendaScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
-      {/* <Text style={styles.headerTitle}>Agenda</Text> */}
+      <LinearGradient colors={Colors.gradientPrimary} style={styles.headerGradient}>
+        <Text style={styles.headerTitle}>Agenda</Text>
+      </LinearGradient>
       <View style={[CommonStyles.card, styles.calendarWrapper]}>
         <Calendar
           onDayPress={(day) => {
@@ -297,6 +299,13 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 20,
   },
+  headerGradient: {
+    paddingTop: 40,
+    paddingBottom: 24,
+    paddingHorizontal: 24,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
   calendarWrapper: {
     marginHorizontal: 20,
     marginTop: 0,
@@ -314,11 +323,9 @@ const styles = StyleSheet.create({
     // height: 350, // Set a fixed height for the calendar
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: '700',
-    color: Colors.black,
-    marginBottom: 20,
-    marginTop: 0,
+    color: Colors.white,
     textAlign: 'left',
     width: '100%',
   },

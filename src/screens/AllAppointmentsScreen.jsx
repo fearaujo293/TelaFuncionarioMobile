@@ -124,6 +124,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 40,
     paddingBottom: 30,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   headerTitle: {
     fontSize: 32,
@@ -144,14 +146,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: Colors.white,
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 10,
+    borderRadius: 14,
+    padding: 16,
+    marginBottom: 12,
     elevation: 3,
-    shadowColor: Colors.shadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowColor: Colors.purple,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
   },
   cardIcon: {
     marginRight: 15,
@@ -187,13 +189,13 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   statusScheduled: {
-    backgroundColor: Colors.info,
+    backgroundColor: Colors.lightBlue,
   },
   statusCompleted: {
-    backgroundColor: Colors.success,
+    backgroundColor: Colors.lightGreen,
   },
   statusCancelled: {
-    backgroundColor: Colors.error,
+    backgroundColor: Colors.lightRed,
   },
   statusText: {
     fontSize: 12,

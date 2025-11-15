@@ -106,7 +106,14 @@ const VeterinarianTabNavigator = () => {
           } else if (route.name === 'Configurações') {
             iconName = iconeConfig;
           }
-          return <Image source={iconName} style={{ width: size, height: size, tintColor: color }} />;
+          const isCalendar = route.name === 'Agenda';
+          return (
+            <Image
+              source={iconName}
+              style={{ width: isCalendar ? size + 6 : size, height: isCalendar ? size + 6 : size, tintColor: color }}
+              resizeMode="contain"
+            />
+          );
         },
       })}
     >

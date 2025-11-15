@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Switch, ScrollView, AsyncStorage } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Colors } from '../Utils/Theme';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
 
@@ -107,7 +108,7 @@ const EmployeeConfigurationScreen = () => {
 
     return (
         <ScrollView style={styles.container}>
-            <LinearGradient colors={['#A367F0', '#FFA500']} style={styles.header}>
+            <LinearGradient colors={Colors.gradientPrimary} style={styles.header}>
                 <TouchableOpacity onPress={pickImage} style={styles.avatarContainer}>
                     <Image source={profileImage ? { uri: profileImage } : require('../assets/pet.png')} style={styles.avatar} />
                     <View style={styles.cameraIcon}>
@@ -187,7 +188,7 @@ const EmployeeConfigurationScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F2F2F7',
+        backgroundColor: '#F8FAFC',
     },
     header: {
         padding: 20,
@@ -223,27 +224,27 @@ const styles = StyleSheet.create({
     section: {
         marginTop: 20,
         marginHorizontal: 20,
-        backgroundColor: '#FFF',
-        borderRadius: 12,
-        padding: 15,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-        elevation: 2,
+        backgroundColor: Colors.white,
+        borderRadius: 14,
+        padding: 16,
+        shadowColor: Colors.purple,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.12,
+        shadowRadius: 6,
+        elevation: 3,
     },
     sectionTitle: {
         fontSize: 16,
-        fontWeight: '600',
-        color: '#8E8E93',
-        marginBottom: 10,
+        fontWeight: '700',
+        color: '#1F2937',
+        marginBottom: 12,
     },
     menuItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 12,
+        paddingVertical: 14,
         borderBottomWidth: 1,
-        borderBottomColor: '#F2F2F7',
+        borderBottomColor: '#F1F5F9',
     },
     menuIcon: {
         marginRight: 15,
@@ -253,7 +254,7 @@ const styles = StyleSheet.create({
     menuText: {
         flex: 1,
         fontSize: 16,
-        color: '#000',
+        color: '#1F2937',
     },
     dangerText: {
         color: '#D9534F',
@@ -261,7 +262,7 @@ const styles = StyleSheet.create({
     notificationOption: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 12,
+        paddingVertical: 14,
     },
 });
 

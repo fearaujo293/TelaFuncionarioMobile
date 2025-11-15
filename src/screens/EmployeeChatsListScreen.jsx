@@ -48,7 +48,7 @@ const EmployeeChatsListScreen = () => {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
+        colors={Colors.gradientPrimary}
         style={styles.headerGradient}
       >
         <Text style={styles.headerTitle}>Conversas</Text>
@@ -76,11 +76,12 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   headerGradient: {
-    backgroundColor: Colors.primary,
     paddingTop: 50,
     paddingBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   headerTitle: {
     fontSize: 22,
@@ -88,21 +89,22 @@ const styles = StyleSheet.create({
     color: Colors.white,
   },
   listContent: {
-    paddingVertical: 10,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
   },
   chatCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.cardBackground,
+    backgroundColor: Colors.white,
     padding: 15,
     marginHorizontal: 10,
     marginVertical: 5,
     borderRadius: 10,
-    shadowColor: Colors.cardShadow,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
     elevation: 3,
+    shadowColor: Colors.purple,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
   },
   chatCardContent: {
     flex: 1,
@@ -110,15 +112,15 @@ const styles = StyleSheet.create({
   chatPartnerName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.textPrimary,
+    color: '#1F2937',
   },
   lastMessage: {
     fontSize: 14,
-    color: Colors.textSecondary,
+    color: '#6B7280',
     marginTop: 5,
   },
   unreadBadge: {
-    backgroundColor: Colors.accent,
+    backgroundColor: Colors.primary,
     borderRadius: 15,
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
   emptyChatText: {
     fontSize: 18,
     fontWeight: '600',
-    color: Colors.textSecondary,
+    color: '#6B7280',
     marginTop: 20,
     textAlign: 'center',
   },

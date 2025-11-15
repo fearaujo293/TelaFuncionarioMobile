@@ -167,11 +167,12 @@ function ConsultasTabStack() {
   return (
     <VeterinarianProvider>
       <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
-        <Stack.Screen
-          name="Consultas"
-          component={ConsultasScreen}
-          options={{ title: 'Minhas Consultas' }}
-        />
+      <Stack.Screen
+        name="Consultas"
+        component={ConsultasScreen}
+        options={{ title: 'Minhas Consultas' }}
+        initialParams={{ hideHeader: true }}
+      />
       <Stack.Screen
         name="Agendamento"
         component={AgendamentoScreen}
@@ -313,8 +314,8 @@ function MainTabs({ route }) {
             <Image
               source={iconeVeterinario}
               style={{
-                width: size + 8,
-                height: size + 8,
+                width: size,
+                height: size,
                 tintColor: color,
               }}
               resizeMode="contain"

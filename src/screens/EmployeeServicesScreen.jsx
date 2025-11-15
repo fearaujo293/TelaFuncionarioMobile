@@ -121,7 +121,7 @@ import { LinearGradient } from 'expo-linear-gradient';
       <View style={styles.cardContent}>
         <View style={styles.serviceHeader}>
           <View style={styles.serviceIconContainer}>
-            <MaterialIcons name={item.icon} size={24} color={Colors.primary} />
+            <MaterialIcons name={item.icon} size={28} color={Colors.primary} />
           </View>
           <View style={styles.serviceInfo}>
             <Text style={styles.serviceName}>{item.name}</Text>
@@ -132,15 +132,15 @@ import { LinearGradient } from 'expo-linear-gradient';
 
         <View style={styles.serviceStats}>
           <View style={styles.statChip}>
-            <MaterialIcons name="today" size={16} color="#6B7280" />
+            <MaterialIcons name="today" size={18} color="#6B7280" />
             <Text style={styles.statChipText}>{item.count} hoje</Text>
           </View>
           <View style={styles.statChip}>
-            <MaterialIcons name="schedule" size={16} color="#6B7280" />
+            <MaterialIcons name="schedule" size={18} color="#6B7280" />
             <Text style={styles.statChipText}>{item.nextTime}</Text>
           </View>
           <View style={styles.statChip}>
-            <MaterialIcons name="timer" size={16} color="#6B7280" />
+            <MaterialIcons name="timer" size={18} color="#6B7280" />
             <Text style={styles.statChipText}>{item.duration}</Text>
           </View>
         </View>
@@ -154,7 +154,7 @@ import { LinearGradient } from 'expo-linear-gradient';
     <View style={styles.container}>
       {/* HEADER MODERNO */}
       <LinearGradient
-        colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
+        colors={Colors.gradientPrimary}
         style={styles.headerGradient}
       >
         <View style={styles.headerContent}>
@@ -276,8 +276,10 @@ const styles = StyleSheet.create({
   },
   headerGradient: {
     paddingTop: 50,
-    paddingBottom: 20,
+    paddingBottom: 24,
     paddingHorizontal: 20,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   headerContent: {
     flex: 1,
@@ -341,21 +343,21 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    marginTop: -10,
+    marginTop: -18,
     zIndex: 1,
   },
   statCard: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
+    backgroundColor: Colors.white,
+    borderRadius: 14,
     padding: 16,
     marginHorizontal: 4,
     alignItems: 'center',
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
+    elevation: 3,
+    shadowColor: Colors.purple,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
   },
   statNumber: {
     fontSize: 24,
@@ -394,13 +396,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.white,
     marginRight: 12,
-    elevation: 1,
-    shadowColor: '#000',
+    elevation: 2,
+    shadowColor: Colors.purple,
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 1,
+    shadowOpacity: 0.08,
+    shadowRadius: 2,
   },
   filterChipActive: {
     backgroundColor: Colors.primary,
@@ -418,14 +420,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   serviceCard: {
-    backgroundColor: '#ffffff',
+    backgroundColor: Colors.white,
     borderRadius: 16,
     marginBottom: 16,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    elevation: 3,
+    shadowColor: Colors.purple,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
   },
   cardContent: {
     padding: 20,
@@ -436,9 +438,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   serviceIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
+    width: 52,
+    height: 52,
+    borderRadius: 14,
     backgroundColor: '#f3f4f6',
     justifyContent: 'center',
     alignItems: 'center',
@@ -474,7 +476,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 12,
     paddingVertical: 6,
-    backgroundColor: '#f9fafb',
+    backgroundColor: '#f3f4f6',
     borderRadius: 16,
   },
   statChipText: {

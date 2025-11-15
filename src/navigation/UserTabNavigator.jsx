@@ -204,8 +204,8 @@ const UserTabNavigator = () => {
             <Image
               source={iconeVeterinario}
               style={{
-                width: size * 1.2,
-                height: size * 1.2,
+                width: size,
+                height: size,
                 tintColor: color,
               }}
               resizeMode="contain"

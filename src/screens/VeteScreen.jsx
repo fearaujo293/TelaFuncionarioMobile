@@ -19,6 +19,7 @@ const VeteScreen = ({ navigation }) => {
   const { appointments } = useVeterinarianContext();
   const route = useRoute();
   const highlightId = route?.params?.highlightId;
+  const hideHeader = route?.params?.hideHeader;
 
   const tabData = [
     { id: 'Agendada', label: 'Agendadas', icon: 'calendar-today', count: appointments?.Agendada?.length || 0 },
@@ -87,15 +88,15 @@ const VeteScreen = ({ navigation }) => {
 
         <View style={styles.compactInfoRow}>
           <View style={styles.compactItem}>
-            <MaterialIcons name="date-range" size={18} color="#6B7280" />
+            <MaterialIcons name="date-range" size={26} color="#6B7280" />
             <Text style={styles.compactText}>{item.date}</Text>
           </View>
           <View style={styles.compactItem}>
-            <MaterialIcons name="access-time" size={18} color="#6B7280" />
+            <MaterialIcons name="access-time" size={26} color="#6B7280" />
             <Text style={styles.compactText}>{item.time}</Text>
           </View>
           <View style={styles.compactItem}>
-            <FontAwesome5 name="user" size={14} color="#6B7280" />
+            <FontAwesome5 name="user" size={18} color="#6B7280" />
             <Text style={styles.compactText} numberOfLines={1}>{item.ownerName}</Text>
           </View>
         </View>
@@ -104,6 +105,7 @@ const VeteScreen = ({ navigation }) => {
   };
 
   const currentConsultations = appointments?.[activeTab] || [];
+  const todayStr = new Date().toISOString().split('T')[0];
 
   React.useEffect(() => {
     if (route?.params?.activeTab) {
@@ -113,16 +115,17 @@ const VeteScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      {/* Header Gradiente */}
-      <LinearGradient
-        colors={Colors.gradientPrimary}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 1 }}
-        style={styles.header}
-      >
-        <Text style={styles.headerTitle}>Minhas Consultas</Text>
-        <Text style={styles.headerSubtitle}>Gerencie seus agendamentos</Text>
-      </LinearGradient>
+      {!hideHeader && (
+        <LinearGradient
+          colors={Colors.gradientPrimary}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.header}
+        >
+          <Text style={styles.headerTitle}>Minhas Consultas</Text>
+          <Text style={styles.headerSubtitle}>Gerencie seus agendamentos</Text>
+        </LinearGradient>
+      )}
 
       {/* Tabs Customizadas */}
       <View style={styles.tabsContainer}>
@@ -154,6 +157,19 @@ const VeteScreen = ({ navigation }) => {
         ))}
       </View>
 
+      {(activeTab === 'Andamento' || activeTab === 'Concluídas') && (
+        <View style={styles.statusStatsContainer}>
+          <View style={styles.statusStatCard}>
+            <Text style={styles.statNumber}>{currentConsultations.length}</Text>
+            <Text style={styles.statLabel}>Total</Text>
+          </View>
+          <View style={styles.statusStatCard}>
+            <Text style={styles.statNumber}>{currentConsultations.filter(c => c.date === todayStr).length}</Text>
+            <Text style={styles.statLabel}>Hoje</Text>
+          </View>
+        </View>
+      )}
+
       {/* Lista de Consultas */}
       <FlatList
         data={currentConsultations}
@@ -172,16 +188,13 @@ const VeteScreen = ({ navigation }) => {
         }
       />
 
-      {/* FAB - Agendar */}
+      {/* Botão central de Agendar Consulta */}
       <TouchableOpacity
-        style={styles.fab}
+        style={styles.scheduleButtonWrapper}
         onPress={() => navigation.navigate('Agendamento')}
       >
-        <LinearGradient
-          colors={Colors.gradientPrimary}
-          style={styles.fabGradient}
-        >
-          <MaterialIcons name="add" size={32} color="#FFF" />
+        <LinearGradient colors={Colors.gradientPrimary} style={styles.scheduleButtonGradient}>
+          <Text style={styles.scheduleButtonText}>Agendar Consulta</Text>
         </LinearGradient>
       </TouchableOpacity>
     </View>
@@ -197,6 +210,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 50,
     paddingBottom: 25,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
   headerTitle: {
     fontSize: 28,
@@ -232,7 +247,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   tabContentInactive: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#EEF2FF',
   },
   tabText: {
     fontSize: 12,
@@ -273,10 +288,10 @@ const styles = StyleSheet.create({
     padding: 16,
     borderLeftWidth: 4,
     elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowColor: '#A367F0',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.12,
+    shadowRadius: 6,
   },
   cardHighlight: {
     borderWidth: 1,
@@ -352,6 +367,35 @@ const styles = StyleSheet.create({
     color: '#1F2937',
     fontWeight: '600',
   },
+  statusStatsContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  statusStatCard: {
+    flex: 1,
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 12,
+    marginHorizontal: 4,
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#A367F0',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 4,
+  },
+  statNumber: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 2,
+  },
+  statLabel: {
+    fontSize: 12,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
   fab: {
     position: 'absolute',
     bottom: 20,
@@ -369,6 +413,22 @@ const styles = StyleSheet.create({
     height: 56,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  scheduleButtonWrapper: {
+    borderRadius: 12,
+    overflow: 'hidden',
+    marginHorizontal: 20,
+    marginTop: 8,
+    marginBottom: 20,
+  },
+  scheduleButtonGradient: {
+    paddingVertical: 14,
+    alignItems: 'center',
+  },
+  scheduleButtonText: {
+    color: '#FFF',
+    fontSize: 16,
+    fontWeight: '700',
   },
   emptyContainer: {
     flex: 1,
