@@ -64,20 +64,20 @@ const TelaHistoricoConsultas = () => {
     let statusColor;
     switch (item.status) {
       case 'Agendada':
-        statusColor = Colors.info; // Blue for scheduled
+        statusColor = Colors.blue;
         break;
       case 'Andamento':
-        statusColor = Colors.primary; // Primary color for in progress
+        statusColor = Colors.primary;
         break;
       case 'Concluída':
-        statusColor = Colors.success; // Green for completed
+        statusColor = Colors.green;
         break;
       default:
         statusColor = Colors.gray;
     }
 
     return (
-      <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('DetalhesConsultaScreen', { consultation: item })}>
+      <TouchableOpacity style={styles.card} onPress={() => navigation.navigate('DetalhesConsulta', { consulta: item })}>
         <View style={styles.cardImageContainer}>
           <Image source={item.image} style={styles.cardImage} resizeMode="cover" />
         </View>
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: Colors.textPrimary,
+    color: Colors.darkGray,
     marginBottom: 20,
     textAlign: 'center',
   },
@@ -185,15 +185,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   filterButtonActive: {
-    backgroundColor: Colors.primaryLight,
+    backgroundColor: Colors.lightPurpleBackground,
   },
   filterText: {
     fontSize: 16,
     fontWeight: '500',
-    color: Colors.textSecondary,
+    color: Colors.gray,
   },
   filterTextActive: {
-    color: Colors.textPrimary,
+    color: Colors.darkGray,
   },
   flatListContent: {
     paddingBottom: 20,
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 15,
     elevation: 5,
-    shadowColor: Colors.shadow,
+    shadowColor: Colors.purple,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -262,11 +262,11 @@ const styles = StyleSheet.create({
   petName: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: Colors.textPrimary,
+    color: Colors.darkGray,
   },
   serviceType: {
     fontSize: 15,
-    color: Colors.textSecondary,
+    color: Colors.gray,
     marginBottom: 4,
   },
   time: {
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     color: Colors.gray,
   },
   statusBadge: {
-    backgroundColor: Colors.success, // Green for success status
+    backgroundColor: Colors.green,
     paddingHorizontal: 10,
     paddingVertical: 5,
     borderRadius: 8,

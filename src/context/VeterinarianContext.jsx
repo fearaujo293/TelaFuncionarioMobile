@@ -27,7 +27,93 @@ export const VeterinarianProvider = ({ children }) => {
     try {
       const stored = await AsyncStorage.getItem('vet_appointments');
       if (stored) {
-        setAppointments(JSON.parse(stored));
+        const parsed = JSON.parse(stored);
+        let updated = { Agendada: [], Andamento: [], Concluídas: [], ...parsed };
+        let changed = false;
+        if (!updated.Andamento || updated.Andamento.length === 0) {
+          updated.Andamento = [
+            {
+              id: 'and-1',
+              petName: 'Rex',
+              service: 'Consulta de Rotina',
+              date: '2025-11-20',
+              time: '10:00',
+              ownerName: 'João Silva',
+              status: 'Andamento',
+              imageSource: require('../assets/dog1.png'),
+            },
+            {
+              id: 'and-2',
+              petName: 'Miau',
+              service: 'Vacinação',
+              date: '2025-11-20',
+              time: '14:30',
+              ownerName: 'Maria Souza',
+              status: 'Andamento',
+              imageSource: require('../assets/cat1.png'),
+            },
+          ];
+          changed = true;
+        }
+        if (!updated.Concluídas || updated.Concluídas.length === 0) {
+          updated.Concluídas = [
+            {
+              id: 'conc-1',
+              petName: 'Thor',
+              service: 'Exame de Sangue',
+              date: '2025-11-18',
+              time: '09:00',
+              ownerName: 'Carlos Mendes',
+              status: 'Concluídas',
+              imageSource: require('../assets/dog2.png'),
+            },
+          ];
+          changed = true;
+        }
+        setAppointments(updated);
+        if (changed) {
+          await AsyncStorage.setItem('vet_appointments', JSON.stringify(updated));
+        }
+      } else {
+        const defaults = {
+          Agendada: [],
+          Andamento: [
+            {
+              id: 'and-1',
+              petName: 'Rex',
+              service: 'Consulta de Rotina',
+              date: '2025-11-20',
+              time: '10:00',
+              ownerName: 'João Silva',
+              status: 'Andamento',
+              imageSource: require('../assets/dog1.png'),
+            },
+            {
+              id: 'and-2',
+              petName: 'Miau',
+              service: 'Vacinação',
+              date: '2025-11-20',
+              time: '14:30',
+              ownerName: 'Maria Souza',
+              status: 'Andamento',
+              imageSource: require('../assets/cat1.png'),
+            },
+          ],
+          Concluídas: [
+            {
+              id: 'conc-1',
+              petName: 'Thor',
+              service: 'Exame de Sangue',
+              date: '2025-11-18',
+              time: '09:00',
+              ownerName: 'Carlos Mendes',
+              status: 'Concluídas',
+              imageSource: require('../assets/dog2.png'),
+            },
+          ],
+        };
+        setAppointments(defaults);
+        await AsyncStorage.setItem('vet_appointments', JSON.stringify(defaults));
       }
     } catch (e) {
       console.log('Erro ao carregar agendamentos vet:', e);

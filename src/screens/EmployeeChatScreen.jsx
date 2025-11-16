@@ -30,6 +30,15 @@ const EmployeeChatScreen = () => {
     }
   };
 
+  const quickAction = (type) => {
+    if (type === 'marcar') {
+      sendMessage(employeeChatId, chatPartnerInfo, 'Consulta marcada. Confirma presença?', 'employee');
+    }
+    if (type === 'retorno') {
+      sendMessage(employeeChatId, chatPartnerInfo, 'Vamos agendar um retorno? Quais horários prefere?', 'employee');
+    }
+  };
+
   const renderMessage = ({ item }) => (
     <View style={[
       styles.messageBubble,
@@ -67,6 +76,14 @@ const EmployeeChatScreen = () => {
           <Text style={styles.emptyChatText}>Nenhuma conversa ativa no momento.</Text>
         </View>
       )}
+      <View style={styles.quickActionsRow}>
+        <TouchableOpacity style={styles.quickButton} onPress={() => quickAction('marcar')}>
+          <FontAwesome name="calendar" size={16} color={Colors.white} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.quickButton} onPress={() => quickAction('retorno')}>
+          <FontAwesome name="refresh" size={16} color={Colors.white} />
+        </TouchableOpacity>
+      </View>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.textInput}
@@ -119,25 +136,45 @@ const styles = StyleSheet.create({
   },
   employeeMessage: {
     alignSelf: 'flex-start',
-    backgroundColor: '#f3f4f6',
+    backgroundColor: '#eef2ff',
     borderTopLeftRadius: 5,
     marginRight: 40,
   },
   userMessage: {
     alignSelf: 'flex-end',
-    backgroundColor: Colors.primary,
+    backgroundColor: '#8b5cf6',
     borderTopRightRadius: 5,
     marginLeft: 40,
   },
   messageText: {
     fontSize: 16,
-    color: '#1F2937',
+    color: '#1f1f1f',
   },
   messageTime: {
     fontSize: 12,
     color: '#6B7280',
     alignSelf: 'flex-end',
     marginTop: 5,
+  },
+  quickActionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingHorizontal: 10,
+    paddingTop: 6,
+    gap: 8,
+  },
+  quickButton: {
+    backgroundColor: Colors.primary,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: Colors.purple,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.12,
+    shadowRadius: 4,
   },
   content: {
     flex: 1,
@@ -150,7 +187,7 @@ const styles = StyleSheet.create({
   emptyChatText: {
     fontSize: 20,
     fontWeight: '600',
-    color: Colors.textSecondary,
+    color: Colors.darkGray,
     marginTop: 20,
     textAlign: 'center',
     lineHeight: 28,

@@ -1,5 +1,5 @@
-import React, { useContext } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React, { useContext, useMemo, useState } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChatContext } from '../context/ChatContext';
@@ -8,13 +8,17 @@ import { FontAwesome } from '@expo/vector-icons';
 
 const EmployeeChatsListScreen = () => {
   const { chats } = useContext(ChatContext);
+  const [query, setQuery] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
   const navigation = useNavigation();
 
   // Convertendo o objeto de chats em um array para FlatList
-  const chatList = Object.keys(chats).map(chatId => ({
-    chatId,
-    ...chats[chatId],
-  }));
+  const chatList = useMemo(() => {
+    const arr = Object.keys(chats).map(chatId => ({ chatId, ...chats[chatId] }));
+    return arr
+      .filter((c) => (c.chatPartnerInfo?.name || '').toLowerCase().includes(query.toLowerCase()))
+      .sort((a, b) => (b.unreadCount || 0) - (a.unreadCount || 0));
+  }, [chats, query]);
 
   const renderChatCard = ({ item }) => {
     const lastMessage = item.messages[item.messages.length - 1];
@@ -53,12 +57,26 @@ const EmployeeChatsListScreen = () => {
       >
         <Text style={styles.headerTitle}>Conversas</Text>
       </LinearGradient>
+      <View style={styles.searchWrapper}>
+        <TextInput
+          placeholder="Buscar por nome"
+          placeholderTextColor={'#888'}
+          value={query}
+          onChangeText={setQuery}
+          style={styles.searchInput}
+        />
+      </View>
       {chatList.length > 0 ? (
         <FlatList
           data={chatList}
           keyExtractor={(item) => item.chatId}
           renderItem={renderChatCard}
           contentContainerStyle={styles.listContent}
+          refreshing={refreshing}
+          onRefresh={() => {
+            setRefreshing(true);
+            setTimeout(() => setRefreshing(false), 800);
+          }}
         />
       ) : (
         <View style={styles.emptyChatContainer}>
@@ -91,6 +109,21 @@ const styles = StyleSheet.create({
   listContent: {
     paddingVertical: 12,
     paddingHorizontal: 10,
+  },
+  searchWrapper: {
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 6,
+  },
+  searchInput: {
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.lightGrayBorder,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 16,
+    color: Colors.darkGray,
   },
   chatCard: {
     flexDirection: 'row',

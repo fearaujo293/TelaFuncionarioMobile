@@ -7,6 +7,7 @@ import EmployeeChatsListScreen from '../screens/EmployeeChatsListScreen';
 import TelaHistoricoConsultas from '../screens/TelaHistoricoConsultas';
 import DetalhesConsultaScreen from '../screens/DetalhesConsultaScreen';
 import AgendamentoScreen from '../screens/AgendamentoScreen';
+import AllAppointmentsScreen from '../screens/AllAppointmentsScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
 import WorkHoursScreen from '../screens/WorkHoursScreen';
 import PaymentMethodsScreen from '../screens/PaymentMethodsScreen';
@@ -22,6 +23,8 @@ const Tab = createBottomTabNavigator();
 const ChatStack = createStackNavigator();
 const ServicesStack = createStackNavigator();
 const Stack = createStackNavigator();
+const AgendaStack = createStackNavigator();
+const ConsultasStack = createStackNavigator();
 
 const ServicesFlow = () => (
   <ServicesStack.Navigator screenOptions={{ headerShown: false }}>
@@ -51,6 +54,21 @@ const EmployeeConfigurationStack = () => (
   </Stack.Navigator>
 );
 
+const AgendaFlow = () => (
+  <AgendaStack.Navigator screenOptions={{ headerShown: false }}>
+    <AgendaStack.Screen name="AllAppointments" component={AllAppointmentsScreen} />
+    <AgendaStack.Screen name="DetalhesConsulta" component={DetalhesConsultaScreen} />
+  </AgendaStack.Navigator>
+);
+
+const ConsultasFlow = () => (
+  <ConsultasStack.Navigator screenOptions={{ headerShown: false }}>
+    <ConsultasStack.Screen name="HistoricoConsultas" component={TelaHistoricoConsultas} />
+    <ConsultasStack.Screen name="DetalhesConsulta" component={DetalhesConsultaScreen} />
+    <ConsultasStack.Screen name="Agendamento" component={AgendamentoScreen} />
+  </ConsultasStack.Navigator>
+);
+
 const EmployeeMainApp = () => {
   return (
     <Tab.Navigator
@@ -63,7 +81,7 @@ const EmployeeMainApp = () => {
         },
         tabBarBackground: () => (
           <LinearGradient
-            colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
+            colors={Colors.gradientPrimary}
             style={{ flex: 1 }}
           />
         ),
@@ -72,6 +90,24 @@ const EmployeeMainApp = () => {
         headerShown: false,
         tabBarShowLabel: false,
       }}>
+      <Tab.Screen
+        name="Agenda"
+        component={AgendaFlow}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="calendar" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Consultas"
+        component={ConsultasFlow}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome name="history" color={color} size={size} />
+          ),
+        }}
+      />
       <Tab.Screen
         name="Serviços"
         component={ServicesFlow}

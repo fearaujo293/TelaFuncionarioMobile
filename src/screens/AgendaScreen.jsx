@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, useWindowDimensions, Modal, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { useOrientation } from '../Utils/Responsive';
 import { Colors, CommonStyles } from '../Utils/Theme';
@@ -135,6 +136,7 @@ const AgendaScreen = () => {
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <LinearGradient colors={Colors.gradientPrimary} style={styles.headerGradient}>
         <Text style={styles.headerTitle}>Agenda</Text>
+        <Text style={styles.headerSubtitle}>Visualize e gerencie suas consultas</Text>
       </LinearGradient>
       <View style={[CommonStyles.card, styles.calendarWrapper]}>
         <Calendar
@@ -183,6 +185,20 @@ const AgendaScreen = () => {
           // disableAllTouchEventsForDisabledDays={true} // Remove this line to make all days clickable
           dayComponent={({ date, marking }) => renderDay(date, marking)}
         />
+      </View>
+      <View style={styles.legendRow}>
+        <View style={styles.legendItem}>
+          <View style={[styles.legendDot, { backgroundColor: Colors.mediumPurple }]} />
+          <Text style={styles.legendText}>Agendada</Text>
+        </View>
+        <View style={styles.legendItem}>
+          <View style={[styles.legendDot, { backgroundColor: '#FF0000' }]} />
+          <Text style={styles.legendText}>Urgente</Text>
+        </View>
+        <View style={styles.legendItem}>
+          <View style={[styles.legendDot, { backgroundColor: Colors.gray }]} />
+          <Text style={styles.legendText}>Concluída</Text>
+        </View>
       </View>
 
       {/* Small Modal for Purple Dot Consultations */}
@@ -329,6 +345,11 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     width: '100%',
   },
+  headerSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.9)',
+    marginTop: 6,
+  },
   dayContainer: {
     flex: 1,
     aspectRatio: 1,
@@ -358,6 +379,28 @@ const styles = StyleSheet.create({
     height: 6,
     borderRadius: 3,
     marginTop: 2,
+  },
+  legendRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  legendItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  legendDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginRight: 8,
+  },
+  legendText: {
+    color: Colors.mediumPurple,
+    fontSize: 12,
+    fontWeight: '500',
   },
   modalOverlay: {
     flex: 1,

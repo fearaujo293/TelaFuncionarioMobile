@@ -29,6 +29,8 @@ import PaymentMethodsScreen from '../screens/PaymentMethodsScreen';
 import iconeHome from '../assets/icone.png'; // Para Dashboard
 import iconePessoa from '../assets/pessoa.png'; // Para Funcionários
 import iconeMao from '../assets/ChatIcon.png'; // Para Chat
+import iconeCalendario from '../assets/CalendarioIcon.png'; // Para Agenda
+import iconeVet from '../assets/vet_icon.png'; // Para Relatórios (temporário)
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -127,6 +129,22 @@ function AdminConfigurationStack() {
   );
 }
 
+function AdminReportsStack() {
+  return (
+    <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
+      <Stack.Screen name="AdminReports" component={AdminReportsScreen} options={{ title: 'Relatórios' }} />
+    </Stack.Navigator>
+  );
+}
+
+function AdminAgendaStack() {
+  return (
+    <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
+      <Stack.Screen name="AllAppointments" component={AllAppointmentsScreen} options={{ title: 'Agenda' }} />
+    </Stack.Navigator>
+  );
+}
+
 function AdminMainTabs({ route }) {
   const { initialTab } = route.params || {};
 
@@ -141,8 +159,9 @@ function AdminMainTabs({ route }) {
           borderTopWidth: 0,
         },
         tabBarBackground: () => (
-          <View
-            style={{ flex: 1, backgroundColor: Colors.primary }}
+          <LinearGradient
+            colors={Colors.gradientPrimary}
+            style={{ flex: 1 }}
           />
         ),
         tabBarActiveTintColor: 'white',
@@ -194,6 +213,42 @@ function AdminMainTabs({ route }) {
           tabBarIcon: ({ color, size }) => (
             <Image
               source={iconeMao}
+              style={{
+                width: size,
+                height: size,
+                tintColor: color,
+              }}
+              resizeMode="contain"
+            />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="AgendaTab"
+        component={AdminAgendaStack}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Image
+              source={iconeCalendario}
+              style={{
+                width: size,
+                height: size,
+                tintColor: color,
+              }}
+              resizeMode="contain"
+            />
+          ),
+        }}
+      />
+
+      <Tab.Screen
+        name="ReportsTab"
+        component={AdminReportsStack}
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Image
+              source={iconeVet}
               style={{
                 width: size,
                 height: size,

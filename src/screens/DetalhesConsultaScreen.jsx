@@ -6,6 +6,7 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import { Ionicons, FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -155,34 +156,36 @@ const DetalhesConsultaScreen = ({ route }) => {
           {/* Botões de ação */}
           <View style={styles.actionButtonsContainer}>
             {consultaData.status === 'Agendada' && (
-              <TouchableOpacity onPress={() => console.log('Consulta confirmada')} style={styles.actionButtonWrapper}>
-                <LinearGradient colors={Colors.gradientPrimary} style={styles.actionButtonGradient}>
-                  <Text style={styles.actionButtonText}>✓ Confirmar</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            )}
-            
-            {consultaData.status === 'Andamento' && (
-              <TouchableOpacity onPress={() => console.log('Consulta em andamento')} style={styles.actionButtonWrapper}>
-                <LinearGradient colors={Colors.gradientPrimary} style={styles.actionButtonGradient}>
-                  <Text style={styles.actionButtonText}>⏳ Em Andamento</Text>
-                </LinearGradient>
-              </TouchableOpacity>
-            )}
-            
-            {consultaData.status === 'Concluída' && (
-              <TouchableOpacity onPress={() => console.log('Consulta concluída')} style={styles.actionButtonWrapper}>
-                <LinearGradient colors={Colors.gradientPrimary} style={styles.actionButtonGradient}>
-                  <Text style={styles.actionButtonText}>✓ Concluída</Text>
-                </LinearGradient>
-              </TouchableOpacity>
+              <View />
             )}
 
-            {consultaData.status === 'Pendente' && (
-              <TouchableOpacity onPress={() => console.log('Pendente de confirmação')} style={styles.actionButtonWrapper}>
-                <LinearGradient colors={Colors.gradientPrimary} style={styles.actionButtonGradient}>
-                  <Text style={styles.actionButtonText}>⏱ Pendente</Text>
-                </LinearGradient>
+            {consultaData.status === 'Andamento' && (
+              <View style={styles.andamentoRow}>
+                <Text style={styles.cancelText}>cancelar consulta</Text>
+                <TouchableOpacity
+                  style={styles.actionRedButton}
+                  onPress={() =>
+                    Alert.alert(
+                      'Cancelar consulta',
+                      'Tem certeza que deseja cancelar?',
+                      [
+                        { text: 'Não', style: 'cancel' },
+                        { text: 'Sim', style: 'destructive', onPress: () => Alert.alert('Cancelada', 'A consulta foi cancelada.') },
+                      ]
+                    )
+                  }
+                >
+                  <Text style={styles.actionRedButtonText}>Clique Aqui</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+
+            {consultaData.status === 'Concluída' && (
+              <TouchableOpacity
+                style={styles.actionPurpleButton}
+                onPress={() => Alert.alert('Relatório', 'Relatório gerado com sucesso')}
+              >
+                <Text style={styles.actionPurpleButtonText}>gerar relatorio</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -368,6 +371,40 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     borderTopWidth: 1,
     borderTopColor: '#E5E7EB',
+  },
+  andamentoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  cancelText: {
+    color: '#000000',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  actionRedButton: {
+    backgroundColor: Colors.red,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+  },
+  actionRedButtonText: {
+    color: Colors.white,
+    fontWeight: '700',
+    fontSize: 14,
+  },
+  actionPurpleButton: {
+    backgroundColor: Colors.purple,
+    paddingVertical: 12,
+    alignItems: 'center',
+    borderRadius: 8,
+  },
+  actionPurpleButtonText: {
+    color: Colors.white,
+    fontWeight: '700',
+    fontSize: 16,
+    textTransform: 'uppercase',
   },
   actionButtonWrapper: {
     borderRadius: 8,

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../Utils/Theme';
@@ -56,6 +56,26 @@ const mockAllAppointments = [
     status: 'Agendada',
     petImage: 'https://via.placeholder.com/150/FFA500/FFFFFF?text=Bob', // Exemplo de imagem
   },
+  {
+    id: '6',
+    petName: 'Princesa',
+    ownerName: 'Ana Clara',
+    date: '2023-10-29',
+    time: '08:30',
+    type: 'Consulta de Rotina',
+    status: 'Andamento',
+    petImage: 'https://via.placeholder.com/150/AA00AA/FFFFFF?text=Princesa',
+  },
+  {
+    id: '7',
+    petName: 'Buddy',
+    ownerName: 'Marcos Lima',
+    date: '2023-10-29',
+    time: '13:15',
+    type: 'Retorno',
+    status: 'Andamento',
+    petImage: 'https://via.placeholder.com/150/8888FF/FFFFFF?text=Buddy',
+  },
 ];
 
 const AppointmentItem = ({ appointment, onPress }) => (
@@ -67,7 +87,16 @@ const AppointmentItem = ({ appointment, onPress }) => (
       <Text style={styles.appointmentDateTime}>{appointment.date} às {appointment.time}</Text>
       <Text style={styles.appointmentType}>Tipo: {appointment.type}</Text>
     </View>
-    <View style={[styles.statusBadge, appointment.status === 'Agendada' ? styles.statusScheduled : appointment.status === 'Concluída' ? styles.statusCompleted : styles.statusCancelled]}>
+    <View style={[
+      styles.statusBadge,
+      appointment.status === 'Agendada'
+        ? styles.statusScheduled
+        : appointment.status === 'Andamento'
+          ? styles.statusInProgress
+          : appointment.status === 'Concluída'
+            ? styles.statusCompleted
+            : styles.statusCancelled
+    ]}>
       <Text style={styles.statusText}>{appointment.status}</Text>
     </View>
   </TouchableOpacity>
@@ -76,6 +105,9 @@ const AppointmentItem = ({ appointment, onPress }) => (
 const AllAppointmentsScreen = () => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
+  const [query, setQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('Todos');
+  const [refreshing, setRefreshing] = useState(false);
 
   const handleCardPress = (appointment) => {
     setSelectedAppointment(appointment);
@@ -85,6 +117,17 @@ const AllAppointmentsScreen = () => {
   const closeModal = () => {
     setModalVisible(false);
     setSelectedAppointment(null);
+  };
+
+  const filteredAppointments = mockAllAppointments.filter((a) => {
+    const matchesQuery = a.petName.toLowerCase().includes(query.toLowerCase());
+    const matchesStatus = statusFilter === 'Todos' ? true : a.status === statusFilter;
+    return matchesQuery && matchesStatus;
+  });
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => setRefreshing(false), 800);
   };
 
   return (
@@ -97,14 +140,39 @@ const AllAppointmentsScreen = () => {
         style={styles.header}
       >
         <Text style={styles.headerTitle}>Todas as Consultas</Text>
-        <Text style={styles.headerSubtitle}>Gerencie todas as consultas agendadas</Text>
+        <Text style={styles.headerSubtitle}>Filtre por status e busque por pet</Text>
       </LinearGradient>
 
+      <View style={styles.controlsRow}>
+        <View style={styles.searchWrapper}>
+          <TextInput
+            placeholder="Buscar por pet"
+            placeholderTextColor={'#888'}
+            value={query}
+            onChangeText={setQuery}
+            style={styles.searchInput}
+          />
+        </View>
+        <View style={styles.filtersRow}>
+          {['Todos','Agendada','Andamento','Concluída','Cancelada'].map((st) => (
+            <TouchableOpacity
+              key={st}
+              onPress={() => setStatusFilter(st)}
+              style={[styles.filterChip, statusFilter === st && styles.filterChipActive]}
+            >
+              <Text style={[styles.filterChipText, statusFilter === st && styles.filterChipTextActive]}>{st}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
       <FlatList
-        data={mockAllAppointments}
+        data={filteredAppointments}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => <AppointmentItem appointment={item} onPress={handleCardPress} />}
         contentContainerStyle={styles.listContent}
+        refreshing={refreshing}
+        onRefresh={onRefresh}
       />
       <AppointmentDetailModal
         visible={isModalVisible}
@@ -141,6 +209,50 @@ const styles = StyleSheet.create({
   listContent: {
     paddingBottom: 20,
     paddingHorizontal: 16, // Added padding to match the new header's horizontal padding
+  },
+  controlsRow: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 6,
+  },
+  searchWrapper: {
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: Colors.lightGrayBorder,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    marginBottom: 10,
+  },
+  searchInput: {
+    fontSize: 16,
+    color: Colors.darkGray,
+  },
+  filtersRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  filterChip: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: Colors.lightGrayBorder,
+    backgroundColor: Colors.white,
+    marginRight: 8,
+    marginBottom: 8,
+  },
+  filterChipActive: {
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
+  },
+  filterChipText: {
+    color: Colors.darkGray,
+    fontWeight: '500',
+  },
+  filterChipTextActive: {
+    color: Colors.white,
   },
   appointmentCard: {
     flexDirection: 'row',
@@ -190,6 +302,9 @@ const styles = StyleSheet.create({
   },
   statusScheduled: {
     backgroundColor: Colors.lightBlue,
+  },
+  statusInProgress: {
+    backgroundColor: Colors.lightOrangeBackground,
   },
   statusCompleted: {
     backgroundColor: Colors.lightGreen,
