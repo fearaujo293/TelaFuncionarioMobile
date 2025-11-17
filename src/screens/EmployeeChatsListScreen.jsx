@@ -1,5 +1,5 @@
 import React, { useContext, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Image, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ChatContext } from '../context/ChatContext';
@@ -7,9 +7,11 @@ import { Colors } from '../Utils/Theme';
 import { FontAwesome } from '@expo/vector-icons';
 
 const EmployeeChatsListScreen = () => {
-  const { chats } = useContext(ChatContext);
+  const { chats, createUserChat } = useContext(ChatContext);
   const [query, setQuery] = useState('');
   const [refreshing, setRefreshing] = useState(false);
+  const [showNewChatModal, setShowNewChatModal] = useState(false);
+  const [newChatName, setNewChatName] = useState('');
   const navigation = useNavigation();
 
   // Convertendo o objeto de chats em um array para FlatList
@@ -27,11 +29,12 @@ const EmployeeChatsListScreen = () => {
     return (
       <TouchableOpacity
         style={styles.chatCard}
-        onPress={() => navigation.navigate('EmployeeChatScreen', {
+        onPress={() => navigation.navigate('ChatVeterinarian', {
           chatId: item.chatId,
           chatPartnerInfo: item.chatPartnerInfo,
         })}
       >
+        <Image source={{ uri: item.chatPartnerInfo?.avatar }} style={styles.avatar} />
         <View style={styles.chatCardContent}>
           <Text style={styles.chatPartnerName}>{chatPartnerName}</Text>
           {lastMessage && (
@@ -84,6 +87,45 @@ const EmployeeChatsListScreen = () => {
           <Text style={styles.emptyChatText}>Nenhuma conversa ativa no momento.</Text>
         </View>
       )}
+      <TouchableOpacity style={styles.fab} onPress={() => setShowNewChatModal(true)} activeOpacity={0.85}>
+        <LinearGradient colors={Colors.gradientPrimary} style={styles.fabGradient}>
+          <FontAwesome name="plus" size={18} color={Colors.white} />
+          <Text style={styles.fabText}>Nova conversa</Text>
+        </LinearGradient>
+      </TouchableOpacity>
+      <Modal transparent visible={showNewChatModal} onRequestClose={() => setShowNewChatModal(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Criar conversa</Text>
+            <TextInput
+              placeholder="Nome do usuário"
+              placeholderTextColor={'#888'}
+              value={newChatName}
+              onChangeText={setNewChatName}
+              style={styles.modalInput}
+            />
+            <View style={styles.modalActionsRow}>
+              <TouchableOpacity style={styles.modalAction} onPress={() => setShowNewChatModal(false)}>
+                <Text style={styles.modalActionText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.modalActionPrimary}
+                onPress={() => {
+                  const res = createUserChat({ name: newChatName });
+                  setShowNewChatModal(false);
+                  setNewChatName('');
+                  navigation.navigate('ChatVeterinarian', {
+                    chatId: res.id,
+                    chatPartnerInfo: res.chatPartnerInfo,
+                  });
+                }}
+              >
+                <Text style={styles.modalActionPrimaryText}>Criar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -139,6 +181,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 6,
   },
+  avatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginRight: 12,
+    backgroundColor: Colors.lightGray,
+  },
   chatCardContent: {
     flex: 1,
   },
@@ -166,6 +215,82 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: 12,
     fontWeight: 'bold',
+  },
+  fab: {
+    position: 'absolute',
+    right: 16,
+    bottom: 16,
+    borderRadius: 28,
+    overflow: 'hidden',
+    elevation: 4,
+    shadowColor: Colors.purple,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+  },
+  fabGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  fabText: {
+    color: Colors.white,
+    fontWeight: '700',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalContent: {
+    width: '85%',
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    padding: 16,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: Colors.darkGray,
+    marginBottom: 12,
+  },
+  modalInput: {
+    borderWidth: 1,
+    borderColor: Colors.lightGrayBorder,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 16,
+    color: Colors.darkGray,
+    marginBottom: 16,
+  },
+  modalActionsRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+  },
+  modalAction: {
+    backgroundColor: Colors.lightGray,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  modalActionText: {
+    color: Colors.darkGray,
+    fontWeight: '600',
+  },
+  modalActionPrimary: {
+    backgroundColor: Colors.primary,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 8,
+  },
+  modalActionPrimaryText: {
+    color: Colors.white,
+    fontWeight: '700',
   },
   emptyChatContainer: {
     flex: 1,

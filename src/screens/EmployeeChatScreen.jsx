@@ -1,14 +1,16 @@
 import React, { useState, useContext, useEffect, useRef } from 'react';
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, KeyboardAvoidingView, Platform, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../Utils/Theme';
+import { useNavigation } from '@react-navigation/native';
 import { ChatContext } from '../context/ChatContext';
 
 const EmployeeChatScreen = () => {
   const { chats, sendMessage, markChatRead } = useContext(ChatContext);
-  const employeeChatId = 'employee_user_chat'; // Um ID fixo para o chat entre funcionário e usuário
-  const chatPartnerInfo = { id: 'user_id', name: 'Usuário' }; // Informações do parceiro de chat (usuário)
+  const navigation = useNavigation();
+  const employeeChatId = 'employee_user_chat';
+  const chatPartnerInfo = { id: 'user_id', name: 'Usuário' };
 
   const currentChat = chats[employeeChatId] || { messages: [] };
   const messages = currentChat.messages;
@@ -37,6 +39,10 @@ const EmployeeChatScreen = () => {
     if (type === 'retorno') {
       sendMessage(employeeChatId, chatPartnerInfo, 'Vamos agendar um retorno? Quais horários prefere?', 'employee');
     }
+    if (type === 'agendar') {
+      markChatRead(employeeChatId);
+      navigation.navigate('Agendamento');
+    }
   };
 
   const renderMessage = ({ item }) => (
@@ -59,7 +65,13 @@ const EmployeeChatScreen = () => {
         colors={Colors.gradientPrimary}
         style={styles.headerGradient}
       >
-        <Text style={styles.headerTitle}>Chat com {chatPartnerInfo.name}</Text>
+        <View style={styles.headerRow}>
+          <Image source={{ uri: currentChat.chatPartnerInfo?.avatar }} style={styles.headerAvatar} />
+          <View style={styles.headerTextCol}>
+            <Text style={styles.headerTitle}>Chat com {chatPartnerInfo.name}</Text>
+            <Text style={styles.headerSubtitle}>Ativo agora</Text>
+          </View>
+        </View>
       </LinearGradient>
       {messages.length > 0 ? (
         <FlatList
@@ -82,6 +94,9 @@ const EmployeeChatScreen = () => {
         </TouchableOpacity>
         <TouchableOpacity style={styles.quickButton} onPress={() => quickAction('retorno')}>
           <FontAwesome name="refresh" size={16} color={Colors.white} />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.quickButton} onPress={() => quickAction('agendar')}>
+          <FontAwesome name="plus" size={16} color={Colors.white} />
         </TouchableOpacity>
       </View>
       <View style={styles.inputContainer}>
@@ -117,6 +132,24 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     color: Colors.white,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  headerAvatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: Colors.lightGray,
+  },
+  headerTextCol: {
+    flexDirection: 'column',
+  },
+  headerSubtitle: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.9)',
   },
   messageList: {
     paddingHorizontal: 15,

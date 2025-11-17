@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, TextInput, Image } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../Utils/Theme';
+import { useNavigation } from '@react-navigation/native';
 import AppointmentDetailModal from '../components/AppointmentDetailModal';
 
 const mockAllAppointments = [
@@ -78,14 +79,25 @@ const mockAllAppointments = [
   },
 ];
 
-const AppointmentItem = ({ appointment, onPress }) => (
-  <TouchableOpacity style={styles.appointmentCard} onPress={() => onPress(appointment)}>
-    <FontAwesome name="paw" size={24} color={Colors.primary} style={styles.cardIcon} />
+const AppointmentItem = ({ appointment, onPress, onReschedule, onMessage }) => (
+  <View style={styles.appointmentCard}>
+    <Image source={{ uri: appointment.petImage }} style={styles.petAvatar} />
     <View style={styles.appointmentInfo}>
       <Text style={styles.petName}>{appointment.petName}</Text>
       <Text style={styles.ownerName}>Dono: {appointment.ownerName}</Text>
       <Text style={styles.appointmentDateTime}>{appointment.date} às {appointment.time}</Text>
       <Text style={styles.appointmentType}>Tipo: {appointment.type}</Text>
+      <View style={styles.cardActionsRow}>
+        <TouchableOpacity style={styles.cardActionBtn} onPress={() => onPress(appointment)}>
+          <Text style={styles.cardActionText}>Detalhes</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.cardActionBtn} onPress={() => onReschedule(appointment)}>
+          <Text style={styles.cardActionText}>Reagendar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.cardActionBtn} onPress={() => onMessage(appointment)}>
+          <Text style={styles.cardActionText}>Mensagens</Text>
+        </TouchableOpacity>
+      </View>
     </View>
     <View style={[
       styles.statusBadge,
@@ -99,10 +111,11 @@ const AppointmentItem = ({ appointment, onPress }) => (
     ]}>
       <Text style={styles.statusText}>{appointment.status}</Text>
     </View>
-  </TouchableOpacity>
+  </View>
 );
 
 const AllAppointmentsScreen = () => {
+  const navigation = useNavigation();
   const [isModalVisible, setModalVisible] = useState(false);
   const [selectedAppointment, setSelectedAppointment] = useState(null);
   const [query, setQuery] = useState('');
@@ -112,6 +125,14 @@ const AllAppointmentsScreen = () => {
   const handleCardPress = (appointment) => {
     setSelectedAppointment(appointment);
     setModalVisible(true);
+  };
+
+  const handleReschedule = (appointment) => {
+    navigation.navigate('Agendamento');
+  };
+
+  const handleMessage = (appointment) => {
+    navigation.navigate('Chat');
   };
 
   const closeModal = () => {
@@ -169,7 +190,14 @@ const AllAppointmentsScreen = () => {
       <FlatList
         data={filteredAppointments}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <AppointmentItem appointment={item} onPress={handleCardPress} />}
+        renderItem={({ item }) => (
+          <AppointmentItem
+            appointment={item}
+            onPress={handleCardPress}
+            onReschedule={handleReschedule}
+            onMessage={handleMessage}
+          />
+        )}
         contentContainerStyle={styles.listContent}
         refreshing={refreshing}
         onRefresh={onRefresh}
@@ -267,6 +295,13 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.12,
     shadowRadius: 6,
   },
+  petAvatar: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    marginRight: 12,
+    backgroundColor: Colors.lightGray,
+  },
   cardIcon: {
     marginRight: 15,
   },
@@ -293,6 +328,22 @@ const styles = StyleSheet.create({
     color: Colors.darkGray,
     marginTop: 3,
     fontWeight: '500',
+  },
+  cardActionsRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 12,
+  },
+  cardActionBtn: {
+    backgroundColor: Colors.lightGray,
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+  },
+  cardActionText: {
+    color: Colors.darkGray,
+    fontSize: 12,
+    fontWeight: '600',
   },
   statusBadge: {
     borderRadius: 15,

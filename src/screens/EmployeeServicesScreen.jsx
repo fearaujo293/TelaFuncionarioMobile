@@ -116,8 +116,12 @@ import { LinearGradient } from 'expo-linear-gradient';
     }
   };
 
+  const handleServicePress = (item) => {
+    navigation.navigate('EmployeeServiceDetails', { service: item });
+  };
+
   const renderServiceCard = (item) => (
-    <TouchableOpacity key={item.id} style={styles.serviceCard}>
+    <TouchableOpacity key={item.id} style={styles.serviceCard} onPress={() => handleServicePress(item)}>
       <View style={styles.cardContent}>
         <View style={styles.serviceHeader}>
           <View style={styles.serviceIconContainer}>
@@ -143,6 +147,14 @@ import { LinearGradient } from 'expo-linear-gradient';
             <MaterialIcons name="timer" size={18} color="#6B7280" />
             <Text style={styles.statChipText}>{item.duration}</Text>
           </View>
+        </View>
+        <View style={styles.cardActionsRow}>
+          <TouchableOpacity style={styles.cardActionBtn} onPress={() => navigation.navigate('AgendamentoScreen')}>
+            <Text style={styles.cardActionText}>Agendar</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.cardActionBtn} onPress={() => navigation.navigate('EmployeeServiceDetails', { service: item })}>
+            <Text style={styles.cardActionText}>Detalhes</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableOpacity>
@@ -484,6 +496,22 @@ const styles = StyleSheet.create({
     color: '#6B7280',
     fontWeight: '500',
     marginLeft: 4,
+  },
+  cardActionsRow: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 14,
+  },
+  cardActionBtn: {
+    backgroundColor: '#f3f4f6',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  cardActionText: {
+    color: '#6B7280',
+    fontWeight: '600',
+    fontSize: 12,
   },
   emptyState: {
     alignItems: 'center',

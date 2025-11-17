@@ -187,6 +187,10 @@ const AdminListScreen = () => {
 
   return (
     <View style={styles.container}>
+      <LinearGradient colors={Colors.gradientPrimary} style={styles.header}>
+        <Text style={styles.headerTitle}>Funcionários</Text>
+        <Text style={styles.headerSubtitle}>Busque, filtre e gerencie</Text>
+      </LinearGradient>
       <TextInput
         style={styles.searchInput}
         placeholder="Buscar funcionário..."
@@ -217,6 +221,20 @@ const AdminListScreen = () => {
           </TouchableOpacity>
         ))}</View>
 
+
+      <View style={styles.statusFilterContainer}>
+        {employeeStatuses.map((st) => (
+          <TouchableOpacity
+            key={st}
+            style={[styles.filterButton, selectedStatus === st && styles.filterButtonActive]}
+            onPress={() => setSelectedStatus(st)}
+          >
+            <Text style={[styles.filterButtonText, selectedStatus === st && styles.filterButtonTextActive]}>
+              {st}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
       <FlatList
         data={filteredAdmins}
@@ -252,6 +270,25 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     padding: 15,
   },
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 24,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+    marginHorizontal: -15,
+    marginBottom: 10,
+  },
+  headerTitle: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: Colors.white,
+  },
+  headerSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.9)',
+    marginTop: 4,
+  },
   searchInput: {
     backgroundColor: Colors.white,
     borderRadius: 10,
@@ -266,6 +303,19 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   filterContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 15,
+    backgroundColor: Colors.white,
+    borderRadius: 10,
+    padding: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+  },
+  statusFilterContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 15,

@@ -1,7 +1,12 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import EmployeeDashboardScreen from '../screens/EmployeeDashboardScreen';
 import EmployeeServicesScreen from '../screens/EmployeeServicesScreen';
+import EmployeeServicesSimpleScreen from '../screens/EmployeeServicesSimpleScreen';
 import EmployeeChatScreen from '../screens/EmployeeChatScreen';
+import EmployeeMessagesScreen from '../screens/EmployeeMessagesScreen';
+import EmployeeHistoricoScreen from '../screens/EmployeeHistoricoScreen';
+import EmployeeServiceDetailsScreen from '../screens/EmployeeServiceDetailsScreen.jsx';
 import EmployeeConfigurationScreen from '../screens/EmployeeConfigurationScreen';
 import EmployeeChatsListScreen from '../screens/EmployeeChatsListScreen';
 import TelaHistoricoConsultas from '../screens/TelaHistoricoConsultas';
@@ -28,7 +33,10 @@ const ConsultasStack = createStackNavigator();
 
 const ServicesFlow = () => (
   <ServicesStack.Navigator screenOptions={{ headerShown: false }}>
-    <ServicesStack.Screen name="EmployeeServices" component={EmployeeServicesScreen} />
+    <ServicesStack.Screen name="EmployeeDashboard" component={EmployeeDashboardScreen} />
+    <ServicesStack.Screen name="EmployeeServices" component={EmployeeServicesSimpleScreen} />
+    <ServicesStack.Screen name="EmployeeServiceDetails" component={require('../screens/EmployeeServiceDetailsScreen.jsx').default} />
+    <ServicesStack.Screen name="EmployeeHistorico" component={EmployeeHistoricoScreen} />
     <ServicesStack.Screen name="TelaHistoricoConsultas" component={TelaHistoricoConsultas} />
     <ServicesStack.Screen name="DetalhesConsultaScreen" component={DetalhesConsultaScreen} />
     <ServicesStack.Screen name="AgendamentoScreen" component={AgendamentoScreen} />
@@ -37,6 +45,7 @@ const ServicesFlow = () => (
 
 const ChatFlow = () => (
   <ChatStack.Navigator screenOptions={{ headerShown: false }}>
+    <ChatStack.Screen name="EmployeeMessages" component={EmployeeMessagesScreen} />
     <ChatStack.Screen name="EmployeeChatsList" component={EmployeeChatsListScreen} />
     <ChatStack.Screen name="EmployeeChatScreen" component={EmployeeChatScreen} />
   </ChatStack.Navigator>
@@ -90,24 +99,6 @@ const EmployeeMainApp = () => {
         headerShown: false,
         tabBarShowLabel: false,
       }}>
-      <Tab.Screen
-        name="Agenda"
-        component={AgendaFlow}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="calendar" color={color} size={size} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="Consultas"
-        component={ConsultasFlow}
-        options={{
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="history" color={color} size={size} />
-          ),
-        }}
-      />
       <Tab.Screen
         name="Serviços"
         component={ServicesFlow}

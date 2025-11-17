@@ -19,6 +19,7 @@ const Colors = {
   mediumGray: '#9E9E9E', // A medium shade of grey
   success: '#4CAF50', // Green for success states
   info: '#2196F3', // Blue for informational states
+  gradientPrimary: ['#7F57F1', '#A367F0'], // Example gradient colors
 };
 
 export default Colors;

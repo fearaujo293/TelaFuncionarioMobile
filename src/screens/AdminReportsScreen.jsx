@@ -21,36 +21,76 @@ const AdminReportsScreen = () => {
         <Text style={styles.headerSubtitle}>Visualize e gerencie os relatórios</Text>
       </LinearGradient>
 
+      <View style={styles.filtersRow}> 
+        {['Hoje','Esta Semana','Este Mês'].map((label, idx) => (
+          <TouchableOpacity key={label} style={[styles.filterChip, idx === 0 && styles.filterChipActive]}> 
+            <Text style={[styles.filterChipText, idx === 0 && styles.filterChipTextActive]}>{label}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+
       <View style={styles.reportCard}>
         <Text style={styles.reportTitle}>Relatório de Consultas</Text>
         <Text style={styles.reportDescription}>Visão geral das consultas agendadas, concluídas e canceladas.</Text>
-        <TouchableOpacity style={styles.viewReportButton} onPress={() => handleViewReport('Consultas')}>
-          <Text style={styles.buttonText}>Ver Relatório</Text>
-        </TouchableOpacity>
+        <View style={styles.actionsRow}>
+          <TouchableOpacity style={styles.viewReportButton} onPress={() => handleViewReport('Consultas')}>
+            <Text style={styles.buttonText}>Ver Relatório</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.exportButton} onPress={() => console.log('Exportar Consultas PDF')}>
+            <Text style={styles.exportButtonText}>PDF</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.exportButtonOutline} onPress={() => console.log('Exportar Consultas CSV')}>
+            <Text style={styles.exportButtonOutlineText}>CSV</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.reportCard}>
         <Text style={styles.reportTitle}>Relatório de Clientes</Text>
         <Text style={styles.reportDescription}>Informações sobre novos clientes, clientes ativos e inativos.</Text>
-        <TouchableOpacity style={styles.viewReportButton} onPress={() => handleViewReport('Clientes')}>
-          <Text style={styles.buttonText}>Ver Relatório</Text>
-        </TouchableOpacity>
+        <View style={styles.actionsRow}>
+          <TouchableOpacity style={styles.viewReportButton} onPress={() => handleViewReport('Clientes')}>
+            <Text style={styles.buttonText}>Ver Relatório</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.exportButton} onPress={() => console.log('Exportar Clientes PDF')}>
+            <Text style={styles.exportButtonText}>PDF</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.exportButtonOutline} onPress={() => console.log('Exportar Clientes CSV')}>
+            <Text style={styles.exportButtonOutlineText}>CSV</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.reportCard}>
         <Text style={styles.reportTitle}>Relatório de Funcionários</Text>
         <Text style={styles.reportDescription}>Desempenho e atividades dos funcionários.</Text>
-        <TouchableOpacity style={styles.viewReportButton} onPress={() => handleViewReport('Funcionários')}>
-          <Text style={styles.buttonText}>Ver Relatório</Text>
-        </TouchableOpacity>
+        <View style={styles.actionsRow}>
+          <TouchableOpacity style={styles.viewReportButton} onPress={() => handleViewReport('Funcionários')}>
+            <Text style={styles.buttonText}>Ver Relatório</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.exportButton} onPress={() => console.log('Exportar Funcionários PDF')}>
+            <Text style={styles.exportButtonText}>PDF</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.exportButtonOutline} onPress={() => console.log('Exportar Funcionários CSV')}>
+            <Text style={styles.exportButtonOutlineText}>CSV</Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.reportCard}>
         <Text style={styles.reportTitle}>Relatório Financeiro</Text>
         <Text style={styles.reportDescription}>Receitas, despesas e lucros.</Text>
-        <TouchableOpacity style={styles.viewReportButton} onPress={() => handleViewReport('Financeiro')}>
-          <Text style={styles.buttonText}>Ver Relatório</Text>
-        </TouchableOpacity>
+        <View style={styles.actionsRow}>
+          <TouchableOpacity style={styles.viewReportButton} onPress={() => handleViewReport('Financeiro')}>
+            <Text style={styles.buttonText}>Ver Relatório</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.exportButton} onPress={() => console.log('Exportar Financeiro PDF')}>
+            <Text style={styles.exportButtonText}>PDF</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.exportButtonOutline} onPress={() => console.log('Exportar Financeiro CSV')}>
+            <Text style={styles.exportButtonOutlineText}>CSV</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </ScrollView>
   );
@@ -76,6 +116,31 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'rgba(255, 255, 255, 0.9)',
     fontWeight: '400',
+  },
+  filtersRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginVertical: 12,
+    paddingHorizontal: 16,
+  },
+  filterChip: {
+    backgroundColor: Colors.white,
+    borderRadius: 20,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: Colors.lightGrayBorder,
+  },
+  filterChipActive: {
+    backgroundColor: Colors.primary,
+    borderColor: Colors.primary,
+  },
+  filterChipText: {
+    color: Colors.darkGray,
+    fontWeight: '600',
+  },
+  filterChipTextActive: {
+    color: Colors.white,
   },
   reportCard: {
     backgroundColor: Colors.white,
@@ -114,6 +179,33 @@ const styles = StyleSheet.create({
     width: '100%',
     flex: 1,
     height: 40,
+  },
+  actionsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 10,
+  },
+  exportButton: {
+    backgroundColor: Colors.secondary,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 5,
+  },
+  exportButtonText: {
+    color: Colors.black,
+    fontWeight: '700',
+  },
+  exportButtonOutline: {
+    borderWidth: 1,
+    borderColor: Colors.lightGrayBorder,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 5,
+  },
+  exportButtonOutlineText: {
+    color: Colors.darkGray,
+    fontWeight: '600',
   },
   buttonText: {
     color: Colors.white,

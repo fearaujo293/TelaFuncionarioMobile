@@ -43,12 +43,14 @@ const HomeVeterinarianTabStack = () => (
 const MinhasConsultasStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="MinhasConsultas" component={AllAppointmentsScreen} />
+    <Stack.Screen name="Agendamento" component={AgendamentoScreen} />
   </Stack.Navigator>
 );
 
 const AgendaVeterinarianTabStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="AgendaVeterinarian" component={AgendaScreen} />
+    <Stack.Screen name="Agendamento" component={AgendamentoScreen} />
   </Stack.Navigator>
 );
 

@@ -72,6 +72,10 @@ const AdminDashboardScreen = () => {
         />
       }
     >
+      <LinearGradient colors={Colors.gradientPrimary} style={styles.header}>
+        <Text style={styles.headerTitle}>Dashboard Administrativo</Text>
+        <Text style={styles.headerSubtitle}>Acompanhe o dia e ações rápidas</Text>
+      </LinearGradient>
       {/* RESUMO DO DIA */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>📊 Resumo</Text>
@@ -142,7 +146,7 @@ const AdminDashboardScreen = () => {
           <ActionButton
             icon="settings"
             label="Configurações"
-            onPress={() => handleNavigate('Configuration')}
+            onPress={() => navigation.navigate('ConfigurationTab')}
             color={Colors.darkGray}
           />
 

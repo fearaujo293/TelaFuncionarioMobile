@@ -2,10 +2,11 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import Colors from '../Utils/Colors';
 
 // Ícones personalizados
-import iconeHome from '../assets/icone.png';
-import iconeMao from '../assets/ChatIcon.png';
+import iconeCalendario from '../assets/CalendarioIcon.png';
+import iconeChat from '../assets/ChatIcon.png';
 import iconePet from '../assets/pet.png';
 import iconePessoa from '../assets/pessoa.png';
 import iconeVeterinario from '../assets/vet_icon.png';
@@ -46,26 +47,26 @@ const VeterinarianHomeScreen = () => {
         <View style={styles.categoryGrid}>
           {/* Category buttons now navigate to different tabs */}
           <CategoryButton
-            icon={iconeHome}
-            label="Home"
+            icon={iconeCalendario}
+            label="Agenda"
             styles={styles}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => navigation.navigate('Agenda')}
           />
           <CategoryButton
-            icon={iconeMao}
-            label="Cuidados"
+            icon={iconeChat}
+            label="Chat"
             styles={styles}
-            onPress={() => navigation.navigate('AddPet')}
+            onPress={() => navigation.navigate('Chat')}
           />
           <CategoryButton
             icon={iconeVeterinario}
-            label="Veterinário"
+            label="Minhas Consultas"
             styles={styles}
-            onPress={() => navigation.navigate('Veterinario')}
+            onPress={() => navigation.navigate('Minhas Consultas')}
           />
           <CategoryButton
             icon={iconePessoa}
-            label="Perfil"
+            label="Configurações"
             styles={styles}
             onPress={() => navigation.navigate('Configurações')}
           />
@@ -262,7 +263,7 @@ export default VeterinarianHomeScreen;
   const CategoryButton = ({ icon, label, styles, onPress }) => (
     <TouchableOpacity style={styles.categoryButton} activeOpacity={0.6} onPress={onPress}>
       <View style={styles.categoryIconContainer}>
-        <Image source={icon} style={label === 'Cuidados' ? styles.categoryIconCare : styles.categoryIcon} />
+        <Image source={icon} style={label === 'Chat' ? styles.categoryIconCare : styles.categoryIcon} />
       </View>
       <Text style={styles.categoryLabel}>{label}</Text>
     </TouchableOpacity>

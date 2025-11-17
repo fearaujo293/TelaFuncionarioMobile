@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 16,
-    color: Colors.text,
+    color: Colors.darkGray,
     marginBottom: 5,
   },
 });

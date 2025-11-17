@@ -1,5 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, useWindowDimensions, Modal, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Calendar, LocaleConfig } from 'react-native-calendars';
 import { useOrientation } from '../Utils/Responsive';
@@ -24,6 +26,7 @@ LocaleConfig.locales['pt-br'] = {
 LocaleConfig.defaultLocale = 'pt-br';
 
 const AgendaScreen = () => {
+  const navigation = useNavigation();
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedConsultation, setSelectedConsultation] = useState(null);
@@ -297,6 +300,12 @@ const AgendaScreen = () => {
           />
         ))}
       </View>
+      <TouchableOpacity style={styles.fab} activeOpacity={0.85} onPress={() => navigation.navigate('Agendamento')}>
+        <LinearGradient colors={Colors.gradientPrimary} style={styles.fabGradient}>
+          <FontAwesome name="calendar" size={22} color={Colors.white} />
+          <Text style={styles.fabText}>Agendar</Text>
+        </LinearGradient>
+      </TouchableOpacity>
     </ScrollView>
   );
 };
@@ -314,6 +323,31 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     paddingBottom: 20,
+  },
+  fab: {
+    position: 'absolute',
+    right: 20,
+    bottom: 20,
+    borderRadius: 28,
+    overflow: 'hidden',
+    elevation: 4,
+    shadowColor: Colors.purple,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+  },
+  fabGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderRadius: 28,
+  },
+  fabText: {
+    color: Colors.white,
+    fontSize: 14,
+    fontWeight: '700',
   },
   headerGradient: {
     paddingTop: 40,
