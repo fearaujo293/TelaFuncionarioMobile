@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Switch, ScrollView, AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Switch, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../Utils/Theme';
@@ -152,8 +153,8 @@ const EmployeeConfigurationScreen = () => {
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Desempenho</Text>
-                <MenuItem iconName="chart-line" text="Meu Desempenho" onPress={() => console.log('API call to get performance data')} />
-                <MenuItem iconName="comments" text="Avaliações e Feedback" onPress={() => console.log('API call to get reviews and feedback')} />
+                <MenuItem iconName="chart-line" text="Meu Desempenho" onPress={() => navigation.navigate('Reports')} />
+                <MenuItem iconName="comments" text="Avaliações e Feedback" onPress={() => navigation.navigate('AvaliacoesFeedback')} />
             </View>
 
             <View style={styles.section}>

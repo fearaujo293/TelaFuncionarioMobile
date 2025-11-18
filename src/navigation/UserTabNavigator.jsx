@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Image, Animated, Easing, Text } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../Utils/Theme';
+import { ThemeProvider, useAppTheme } from '../context/ThemeContext';
 import AdminDashboardUsuario from '../screens/AdminDashboardUsuario';
 import AgendaScreen from '../screens/AgendaScreen';
 import AgendamentoScreen from '../screens/AgendamentoScreen';
@@ -31,6 +32,15 @@ import PrincipalScreen from '../screens/PrincipalScreen';
 import ConsultasScreen from '../screens/AdminConsultasScreen';
 import DetalhesConsultaScreen from '../screens/DetalhesConsultaScreen';
 import TelaHistoricoConsultas from '../screens/TelaHistoricoConsultas';
+import WorkScheduleScreen from '../screens/WorkScheduleScreen';
+import PaymentMethodsScreen from '../screens/PaymentMethodsScreen';
+import EditSpecialtiesScreen from '../screens/EditSpecialtiesScreen';
+import ViewReviewsScreen from '../screens/ViewReviewsScreen';
+import ClinicOfficeScreen from '../screens/ClinicOfficeScreen';
+import SetServiceHoursScreen from '../screens/SetServiceHoursScreen';
+import ConfigureConsultationIntervalsScreen from '../screens/ConfigureConsultationIntervalsScreen';
+import ReportsScreen from '../screens/ReportsScreen';
+import DeleteAccountScreen from '../screens/DeleteAccountScreen';
 
 // Ícones personalizados
 import iconeAgenda from '../assets/CalendarioIcon.png';
@@ -43,11 +53,9 @@ import iconeVeterinario from '../assets/vet_icon.png';
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
-const newHeaderOptions = {
+const newHeaderOptions = (colors) => ({
   headerBackground: () => (
-    <LinearGradient
-      colors={Colors.gradientPrimary}      style={{ flex: 1 }}
-    />
+    <LinearGradient colors={colors.gradientPrimary} style={{ flex: 1 }} />
   ),
   headerTitleStyle: {
     color: 'white',
@@ -58,7 +66,7 @@ const newHeaderOptions = {
   headerTitleAlign: 'center',
   headerBackVisible: false,
   headerLeft: () => null,
-};
+})
 
 const slideTransition = {
   gestureDirection: 'horizontal',
@@ -95,16 +103,18 @@ const slideTransition = {
 };
 
 function HomeUserTabStack() {
+  const { colors } = useAppTheme();
   return (
-    <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
+    <Stack.Navigator screenOptions={{ ...newHeaderOptions(colors), ...slideTransition, contentStyle: { backgroundColor: colors.background } }}>
       <Stack.Screen name="Principal" component={PrincipalScreen} options={{ title: 'Home' }} />
     </Stack.Navigator>
   );
 }
 
 function ConsultasUserTabStack() {
+  const { colors } = useAppTheme();
   return (
-    <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
+    <Stack.Navigator screenOptions={{ ...newHeaderOptions(colors), ...slideTransition, contentStyle: { backgroundColor: colors.background } }}>
       <Stack.Screen name="MinhasConsultas" component={TelaHistoricoConsultas} options={{ title: 'Minhas Consultas' }} />
       <Stack.Screen name="DetalhesConsulta" component={DetalhesConsultaScreen} options={{ title: 'Detalhes da Consulta', headerBackVisible: true, headerLeft: undefined }} />
     </Stack.Navigator>
@@ -112,8 +122,9 @@ function ConsultasUserTabStack() {
 }
 
 function ChatUserTabStack() {
+  const { colors } = useAppTheme();
   return (
-    <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
+    <Stack.Navigator screenOptions={{ ...newHeaderOptions(colors), ...slideTransition, contentStyle: { backgroundColor: colors.background } }}>
       <Stack.Screen name="ChatsList" component={ChatsListScreen} options={{ title: 'Conversas' }} />
       <Stack.Screen name="UserChatScreen" component={UserChatScreen} options={({ route }) => ({ title: route.params?.clientName || 'Chat', headerBackVisible: true, headerLeft: undefined })} />
     </Stack.Navigator>
@@ -121,9 +132,9 @@ function ChatUserTabStack() {
 }
 
 function ConfigurationUserTabStack() {
+  const { colors } = useAppTheme();
   return (
-    <Stack.Navigator screenOptions={{ ...newHeaderOptions, ...slideTransition }}>
-      <Stack.Screen name="TempTestScreen" component={() => <Text>Stack de Configurações Renderizado!</Text>} options={{ title: 'Teste' }} />
+    <Stack.Navigator screenOptions={{ ...newHeaderOptions(colors), ...slideTransition, contentStyle: { backgroundColor: colors.background } }}>
       <Stack.Screen name="Configuration" component={ConfigurationScreen} options={{ title: 'Configurações' }} />
       <Stack.Screen name="Security" component={SecurityScreen} options={{ title: 'Segurança' }} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: 'Editar Perfil', headerBackVisible: true, headerLeft: undefined }} />
@@ -137,6 +148,15 @@ function ConfigurationUserTabStack() {
       <Stack.Screen name="TermsOfServiceScreen" component={TermsOfServiceScreen} options={{ headerShown: false }} />
       <Stack.Screen name="PrivacyPolicyScreen" component={PrivacyPolicyScreen} options={{ headerShown: false }} />
           <Stack.Screen name="PetList" component={PetList} options={{ title: 'Meus Pets', headerBackVisible: true, headerLeft: undefined }} />
+          <Stack.Screen name="WorkSchedule" component={WorkScheduleScreen} options={{ title: 'Horário de Trabalho', headerBackVisible: true, headerLeft: undefined }} />
+          <Stack.Screen name="PaymentMethods" component={PaymentMethodsScreen} options={{ title: 'Métodos de Pagamento', headerBackVisible: true, headerLeft: undefined }} />
+          <Stack.Screen name="EditSpecialties" component={EditSpecialtiesScreen} options={{ title: 'Editar Especialidades', headerBackVisible: true, headerLeft: undefined }} />
+          <Stack.Screen name="ViewReviews" component={ViewReviewsScreen} options={{ title: 'Ver Avaliações', headerBackVisible: true, headerLeft: undefined }} />
+          <Stack.Screen name="ClinicOffice" component={ClinicOfficeScreen} options={{ title: 'Clínica/Consultório', headerBackVisible: true, headerLeft: undefined }} />
+          <Stack.Screen name="SetServiceHours" component={SetServiceHoursScreen} options={{ title: 'Definir Horários de Atendimento', headerBackVisible: true, headerLeft: undefined }} />
+          <Stack.Screen name="ConfigureConsultationIntervals" component={ConfigureConsultationIntervalsScreen} options={{ title: 'Configurar Intervalos de Consulta', headerBackVisible: true, headerLeft: undefined }} />
+          <Stack.Screen name="Reports" component={ReportsScreen} options={{ title: 'Relatórios', headerBackVisible: true, headerLeft: undefined }} />
+          <Stack.Screen name="DeleteAccount" component={DeleteAccountScreen} options={{ title: 'Excluir Conta', headerBackVisible: true, headerLeft: undefined }} />
         </Stack.Navigator>
   );
 }
@@ -157,7 +177,9 @@ function AgendaUserTabStack() {
 // Removido PetsUserTabStack; a aba Agenda permanece como original
 
 const UserTabNavigator = () => {
+  const { colors } = useAppTheme();
   return (
+    <ThemeProvider scope="user">
     <Tab.Navigator
       screenOptions={{
         tabBarStyle: {
@@ -167,10 +189,7 @@ const UserTabNavigator = () => {
           borderTopWidth: 0,
         },
         tabBarBackground: () => (
-          <LinearGradient
-            colors={['rgb(163, 103, 240)', 'rgb(141, 126, 251)']}
-            style={{ flex: 1 }}
-          />
+          <LinearGradient colors={colors.gradientPrimary} style={{ flex: 1 }} />
         ),
         tabBarActiveTintColor: 'white',
         tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.7)',
@@ -268,6 +287,7 @@ const UserTabNavigator = () => {
         }}
       />
     </Tab.Navigator>
+    </ThemeProvider>
   );
 };
 

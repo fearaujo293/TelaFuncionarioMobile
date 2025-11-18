@@ -118,21 +118,22 @@ const AdminConfigurationScreen = () => {
                 <MenuItem iconName="user-cog" text="Editar Perfil" onPress={() => navigation.navigate('EditProfile')} />
           <MenuItem iconName="clock" text="Horário de Trabalho" onPress={() => navigation.navigate('WorkHours')} />
           <MenuItem iconName="credit-card" text="Métodos de Pagamento" onPress={() => navigation.navigate('PaymentMethods')} />
-                <MenuItem iconName="user-shield" text="Permissões Admin" onPress={() => console.log('API call to manage admin permissions')} />
+                <MenuItem iconName="user-shield" text="Permissões Admin" onPress={() => navigation.navigate('Security')} />
             </View>
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Gerenciamento de Usuários</Text>
-                <MenuItem iconName="users" text="Listar Usuários" onPress={() => console.log('API call to list users')} />
-                <MenuItem iconName="user-plus" text="Adicionar Usuário" onPress={() => console.log('API call to add user')} />
-                <MenuItem iconName="user-tie" text="Gerenciar Funcionários" onPress={() => console.log('API call to manage employees')} />
+                <MenuItem iconName="users" text="Listar Usuários" onPress={() => navigation.navigate('UserListScreen')} />
+                <MenuItem iconName="user-plus" text="Adicionar Funcionário" onPress={() => navigation.navigate('AddAdmin', { employee: { role: 'Funcionário' } })} />
+                <MenuItem iconName="user-md" text="Adicionar Veterinário" onPress={() => navigation.navigate('AddAdmin', { employee: { role: 'Veterinário', specialty: '' } })} />
+                <MenuItem iconName="user-tie" text="Gerenciar Funcionários" onPress={() => navigation.navigate('AdminList')} />
             </View>
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Sistema</Text>
-                <MenuItem iconName="database" text="Backup de Dados" onPress={() => console.log('API call to backup data')} />
-                <MenuItem iconName="file-alt" text="Logs do Sistema" onPress={() => console.log('API call to view system logs')} />
-                <MenuItem iconName="server" text="Status do Servidor" onPress={() => console.log('API call to check server status')} />
+                <MenuItem iconName="database" text="Backup de Dados" onPress={() => navigation.navigate('AdminReports')} />
+                <MenuItem iconName="file-alt" text="Logs do Sistema" onPress={() => navigation.navigate('AdminReports')} />
+                <MenuItem iconName="server" text="Status do Servidor" onPress={() => navigation.navigate('AdminReports')} />
                 <View style={styles.notificationOption}>
                     <Icon name="tools" size={18} color={'#A367F0'} style={styles.menuIcon} />
                     <Text style={styles.menuText}>Modo Manutenção</Text>
@@ -147,16 +148,16 @@ const AdminConfigurationScreen = () => {
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Relatórios</Text>
-                <MenuItem iconName="chart-pie" text="Relatório Geral" onPress={() => console.log('API call to generate general report')} />
-                <MenuItem iconName="file-export" text="Exportar Dados" onPress={() => console.log('API call to export data')} />
-                <MenuItem iconName="analytics" text="Análise de Uso" onPress={() => console.log('API call for usage analysis')} />
+                <MenuItem iconName="chart-pie" text="Relatório Geral" onPress={() => navigation.navigate('AdminReports')} />
+                <MenuItem iconName="file-export" text="Exportar Dados" onPress={() => navigation.navigate('AdminReports')} />
+                <MenuItem iconName="chart-line" text="Análise de Uso" onPress={() => navigation.navigate('AdminReports')} />
             </View>
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Configurações Gerais</Text>
-                <MenuItem iconName="cogs" text="Configurações do App" onPress={() => console.log('API call to manage app settings')} />
-                <MenuItem iconName="palette" text="Temas e Aparência" onPress={() => console.log('API call to manage themes')} />
-                <MenuItem iconName="envelope-open-text" text="Email e Notificações" onPress={() => console.log('API call to manage email and notifications')} />
+                <MenuItem iconName="cogs" text="Configurações do App" onPress={() => navigation.navigate('PrivacySettings')} />
+                <MenuItem iconName="palette" text="Temas e Aparência" onPress={() => navigation.navigate('AppearanceSettings')} />
+                <MenuItem iconName="envelope-open-text" text="Email e Notificações" onPress={() => navigation.navigate('NotificationsSettings')} />
             </View>
 
             <View style={styles.section}>
@@ -175,16 +176,16 @@ const AdminConfigurationScreen = () => {
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Segurança</Text>
-                <MenuItem iconName="lock" text="Mudar Senha" onPress={() => navigation.navigate('ChangePasswordScreen')} />
-                <MenuItem iconName="envelope" text="Mudar Email" onPress={() => navigation.navigate('ChangeEmailScreen')} />
-                <MenuItem iconName="shield-alt" text="Autenticação de 2 Fatores" onPress={() => {}} />
+                <MenuItem iconName="lock" text="Mudar Senha" onPress={() => navigation.navigate('ChangePassword')} />
+                <MenuItem iconName="envelope" text="Mudar Email" onPress={() => navigation.navigate('ChangeEmail')} />
+                <MenuItem iconName="shield-alt" text="Autenticação de 2 Fatores" onPress={() => navigation.navigate('Security')} />
             </View>
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Suporte</Text>
-                <MenuItem iconName="question-circle" text="Central de Ajuda" onPress={() => {}} />
-                <MenuItem iconName="bug" text="Reportar Bug" onPress={() => {}} />
-                <MenuItem iconName="info-circle" text="Sobre o Sistema" onPress={() => {}} />
+                <MenuItem iconName="question-circle" text="Central de Ajuda" onPress={() => navigation.navigate('HelpSupport')} />
+                <MenuItem iconName="bug" text="Reportar Bug" onPress={() => navigation.navigate('HelpSupport')} />
+                <MenuItem iconName="info-circle" text="Sobre o Sistema" onPress={() => navigation.navigate('AboutAppScreen')} />
             </View>
 
             <View style={styles.section}>

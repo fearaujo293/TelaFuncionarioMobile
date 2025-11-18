@@ -37,13 +37,11 @@ const PaymentMethodsScreen = () => {
     );
 
     const handleAddPaymentMethod = () => {
-        Alert.alert('Adicionar Método de Pagamento', 'Navegar para a tela de adição de método de pagamento.');
-        // navigation.navigate('AddPaymentMethodScreen');
+        navigation.navigate('AddPaymentMethodScreen');
     };
 
     const handleEditPaymentMethod = (id) => {
-        Alert.alert('Editar Método de Pagamento', `Editar método de pagamento com ID: ${id}`);
-        // navigation.navigate('EditPaymentMethodScreen', { id });
+        navigation.navigate('EditPaymentMethodScreen', { id });
     };
 
     const handleDeletePaymentMethod = (id) => {

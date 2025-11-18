@@ -4,29 +4,54 @@ import { defaultPetImage } from '../assets/defaultPetImage';
 import { Colors } from '../Utils/Theme';
 
 const ConsultationCard = ({ consultation, onPress }) => {
+  const statusLabel = (() => {
+    switch (consultation.status) {
+      case 'scheduled':
+      case 'Agendada':
+        return 'Agendada';
+      case 'in_progress':
+      case 'Andamento':
+        return 'Andamento';
+      case 'completed':
+      case 'Concluída':
+        return 'Concluída';
+      case 'urgent':
+      case 'Urgente':
+        return 'Urgente';
+      default:
+        return consultation.status || '';
+    }
+  })();
+
   const getStatusStyle = (status) => {
-    switch (status) {
+    switch (statusLabel) {
       case 'Agendada':
         return styles.statusAgendada;
       case 'Andamento':
         return styles.statusAndamento;
       case 'Concluída':
         return styles.statusConcluida;
+      case 'Urgente':
+        return styles.statusUrgente;
       default:
         return {};
     }
   };
 
+  const imageSource = consultation.imageSource || consultation.petImage || defaultPetImage;
+  const petName = consultation.petName || consultation.pet || 'Pet';
+  const service = consultation.service || consultation.type || '';
+
   return (
-    <TouchableOpacity style={styles.card} onPress={onPress}>
-      <Image source={consultation.imageSource || defaultPetImage} style={styles.petImage} />
+    <TouchableOpacity style={styles.card} onPress={() => onPress && onPress(consultation)}>
+      <Image source={imageSource} style={styles.petImage} />
       <View style={styles.cardContent}>
-        <Text style={styles.petName}>{consultation.petName}</Text>
-        <Text style={styles.service}>{consultation.service}</Text>
+        <Text style={styles.petName}>{petName}</Text>
+        <Text style={styles.service}>{service}</Text>
         <Text style={styles.time}>{consultation.time}</Text>
       </View>
-      <View style={[styles.statusBadge, getStatusStyle(consultation.status)]}>
-        <Text style={styles.statusText}>{consultation.status}</Text>
+      <View style={[styles.statusBadge, getStatusStyle(statusLabel)]}>
+        <Text style={styles.statusText}>{statusLabel}</Text>
       </View>
     </TouchableOpacity>
   );
@@ -84,6 +109,9 @@ const styles = StyleSheet.create({
   },
   statusConcluida: {
     backgroundColor: Colors.green,
+  },
+  statusUrgente: {
+    backgroundColor: '#FF0000',
   },
 });
 

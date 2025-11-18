@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Switch, ScrollView, AsyncStorage } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert, Switch, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
@@ -94,7 +95,7 @@ const VeterinarianConfigurationScreen = () => {
                     text: "Cancelar",
                     style: "cancel"
                 },
-                { text: "Excluir", onPress: () => console.log("API call to delete account"), style: "destructive" }
+                { text: "Excluir", onPress: () => navigation.navigate('DeleteAccountScreen'), style: "destructive" }
             ]
         );
     };
@@ -123,15 +124,15 @@ const VeterinarianConfigurationScreen = () => {
                 <MenuItem iconName="user-secret" text="Privacidade" onPress={() => navigation.navigate('PrivacySettingsScreen')} />
                 <MenuItem iconName="paint-brush" text="Aparência" onPress={() => navigation.navigate('AppearanceSettingsScreen')} />
                 <MenuItem iconName="question-circle" text="Ajuda e Suporte" onPress={() => navigation.navigate('HelpSupportScreen')} />
-                <MenuItem iconName="stethoscope" text="Editar Especialidades" onPress={() => console.log('API call to edit specialties')} />
-                <MenuItem iconName="star" text="Ver Avaliações" onPress={() => console.log('API call to get reviews')} />
-                <MenuItem iconName="clinic-medical" text="Clínica/Consultório" onPress={() => console.log('API call to get clinic/office info')} />
+                <MenuItem iconName="stethoscope" text="Editar Especialidades" onPress={() => navigation.navigate('EditSpecialtiesScreen')} />
+                <MenuItem iconName="star" text="Ver Avaliações" onPress={() => navigation.navigate('ViewReviewsScreen')} />
+                <MenuItem iconName="clinic-medical" text="Clínica/Consultório" onPress={() => navigation.navigate('ClinicOfficeScreen')} />
             </View>
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Horários e Disponibilidade</Text>
-                <MenuItem iconName="calendar-alt" text="Definir Horários de Atendimento" onPress={() => console.log('API call to set office hours')} />
-                <MenuItem iconName="clock" text="Configurar Intervalos de Consulta" onPress={() => console.log('API call to set appointment intervals')} />
+                <MenuItem iconName="calendar-alt" text="Definir Horários de Atendimento" onPress={() => navigation.navigate('SetServiceHoursScreen')} />
+                <MenuItem iconName="clock" text="Configurar Intervalos de Consulta" onPress={() => navigation.navigate('ConfigureConsultationIntervalsScreen')} />
                 <View style={styles.notificationOption}>
                     <Icon name="power-off" size={18} color={'#A367F0'} style={styles.menuIcon} />
                     <Text style={styles.menuText}>Disponível para Agendamentos</Text>
@@ -146,8 +147,8 @@ const VeterinarianConfigurationScreen = () => {
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Consultas</Text>
-                <MenuItem iconName="history" text="Histórico de Consultas" onPress={() => console.log('API call to get appointment history')} />
-                <MenuItem iconName="chart-bar" text="Relatórios" onPress={() => console.log('API call to get reports')} />
+                <MenuItem iconName="history" text="Histórico de Consultas" onPress={() => navigation.navigate('AllAppointmentsScreen')} />
+                <MenuItem iconName="chart-bar" text="Relatórios" onPress={() => navigation.navigate('ReportsScreen')} />
             </View>
 
             <View style={styles.section}>
@@ -166,8 +167,8 @@ const VeterinarianConfigurationScreen = () => {
 
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Segurança</Text>
-                <MenuItem iconName="lock" text="Mudar Senha" onPress={() => navigation.navigate('ChangePasswordScreen')} />
-                <MenuItem iconName="envelope" text="Mudar Email" onPress={() => navigation.navigate('ChangeEmailScreen')} />
+                <MenuItem iconName="lock" text="Mudar Senha" onPress={() => navigation.navigate('ChangePassword')} />
+                <MenuItem iconName="envelope" text="Mudar Email" onPress={() => navigation.navigate('ChangeEmail')} />
             </View>
 
             <View style={styles.section}>

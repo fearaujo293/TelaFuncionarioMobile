@@ -17,6 +17,7 @@ import {
 import dog1 from '../assets/dog1.png';
 import dog2 from '../assets/dog2.png';
 import cat1 from '../assets/cat1.png';
+import HomeAppointmentCard from '../components/HomeAppointmentCard';
 
 export default function HomeScreen() {
   const [pets, setPets] = useState([
@@ -126,6 +127,12 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       {/* Removido o cabeçalho interno "Meus Pets" */}
+      <HomeAppointmentCard
+        petName="Princesa"
+        date="10/12/2025"
+        message="A consulta da Princesa foi agendada, aguarde para mais informações"
+        petImage={cat1}
+      />
 
       {!showAddForm ? (
         <>

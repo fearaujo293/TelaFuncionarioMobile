@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'rea
 import { LinearGradient } from 'expo-linear-gradient';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { Colors } from '../Utils/Theme';
+import HomeAppointmentCard from '../components/HomeAppointmentCard';
 
 const EmployeeDashboardScreen = ({ navigation }) => {
   const [todayStats] = useState({
@@ -61,6 +62,14 @@ const EmployeeDashboardScreen = ({ navigation }) => {
       </LinearGradient>
 
       <ScrollView style={styles.content}>
+        <View style={{ paddingHorizontal: 16 }}>
+          <HomeAppointmentCard
+            petName="Princesa"
+            date="10/12/2025"
+            message="A consulta da Princesa foi agendada, aguarde para mais informações"
+            petImage={require('../assets/cat1.png')}
+          />
+        </View>
         {/* Estatísticas do Dia */}
         <View style={styles.statsSection}>
           <Text style={styles.sectionTitle}>Hoje</Text>

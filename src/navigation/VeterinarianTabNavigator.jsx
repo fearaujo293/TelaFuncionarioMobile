@@ -23,6 +23,13 @@ import PaymentMethodsScreen from '../screens/PaymentMethodsScreen';
 import PrivacySettingsScreen from '../screens/PrivacySettingsScreen';
 import AppearanceSettingsScreen from '../screens/AppearanceSettingsScreen';
 import HelpSupportScreen from '../screens/HelpSupportScreen';
+import DeleteAccountScreen from '../screens/DeleteAccountScreen';
+import ViewReviewsScreen from '../screens/ViewReviewsScreen';
+import EditSpecialtiesScreen from '../screens/EditSpecialtiesScreen';
+import ClinicOfficeScreen from '../screens/ClinicOfficeScreen';
+import SetServiceHoursScreen from '../screens/SetServiceHoursScreen';
+import ConfigureConsultationIntervalsScreen from '../screens/ConfigureConsultationIntervalsScreen';
+import ReportsScreen from '../screens/ReportsScreen';
 
 // Ícones
 import iconeHome from '../assets/pet.png';
@@ -72,6 +79,14 @@ const ConfigurationVeterinarianTabStack = () => (
     <Stack.Screen name="PrivacySettingsScreen" component={PrivacySettingsScreen} />
     <Stack.Screen name="AppearanceSettingsScreen" component={AppearanceSettingsScreen} />
     <Stack.Screen name="HelpSupportScreen" component={HelpSupportScreen} />
+    <Stack.Screen name="DeleteAccountScreen" component={DeleteAccountScreen} />
+    <Stack.Screen name="ViewReviewsScreen" component={ViewReviewsScreen} />
+    <Stack.Screen name="EditSpecialtiesScreen" component={EditSpecialtiesScreen} />
+    <Stack.Screen name="ClinicOfficeScreen" component={ClinicOfficeScreen} />
+    <Stack.Screen name="SetServiceHoursScreen" component={SetServiceHoursScreen} />
+    <Stack.Screen name="ConfigureConsultationIntervalsScreen" component={ConfigureConsultationIntervalsScreen} />
+    <Stack.Screen name="ReportsScreen" component={ReportsScreen} />
+    <Stack.Screen name="AllAppointmentsScreen" component={AllAppointmentsScreen} />
   </Stack.Navigator>
 );
 
@@ -112,18 +127,17 @@ const VeterinarianTabNavigator = () => {
           return (
             <Image
               source={iconName}
-              style={{ width: isCalendar ? size + 6 : size, height: isCalendar ? size + 6 : size, tintColor: color }}
+              style={{ width: isCalendar ? size + 10 : size, height: isCalendar ? size + 10 : size, tintColor: color }}
               resizeMode="contain"
             />
           );
         },
       })}
     >
-      {/* Ordem ajustada: Home, Agenda, Minhas Consultas, Chat, Configurações */}
-      <Tab.Screen name="Home" component={HomeVeterinarianTabStack} />
       <Tab.Screen name="Agenda" component={AgendaVeterinarianTabStack} />
-      <Tab.Screen name="Minhas Consultas" component={MinhasConsultasStack} />
       <Tab.Screen name="Chat" component={ChatVeterinarianTabStack} />
+      <Tab.Screen name="Home" component={HomeVeterinarianTabStack} />
+      <Tab.Screen name="Minhas Consultas" component={MinhasConsultasStack} />
       <Tab.Screen name="Configurações" component={ConfigurationVeterinarianTabStack} />
     </Tab.Navigator>
   );

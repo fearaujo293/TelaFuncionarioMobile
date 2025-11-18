@@ -86,7 +86,7 @@ const EmployeeMessagesScreen = () => {
   const renderConversationItem = ({ item }) => (
     <TouchableOpacity 
       style={styles.conversationItem}
-      onPress={() => navigation.navigate('EmployeeChatScreen', { conversation: item })}
+      onPress={() => navigation.navigate('EmployeeChatsList')}
     >
       <View style={styles.avatarContainer}>
         <Image source={{ uri: item.avatar }} style={styles.avatar} />

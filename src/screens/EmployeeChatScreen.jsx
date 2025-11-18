@@ -3,16 +3,16 @@ import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, Keyboard
 import { FontAwesome } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../Utils/Theme';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { ChatContext } from '../context/ChatContext';
 
 const EmployeeChatScreen = () => {
   const { chats, sendMessage, markChatRead } = useContext(ChatContext);
   const navigation = useNavigation();
-  const employeeChatId = 'employee_user_chat';
-  const chatPartnerInfo = { id: 'user_id', name: 'Usuário' };
+  const route = useRoute();
+  const { chatId, chatPartnerInfo } = route.params || {};
 
-  const currentChat = chats[employeeChatId] || { messages: [] };
+  const currentChat = (chatId && chats[chatId]) || { messages: [], chatPartnerInfo };
   const messages = currentChat.messages;
 
   const [inputText, setInputText] = useState('');
@@ -22,25 +22,27 @@ const EmployeeChatScreen = () => {
     if (messages.length > 0) {
       flatListRef.current.scrollToEnd({ animated: true });
     }
-    markChatRead(employeeChatId);
-  }, [messages]);
+    if (chatId) {
+      markChatRead(chatId);
+    }
+  }, [messages, chatId, markChatRead]);
 
   const handleSendMessage = () => {
-    if (inputText.trim()) {
-      sendMessage(employeeChatId, chatPartnerInfo, inputText.trim(), 'employee');
+    if (inputText.trim() && chatId) {
+      sendMessage(chatId, chatPartnerInfo || currentChat.chatPartnerInfo || { name: 'Usuário' }, inputText.trim(), 'employee');
       setInputText('');
     }
   };
 
   const quickAction = (type) => {
     if (type === 'marcar') {
-      sendMessage(employeeChatId, chatPartnerInfo, 'Consulta marcada. Confirma presença?', 'employee');
+      if (chatId) sendMessage(chatId, chatPartnerInfo || currentChat.chatPartnerInfo || { name: 'Usuário' }, 'Consulta marcada. Confirma presença?', 'employee');
     }
     if (type === 'retorno') {
-      sendMessage(employeeChatId, chatPartnerInfo, 'Vamos agendar um retorno? Quais horários prefere?', 'employee');
+      if (chatId) sendMessage(chatId, chatPartnerInfo || currentChat.chatPartnerInfo || { name: 'Usuário' }, 'Vamos agendar um retorno? Quais horários prefere?', 'employee');
     }
     if (type === 'agendar') {
-      markChatRead(employeeChatId);
+      if (chatId) markChatRead(chatId);
       navigation.navigate('Agendamento');
     }
   };
@@ -66,9 +68,9 @@ const EmployeeChatScreen = () => {
         style={styles.headerGradient}
       >
         <View style={styles.headerRow}>
-          <Image source={{ uri: currentChat.chatPartnerInfo?.avatar }} style={styles.headerAvatar} />
+          <Image source={currentChat.chatPartnerInfo?.avatar ? { uri: currentChat.chatPartnerInfo.avatar } : require('../assets/pessoa.png')} style={styles.headerAvatar} />
           <View style={styles.headerTextCol}>
-            <Text style={styles.headerTitle}>Chat com {chatPartnerInfo.name}</Text>
+            <Text style={styles.headerTitle}>Chat com {(chatPartnerInfo?.name || currentChat.chatPartnerInfo?.name || 'Usuário')}</Text>
             <Text style={styles.headerSubtitle}>Ativo agora</Text>
           </View>
         </View>

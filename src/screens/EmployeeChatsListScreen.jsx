@@ -19,6 +19,11 @@ const EmployeeChatsListScreen = () => {
     const arr = Object.keys(chats).map(chatId => ({ chatId, ...chats[chatId] }));
     return arr
       .filter((c) => (c.chatPartnerInfo?.name || '').toLowerCase().includes(query.toLowerCase()))
+      .map((c) => {
+        const last = c.messages && c.messages.length > 0 ? c.messages[c.messages.length - 1] : null;
+        const computedUnreadCount = last && last.role === 'user' ? 1 : 0;
+        return { ...c, unreadCount: computedUnreadCount };
+      })
       .sort((a, b) => (b.unreadCount || 0) - (a.unreadCount || 0));
   }, [chats, query]);
 
@@ -34,7 +39,7 @@ const EmployeeChatsListScreen = () => {
           chatPartnerInfo: item.chatPartnerInfo,
         })}
       >
-        <Image source={{ uri: item.chatPartnerInfo?.avatar }} style={styles.avatar} />
+        <Image source={item.chatPartnerInfo?.avatar ? { uri: item.chatPartnerInfo.avatar } : require('../assets/pessoa.png')} style={styles.avatar} />
         <View style={styles.chatCardContent}>
           <Text style={styles.chatPartnerName}>{chatPartnerName}</Text>
           {lastMessage && (

@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Colors from '../Utils/Colors';
+import HomeAppointmentCard from '../components/HomeAppointmentCard';
 
 // Ícones personalizados
 import iconeCalendario from '../assets/CalendarioIcon.png';
@@ -81,7 +82,12 @@ const VeterinarianHomeScreen = () => {
             <Text style={styles.seeAllLink}>Ver Todas</Text>
           </TouchableOpacity>
         </View>
-        {/* Conteúdo removido para deixar a seção em branco */}
+        <HomeAppointmentCard
+          petName="Princesa"
+          date="10/12/2025"
+          message="A consulta da Princesa foi agendada, aguarde para mais informações"
+          petImage={require('../assets/cat1.png')}
+        />
       </View>
 
 

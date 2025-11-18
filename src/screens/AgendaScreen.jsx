@@ -97,6 +97,7 @@ const AgendaScreen = () => {
                 petImage: consultation.petImage,
                 time: consultation.time,
                 date: day.dateString,
+                pet: consultation.pet,
               });
               setShowSmallModal(true);
               setSelectedConsultation(null); // Clear detailed modal content

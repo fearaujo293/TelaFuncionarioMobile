@@ -11,7 +11,7 @@ const chatData = [
 
 const AdminAllChatsScreen = ({ navigation }) => {
   const renderChatItem = ({ item }) => (
-    <TouchableOpacity style={styles.chatCard} onPress={() => navigation.navigate('UserChatScreen', { clientName: item.clientName })}>
+    <TouchableOpacity style={styles.chatCard} onPress={() => navigation.navigate('AdminChat', { clientName: item.clientName, clientId: item.id })}>
       <View>
         <Text style={styles.clientName}>{item.clientName}</Text>
         <Text style={styles.lastMessage}>{item.lastMessage}</Text>

@@ -12,6 +12,7 @@ import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import { Colors, CommonStyles } from '../Utils/Theme';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
+import HomeAppointmentCard from '../components/HomeAppointmentCard';
 
 const AdminDashboardScreen = () => {
   const navigation = useNavigation();
@@ -76,6 +77,14 @@ const AdminDashboardScreen = () => {
         <Text style={styles.headerTitle}>Dashboard Administrativo</Text>
         <Text style={styles.headerSubtitle}>Acompanhe o dia e ações rápidas</Text>
       </LinearGradient>
+      <View style={{ paddingHorizontal: 16 }}>
+        <HomeAppointmentCard
+          petName="Princesa"
+          date="10/12/2025"
+          message="A consulta da Princesa foi agendada, aguarde para mais informações"
+          petImage={require('../assets/cat1.png')}
+        />
+      </View>
       {/* RESUMO DO DIA */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>📊 Resumo</Text>
