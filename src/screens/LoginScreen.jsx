@@ -1,22 +1,25 @@
 import React, { useState } from 'react';
-import { View, Image, StyleSheet, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Image, StyleSheet, Text, TextInput, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native'; // Importe o hook de navegação
 import { Colors, CommonStyles } from '../Utils/Theme';
+import { useAuth } from '../context/AuthContext';
 
 const LoginScreen = () => {
   const navigation = useNavigation(); // Obtenha o objeto de navegação
   const route = useRoute();
+  const { login } = useAuth();
   const [userType, setUserType] = useState(route.params?.userType || 'usuario'); // 'usuario', 'veterinario' ou 'admin'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleBackPress = () => {
     navigation.goBack(); // Volta para a tela anterior na pilha
   };
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     // Limpa erros anteriores
     setEmailError('');
     setPasswordError('');
@@ -42,15 +45,32 @@ const LoginScreen = () => {
     }
 
     if (valid) {
-      // Lógica de autenticação simulada
-      if (userType === 'usuario') {
-        navigation.navigate('AdminUserMainApp');
-      } else if (userType === 'veterinario') {
-        navigation.navigate('VeterinarianMainApp');
-      } else if (userType === 'funcionario') {
-        navigation.navigate('EmployeeMainApp');
-      } else if (userType === 'admin') {
-        navigation.navigate('AdminApp');
+      setLoading(true);
+      try {
+        // Autenticação real com API
+        const credentials = { email, password };
+        const response = await login(credentials);
+        
+        // Navegação baseada no role do usuário retornado pela API
+        const userRole = response.user.role || userType;
+        
+        if (userRole === 'USER' || userRole === 'usuario') {
+          navigation.navigate('AdminUserMainApp');
+        } else if (userRole === 'VETERINARIAN' || userRole === 'veterinario') {
+          navigation.navigate('VeterinarianMainApp');
+        } else if (userRole === 'EMPLOYEE' || userRole === 'funcionario') {
+          navigation.navigate('EmployeeMainApp');
+        } else if (userRole === 'ADMIN' || userRole === 'admin') {
+          navigation.navigate('AdminApp');
+        }
+      } catch (error) {
+        Alert.alert(
+          'Erro de Login',
+          error.response?.data?.message || 'Credenciais inválidas. Verifique seu email e senha.',
+          [{ text: 'OK' }]
+        );
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -154,8 +174,16 @@ const LoginScreen = () => {
         </View>
 
         {/* Botão Entrar */}
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Entrar</Text>
+        <TouchableOpacity 
+          style={[styles.loginButton, loading && styles.loginButtonDisabled]} 
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color={Colors.white} />
+          ) : (
+            <Text style={styles.loginButtonText}>Entrar</Text>
+          )}
         </TouchableOpacity>
 
         {/* Botão Voltar */}
@@ -291,6 +319,10 @@ const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  loginButtonDisabled: {
+    backgroundColor: Colors.lightPurple,
+    opacity: 0.7,
   },
   backButton: {
     width: '100%',

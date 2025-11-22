@@ -5,9 +5,11 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../context/AuthContext';
 
 const AdminConfigurationScreen = () => {
     const navigation = useNavigation();
+    const { logout, deleteAccount } = useAuth();
     const [profileImage, setProfileImage] = useState(null);
     const [notifications, setNotifications] = useState({
         systemAlerts: true,
@@ -70,7 +72,7 @@ const AdminConfigurationScreen = () => {
         </TouchableOpacity>
     );
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         Alert.alert(
           "Sair",
           "Tem certeza que deseja sair?",
@@ -79,11 +81,15 @@ const AdminConfigurationScreen = () => {
               text: "Cancelar",
               style: "cancel"
             },
-            { text: "Sair", onPress: () => {
-          console.log("Cleaning up session...");
-          navigation.navigate('Login');
-        } }
-      ]
+            { text: "Sair", onPress: async () => {
+                const success = await logout();
+                if (success) {
+                    navigation.navigate('Login');
+                } else {
+                    Alert.alert("Erro", "Não foi possível fazer logout");
+                }
+            }}
+          ]
         );
     };
 
@@ -98,6 +104,27 @@ const AdminConfigurationScreen = () => {
             },
             { text: "Resetar", onPress: () => console.log("API call to reset system"), style: "destructive" }
           ]
+        );
+    };
+
+    const handleDeleteAccount = async () => {
+        Alert.alert(
+            "Excluir Conta",
+            "Tem certeza que deseja excluir sua conta? Esta ação é irreversível.",
+            [
+                {
+                    text: "Cancelar",
+                    style: "cancel"
+                },
+                { text: "Excluir", onPress: async () => {
+                    const success = await deleteAccount();
+                    if (success) {
+                        navigation.navigate('Login');
+                    } else {
+                        Alert.alert("Erro", "Não foi possível excluir a conta");
+                    }
+                }, style: "destructive" }
+            ]
         );
     };
 
@@ -191,6 +218,7 @@ const AdminConfigurationScreen = () => {
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Conta</Text>
                 <MenuItem iconName="sign-out-alt" text="Sair" onPress={handleLogout} isDanger />
+                <MenuItem iconName="trash-alt" text="Excluir Conta" onPress={handleDeleteAccount} isDanger />
                 <MenuItem iconName="exclamation-triangle" text="Resetar Sistema" onPress={handleResetSystem} isDanger />
             </View>
         </ScrollView>

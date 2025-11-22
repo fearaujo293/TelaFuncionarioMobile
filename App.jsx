@@ -11,6 +11,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import CadastroScreen from './src/screens/CadastroScreen';
 import InicialScreen from './src/screens/InicialScreen';
 import { ChatProvider } from './src/context/ChatContext';
+import { AuthProvider } from './src/context/AuthContext';
 import AdminUserMainApp from './src/navigation/AdminUserMainApp';
 import VeterinarianMainApp from './src/navigation/VeterinarianMainApp';
 
@@ -32,8 +33,9 @@ export default function App() {
   }
 
   return (
-    <ChatProvider>
-      <NavigationContainer>
+    <AuthProvider>
+      <ChatProvider>
+        <NavigationContainer>
         <RootStack.Navigator screenOptions={{ headerShown: false }}>
           <RootStack.Screen name="Inicial" component={InicialScreen} />
           <RootStack.Screen name="Login" component={LoginScreen} />
@@ -46,6 +48,7 @@ export default function App() {
           <RootStack.Screen name="PrincipalScreen" component={PrincipalScreen} />
         </RootStack.Navigator>
       </NavigationContainer>
-    </ChatProvider>
+      </ChatProvider>
+    </AuthProvider>
   );
 }

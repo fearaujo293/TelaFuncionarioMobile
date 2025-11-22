@@ -5,9 +5,11 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../context/AuthContext';
 
 const ConfigurationScreen = () => {
     const navigation = useNavigation();
+    const { logout, deleteAccount } = useAuth();
     const [profileImage, setProfileImage] = useState(null);
     const [notifications, setNotifications] = useState({
         global: true,
@@ -28,7 +30,7 @@ const ConfigurationScreen = () => {
         console.log('Notification settings changed:', notifications);
     }, [notifications]);
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         Alert.alert(
             "Sair",
             "Tem certeza que deseja sair?",
@@ -37,15 +39,19 @@ const ConfigurationScreen = () => {
                     text: "Cancelar",
                     style: "cancel"
                 },
-                { text: "Sair", onPress: () => {
-          console.log("Cleaning up session...");
-          navigation.navigate('Login');
-        } }
-      ]
+                { text: "Sair", onPress: async () => {
+                    const success = await logout();
+                    if (success) {
+                        navigation.navigate('Login');
+                    } else {
+                        Alert.alert("Erro", "Não foi possível fazer logout");
+                    }
+                }}
+            ]
         );
     };
 
-    const handleDeleteAccount = () => {
+    const handleDeleteAccount = async () => {
         Alert.alert(
             "Excluir Conta",
             "Tem certeza que deseja excluir sua conta? Esta ação é irreversível.",
@@ -54,7 +60,14 @@ const ConfigurationScreen = () => {
                     text: "Cancelar",
                     style: "cancel"
                 },
-                { text: "Excluir", onPress: () => console.log("API call to delete account"), style: "destructive" }
+                { text: "Excluir", onPress: async () => {
+                    const success = await deleteAccount();
+                    if (success) {
+                        navigation.navigate('Login');
+                    } else {
+                        Alert.alert("Erro", "Não foi possível excluir a conta");
+                    }
+                }, style: "destructive" }
             ]
         );
     };
